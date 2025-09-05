@@ -47,6 +47,7 @@ export const fetchCredentials = createAsyncThunk(
           imageUrl: item?.imageUrl ? item?.imageUrl : null,
           organizationName: item?.name ? item?.name : null,
           qrCode: qrCode,
+          credentialType: cred.type,
           type:
             cred.values != undefined && cred.values.Type != undefined
               ? cred.values.Type
@@ -55,8 +56,8 @@ export const fetchCredentials = createAsyncThunk(
                 cred.values['Vaccine Name'].length != 0 &&
                 cred.values['Dose'] != undefined &&
                 cred.values['Dose'].length != 0
-              ? 'COVIDpass (Vaccination)'
-              : 'Digital Certificate',
+                ? 'COVIDpass (Vaccination)'
+                : 'Digital Certificate',
         };
         credObj.credentials.push(obj);
       }
@@ -99,8 +100,8 @@ export const addCredential = createAsyncThunk(
             cred.values['Vaccine Name'].length != 0 &&
             cred.values['Dose'] != undefined &&
             cred.values['Dose'].length != 0
-          ? 'COVIDpass (Vaccination)'
-          : 'Digital Certificate',
+            ? 'COVIDpass (Vaccination)'
+            : 'Digital Certificate',
     };
 
     credObj.credentials.push(obj);
@@ -118,11 +119,12 @@ export const removeCredentials = createAsyncThunk(
       let { credential } = getState() as RootState;
       let credObj = credential.entities;
 
+      let cred = Object.values(credObj).find((x) => x?.credentialId == credentialId);
+
       // Delete credentials API call
-      await CredentialAPI.delete_credential(credentialId);
+      await CredentialAPI.delete_credential(credentialId, cred?.correlationId);
 
       // Removing Credentials from local storage
-      let cred = Object.values(credObj).find((x) => x?.credentialId == credentialId);
       if (cred?.credentialId) {
         dispatch(deleteCredential(cred?.credentialId));
 
@@ -152,13 +154,9 @@ export const compressCredentials = createAsyncThunk(
         return { success: true };
       }
 
-      // Return if
-      // QR is not undefined as v3 still needs to be generated &&
-      // QR version === 3 i.e credential is already generated.
+      // Return if QR is not undefined 
       if (credObj.qrCode !== undefined) {
-        if (credObj?.qrCode.v === 3) {
-          return { success: true };
-        }
+        return { success: true };
       }
 
       // Making QR code.

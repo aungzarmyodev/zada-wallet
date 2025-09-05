@@ -79,7 +79,7 @@ const useInit = () => {
   }, [token]);
 
   const fetchUserProfile = async () => {
-    if (user.language === undefined) {
+    if (user.language === undefined && token) {
       await dispatch(getUserProfile()).unwrap();
     }
     await i18n.changeLanguage(user.language);

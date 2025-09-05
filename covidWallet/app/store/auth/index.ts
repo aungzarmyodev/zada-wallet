@@ -1,7 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { _showAlert } from '../../helpers';
 import { IAuthState, IUserState } from './interface';
-import { getUserProfile, reactivateUserAccount, resetUserPassword, sendOTP, updateUserProfile, validateUserOTP } from './thunk';
+import {
+  getUserProfile,
+  getUserStatus,
+  reactivateUserAccount,
+  resetUserPassword,
+  sendOTP,
+  updateUserProfile,
+  validateUserOTP,
+} from './thunk';
 
 // State initialization
 export const AuthState: IAuthState = {
@@ -26,6 +34,7 @@ export const AuthState: IAuthState = {
     language: undefined,
     auto_accept_connection: true,
     status: undefined,
+    isMigrated: false,
   },
 };
 
@@ -50,7 +59,7 @@ const slice = createSlice({
     },
     resetAuth: () => AuthState,
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // Validate OTP
     builder.addCase(validateUserOTP.pending, (state, action) => {
       if (state.status === 'idle') {
@@ -156,6 +165,13 @@ const slice = createSlice({
     builder.addCase(updateUserProfile.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action?.error;
+    });
+
+    // Get user Status
+    builder.addCase(getUserStatus.fulfilled, (state, action) => {
+      if (action.payload?.success) {
+        state.user.isMigrated = action.payload.isMigrated;
+      }
     });
   },
 });

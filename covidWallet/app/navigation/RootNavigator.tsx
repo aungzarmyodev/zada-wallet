@@ -63,7 +63,7 @@ const RootNavigator = () => {
 
       if (storedVersion && storedVersion !== currentVersion) {
         // Uncomment if users needs to be logged after app update
-        // clearAllAndLogout(dispatch);
+        clearAllAndLogout(dispatch);
         await saveItemInLocalStorage(ConfigApp.APP_VERSION, currentVersion);
       } else {
         // Store the current version if it's the first time running the app

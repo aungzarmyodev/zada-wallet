@@ -14,6 +14,7 @@ export interface IUserState {
   auto_accept_connection: boolean;
   status: 'deleted' | 'inactive' | undefined;
   didExist?: boolean;
+  isMigrated: boolean;
 }
 export interface IAuthState {
   status: IStatus;

@@ -185,6 +185,7 @@
     "success_connection": "Your connection is created successfully.",
     "success_certificate": "You have received a certificate successfully.",
     "success_certificate_deletion": "Credential is deleted successfully",
+    "failed_certificate_deletion": "Failed to delete Credential.",
     "success_claim_credential": "Request for credential has been submitted. It will be delivered shortly."
   },
   "success": {

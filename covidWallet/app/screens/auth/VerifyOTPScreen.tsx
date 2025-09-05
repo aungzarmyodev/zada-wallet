@@ -76,7 +76,11 @@ const VerifyOTPScreen = (props: INProps) => {
         .then(response => {
           setLoading(false);
           if (response.isRegistered) {
-            props.navigation.navigate('SecurityScreen', { navigation: props.navigation });
+            if (user.isMigrated) {
+              props.navigation.navigate('SecurityScreen', { navigation: props.navigation });
+            } else {
+              props.navigation.navigate('MigrationScreen');
+            }
             // clear authentication count.
             saveItemInLocalStorage(ConstantsList.AUTH_COUNT, 0);
           } else {

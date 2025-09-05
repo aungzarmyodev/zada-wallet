@@ -256,6 +256,7 @@ export default function SettingsScreen(props) {
                 false: AppColors.BACKGROUND,
                 true: AppColors.BLUE,
               }}
+              thumbColor="#ffffff"
               ios_backgroundColor="#ffffff"
               onValueChange={() => setDevelopmentMode(!developmentMode)}
               value={developmentMode}

@@ -56,7 +56,7 @@ export function showAskDialog(
   );
 }
 
-export function showOKDialog(title: string, subtitle: string, onOkPress: () => {}) {
+export function showOKDialog(title: string, subtitle: string, onOkPress: () => void) {
   Alert.alert(
     title,
     subtitle,

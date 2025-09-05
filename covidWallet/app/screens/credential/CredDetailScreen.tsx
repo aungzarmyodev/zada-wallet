@@ -64,11 +64,15 @@ const CredDetailScreen = (props: IProps) => {
       showMessage('ZADA Wallet', message);
       props.navigation.goBack();
     }
+    if (credentialStatus === 'failed') {
+      let message: string = t('messages.failed_certificate_deletion');
+      showMessage('ZADA Wallet', message);
+    }
   }, [credentialStatus, props.navigation]);
 
   useEffect(() => {
     if (data.threadId) {
-      if (data?.qrCode === undefined || data?.qrCode?.v !== 3) {
+      if (data?.qrCode === undefined) {
         dispatch(compressCredentials(data.threadId));
       } else if (isGenerating) setGenerating(false);
     }

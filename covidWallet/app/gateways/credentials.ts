@@ -51,12 +51,12 @@ export async function accept_credential(credentialId: string) {
 }
 
 // Delete Crendentials API
-export async function delete_credential(credentialId: string) {
+export async function delete_credential(credentialId: string, correlationId?: string) {
   try {
     const result = await http_client({
       method: 'POST',
       url: '/api/credential/delete_credential',
-      data: { credentialId },
+      data: { credentialId, credentialExchangeId: correlationId },
     });
 
     // Google Analytics

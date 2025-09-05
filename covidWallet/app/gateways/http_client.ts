@@ -23,6 +23,7 @@ const url_arr = [
   '/api/wallet/create',
   '/api/get_user_status',
   '/api/v1/is_country_allowed',
+  '/api/migrate/connections-and-credentials',
 ];
 // Api request Queue machanism, if authorization token has expired.
 const processQueue = (error: any, token = null) => {

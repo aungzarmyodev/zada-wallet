@@ -23,6 +23,7 @@ import { useAppSelector } from '../store';
 import { selectAppSetupComplete } from '../store/app/selectors';
 import PreferenceScreen from '../screens/auth/PreferenceScreen';
 import RecoveryPhraseScreen from '../screens/auth/RecoveryPhraseScreen';
+import MigrationScreen from '../screens/auth/MigrationScreen';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -109,6 +110,11 @@ const AuthNavigator = () => {
         })}
         name="VerifyOTPScreen"
         component={VerifyOTPScreen}
+      />
+      <AuthStack.Screen
+        options={{ headerShown: false }}
+        name="MigrationScreen"
+        component={MigrationScreen}
       />
       <AuthStack.Screen
         options={{ headerShown: false }}

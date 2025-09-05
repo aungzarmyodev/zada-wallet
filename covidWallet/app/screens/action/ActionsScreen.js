@@ -55,7 +55,7 @@ import { deleteAction } from '../../store/actions';
 import { fetchConnections } from '../../store/connections/thunk';
 import { selectCredentials } from '../../store/credentials/selectors';
 import { selectNetworkStatus } from '../../store/app/selectors';
-import { addCredential } from '../../store/credentials/thunk';
+import { fetchCredentials } from '../../store/credentials/thunk';
 
 function ActionsScreen({ navigation }) {
   //Constants
@@ -299,36 +299,13 @@ function ActionsScreen({ navigation }) {
           // Accept credentials Api call.
           let result = await accept_credential(selectedItemObj.credentialId);
 
-          let cred_dict = result.data.credential;
-
-          let attributes = cred_dict.credential_proposal_dict.credential_proposal.attributes;
-
-          let values = {}
-          for (let item of attributes) {
-            values[item.name] = item.value;
-          }
-
-          let cred = {
-            acceptedAtUtc: cred_dict.updated_at,
-            connectionId: cred_dict.connection_id,
-            correlationId: cred_dict.credential_exchange_id,
-            credentialId: cred_dict.credential_exchange_id,
-            definitionId: cred_dict.credential_definition_id,
-            issuedAtUtc: cred_dict.created_at,
-            schemaId: cred_dict.schema_id,
-            state: 'Issued',
-            threadId: cred_dict.thread_id,
-            values,
-          };
-
           if (result.data.success) {
             // Delete Credential from list.
             dispatch(deleteAction(credObj.connectionId + credObj.credentialId));
 
-            dispatch(addCredential(cred));
-
             setTimeout(() => {
               _showSuccessAlert('cred');
+              dispatch(fetchCredentials());
             }, 500);
           } else {
             showMessage('ZADA Wallet', t('errors.invalid_credential_offer'));
@@ -456,7 +433,7 @@ function ActionsScreen({ navigation }) {
     // Credential Action
     if (selectedItemObj.type === ConstantsList.CRED_OFFER) {
       try {
-        await delete_credential(selectedItemObj.credentialId);
+        await delete_credential(selectedItemObj.credentialId, selectedItemObj.correlationId);
         dispatch(deleteAction(selectedItemObj.connectionId + selectedItemObj.credentialId));
       } catch (e) {
         console.log(e);

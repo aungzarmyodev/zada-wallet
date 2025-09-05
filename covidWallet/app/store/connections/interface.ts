@@ -23,11 +23,10 @@ export interface IConnectionObject {
   imageUrl: string;
   multiParty: boolean;
   myDid: string;
-  myKey: string;
   name: string;
   state: string;
   theirDid: string;
-  theirKey: string;
+  theirLabel: string;
 }
 
 export interface IConnectionList {

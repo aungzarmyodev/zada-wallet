@@ -54,7 +54,7 @@ function ActionDialog(props) {
             let result = []
             if (props.data.type == CONNLESS_VER_REQ) {
                 // Check if metadata is object or string
-                if(typeof props.data.metadata === 'object') {
+                if (typeof props.data.metadata === 'object') {
                     metadata = props.data.metadata.verificationRequestId;
                 } else {
                     metadata = props.data.metadata;
@@ -64,27 +64,29 @@ function ActionDialog(props) {
                 result = await get_all_credentials_for_verification(props.data.verificationId);
             }
             if (result.data.success) {
-                let val = result.data.availableCredentials[0].availableCredentials[0] ? result.data.availableCredentials[0].availableCredentials[0].values : null;
-                let polName = result.data.availableCredentials[0] ? result.data.availableCredentials[0].policyName : null;
-                let cred = result.data.availableCredentials[0].availableCredentials ? result.data.availableCredentials[0].availableCredentials : [];
-
-                let fullyVaccinatedCreds = [];
-                cred.forEach(credItem => {
-                    if (credItem.values != undefined && credItem.values.Dose != null && credItem.values.Dose != undefined) {
-                        if (credItem.values.Dose == '2/2') {
-                            fullyVaccinatedCreds.push(credItem);
+                if (result.data.availableCredentials.length > 0) {
+                    let firstCredential = result.data.availableCredentials[0];
+                    let val = firstCredential.values;
+                    let polName = firstCredential.policyName
+                    let cred = result.data.availableCredentials;
+                    let fullyVaccinatedCreds = [];
+                    cred.forEach(credItem => {
+                        if (credItem.values != undefined && credItem.values.Dose != null && credItem.values.Dose != undefined) {
+                            if (credItem.values.Dose == '2/2') {
+                                fullyVaccinatedCreds.push(credItem);
+                            }
                         }
-                    }
-                });
+                    });
 
-                if (fullyVaccinatedCreds.length) {
-                    setCredential(fullyVaccinatedCreds);
+                    if (fullyVaccinatedCreds.length) {
+                        setCredential(fullyVaccinatedCreds);
+                    }
+                    else {
+                        setCredential(cred);
+                        setPolicyName(polName);
+                    }
+                    setValues(val != null ? orderValues(val) : null);
                 }
-                else {
-                    setCredential(cred);
-                    setPolicyName(polName);
-                }
-                setValues(val != null ? orderValues(val) : null);
             } else {
                 showMessage('ZADA Wallet', result.data.error);
             }

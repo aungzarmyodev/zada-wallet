@@ -22,6 +22,7 @@ export type AuthStackParamList = {
   SecureidContainer: undefined;
   NotifyMeScreen: undefined;
   ConnectionListScreen: { connections: IConnectionList[] };
+  MigrationScreen: undefined;
 };
 
 export type MainStackParamList = {

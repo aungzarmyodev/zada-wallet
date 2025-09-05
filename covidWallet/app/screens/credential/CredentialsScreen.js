@@ -8,14 +8,14 @@ import Credentials from './components/Credentials';
 import CredentialGroups from './components/CredentialGroups';
 import BannerComponent from '../../components/Banner/BannerComponent';
 import OverlayLoader from '../../components/OverlayLoader';
-import { _showAlert, showMessage } from '../../helpers';
+import { _showAlert, showMessage, showOKDialog } from '../../helpers';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { CredentialAPI } from '../../gateways';
 import { selectUser } from '../../store/auth/selectors';
 import { selectCredentials } from '../../store/credentials/selectors';
-import { getUserProfile } from '../../store/auth/thunk';
 import { selectAppStatus } from '../../store/app/selectors';
 import { changeAppStatus } from '../../store/app';
+import { selectConnections } from '../../store/connections/selectors';
 
 
 const CredentialsScreen = (props) => {
@@ -31,6 +31,7 @@ const CredentialsScreen = (props) => {
   ]
   const user = useAppSelector(selectUser);
   const credentials = useAppSelector(selectCredentials.selectAll);
+  const connections = useAppSelector(selectConnections.selectAll);
   const appStatus = useAppSelector(selectAppStatus);
 
   const renderScene = SceneMap({
@@ -49,14 +50,11 @@ const CredentialsScreen = (props) => {
 
   // Claim Zada Wallet ID credential Banner
   useEffect(() => {
-    if (user && !user.didExist) {
-      dispatch(getUserProfile({ phone: user.phone }))
-        .unwrap()
-        .then(res => {
-          if (!res.user.didExist) {
-            setShowBanner(true);
-          }
-        })
+    let ifExist = credentials.find(c => c.credentialType === "ZADAWalletID")
+    if (user && !ifExist) {
+      setShowBanner(true);
+    } else {
+      setShowBanner(false);
     }
   }, [credentials])
 
@@ -86,6 +84,12 @@ const CredentialsScreen = (props) => {
   };
 
   const handleClaimCredentialPress = async () => {
+    let ifConnectionExist = connections.filter(conn => conn.name === "ZADA (Test)" || conn.name === "Acme (Test)" || conn.name === "ZADA")
+    if (ifConnectionExist.length < 1) {
+      showOKDialog("ZADA WALLET", "To continue, please create a connection with ‘ZADA’. Tap the ‘+’ button on the Connections screen to get started.")
+      return;
+    }
+
     dispatch(changeAppStatus('loading'));
     setBannerButtonDisabled(true);
     let resp = await CredentialAPI.claimCredential('zada-wallet-id');
