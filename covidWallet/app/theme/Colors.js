@@ -1,4 +1,4 @@
-export const PRIMARY_COLOR = '#001871';
+export const PRIMARY_COLOR = '#1B3760';
 export const SECONDARY_COLOR = 'gray';
 export const BLACK_COLOR = 'black';
 export const WHITE_COLOR = 'white';
@@ -22,6 +22,6 @@ export const AppColors = {
   WHITE: 'white',
   BLACK: 'black',
   GREEN: '#19cb94',
-  TRANSPARENT_LOADER: "00000000",
+  TRANSPARENT_LOADER: '00000000',
   TRANSPARENT: '#00000000',
 };
