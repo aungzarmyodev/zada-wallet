@@ -51,7 +51,7 @@ const AnimatedButton = (props: INProps) => {
         style={styles._button}
         touchableStyle={styles.touchableStyle}
         onPress={onPress}
-        underlayColor={AppColors.BLUE}>
+        underlayColor={AppColors.PRIMARY}>
         <Animated.View
           style={[
             styles._button,
