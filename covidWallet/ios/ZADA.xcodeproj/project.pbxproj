@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* ZADATests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ZADATests.m */; };
 		043C979626B805FA006295AC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 043C979526B805FA006295AC /* GoogleService-Info.plist */; };
-		047DE887271035FA00CF09F1 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 047DE886271035FA00CF09F1 /* libswiftWebKit.tbd */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -111,7 +110,6 @@
 			files = (
 				998BC8162AF957BD00B27C88 /* libDoubleConversion.a in Frameworks */,
 				998BC8142AF957B500B27C88 /* double-conversion.xcframework in Frameworks */,
-				047DE887271035FA00CF09F1 /* libswiftWebKit.tbd in Frameworks */,
 				B0B70478D2B351FC07D43362 /* libPods-ZADA.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
