@@ -9,7 +9,7 @@ buildscript {
         compileSdkVersion = 36
         targetSdkVersion = 34
         ndkVersion = "27.1.12297006"
-        kotlinVersion = "1.9.22"
+        kotlinVersion = "1.8.22"
     }
     repositories {
         google()
@@ -37,6 +37,12 @@ buildscript {
         afterEvaluate {
             if (subproject.hasProperty("android")) {
                 subproject.android.ndkVersion = rootProject.ext.ndkVersion
+            }
+            if (subproject.plugins.hasPlugin('kotlin-android')) {
+                subproject.extensions.findByName("kotlinOptions")?.with {
+                    jvmTarget = "1.8"
+                    freeCompilerArgs += ["-Xjvm-default=all"]
+                }
             }
         }
     }
