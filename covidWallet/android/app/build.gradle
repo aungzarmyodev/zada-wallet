@@ -88,6 +88,10 @@ def getMyVersionName = { ->
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+project.ext.react = [
+    enableHermes: true  
+]
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
