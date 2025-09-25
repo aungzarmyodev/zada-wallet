@@ -1,6 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, Dimensions, Image, ImageSourcePropType } from 'react-native';
-import ActionButton from 'react-native-action-button';
+import React, { useState } from 'react';
+import { View, StyleSheet, Dimensions, Text, Image, Pressable, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AppColors } from '../../theme/Colors';
 
@@ -8,9 +7,10 @@ interface IActionItems {
   title: string;
   onPress: () => void;
   iconName?: string;
-  imageSrc?: ImageSourcePropType;
+  imageSrc?: any;
   buttonColor?: string;
 }
+
 interface IProps {
   buttonColor: string;
   onPress?: () => void;
@@ -18,59 +18,78 @@ interface IProps {
 }
 
 const window = Dimensions.get('screen');
-const FloatingActionButton = (props: IProps) => {
+
+const FloatingActionButton = ({ buttonColor, onPress, actionItems }: IProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <View style={{ backgroundColor: '#f3f3f3' }}>
-      <ActionButton
-        size={window.width / 7}
-        buttonColor={props.buttonColor}
-        onPress={props.onPress}
-        renderIcon={() => <Icon name="plus" style={styles.actionButtonIcon} />}
-        nativeFeedbackRippleColor={AppColors.TRANSPARENT}>
-        {props.actionItems &&
-          props.actionItems.map((item, index) => {
-            return (
-              <ActionButton.Item
-                buttonColor={item.buttonColor || props.buttonColor}
-                title={item.title}
-                onPress={item.onPress}
-                key={index}
-                textStyle={{ fontFamily: 'Poppins-Regular' }}
-                style={styles.actionButtonItemStyle}>
-                {item.iconName ? (
-                  <Icon name={item.iconName} style={styles.actionButtonItemIcon} />
-                ) : (
-                  <Image source={item.imageSrc} style={styles.actionButtonItemImage} />
-                )}
-              </ActionButton.Item>
-            );
-          })}
-      </ActionButton>
+    <View style={styles.container}>
+      {open && actionItems && (
+        <View style={styles.actionItemsContainer}>
+          {actionItems.map((item, index) => (
+            <Pressable
+              key={index}
+              style={[styles.actionItem, { backgroundColor: item.buttonColor || buttonColor }]}
+              onPress={() => {
+                item.onPress();
+                setOpen(false);
+              }}>
+              {item.iconName ? (
+                <Icon name={item.iconName} size={24} color="white" />
+              ) : (
+                <Image source={item.imageSrc} style={styles.actionItemImage} />
+              )}
+              <Text style={styles.actionItemText}>{item.title}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+      <Pressable
+        style={[styles.mainButton, { backgroundColor: buttonColor }]}
+        onPress={() => {
+          if (onPress) onPress();
+          setOpen(!open);
+        }}>
+        <Icon name={open ? 'close' : 'plus'} size={28} color="white" />
+      </Pressable>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  actionButtonIcon: {
-    fontSize: window.width / 20,
-    color: 'white',
+  container: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    alignItems: 'center',
   },
-  actionButtonItemIcon: {
-    fontSize: 20,
-    height: 22,
-    color: 'black',
-  },
-  actionButtonItemImage: {
-    fontSize: 20,
-    height: 35,
-    width: 35,
-    color: 'black',
-  },
-  actionButtonItemStyle: {
-    height: 50,
-    borderRadius: 25,
+  mainButton: {
+    width: window.width / 7,
+    height: window.width / 7,
+    borderRadius: window.width / 14,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 5,
+  },
+  actionItemsContainer: {
+    marginBottom: 10,
+  },
+  actionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 25,
+    marginBottom: 10,
+  },
+  actionItemImage: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
+  actionItemText: {
+    color: 'white',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 14,
   },
 });
 

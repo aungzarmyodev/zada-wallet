@@ -149,7 +149,10 @@ function ConnectionsScreen() {
 
       {connectionlist.length > 0 && (
         <>
-          <View style={{ bottom: height * 0.12 }}>
+          {/* <View style={{ bottom: height * 0.12 }}>
+            <FloatingActionButton buttonColor={AppColors.PRIMARY} onPress={handleAddButton} />
+          </View> */}
+          <View style={{ bottom: 20 }}>
             <FloatingActionButton buttonColor={AppColors.PRIMARY} onPress={handleAddButton} />
           </View>
 

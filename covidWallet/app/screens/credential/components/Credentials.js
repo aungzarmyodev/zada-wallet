@@ -1,5 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { View, StyleSheet, RefreshControl, FlatList, Dimensions, TouchableOpacity, Linking } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  RefreshControl,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+  Linking,
+} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -10,8 +18,8 @@ import { AppColors, PRIMARY_COLOR, WHITE_COLOR } from '../../../theme/Colors';
 import { get_local_issue_date } from '../../../helpers/time';
 import CardBackground from '../../../components/CardBackground';
 import CertificateCard from '../../../components/CertificateCard';
-import phhLogo from "../../../assets/icons/phh-logo-color.png";
-import zadaLogo from "../../../assets/icons/zada-logo-color.png";
+import phhLogo from '../../../assets/icons/phh-logo-color.png';
+import zadaLogo from '../../../assets/icons/zada-logo-color.png';
 
 import { CredentialAPI } from '../../../gateways';
 
@@ -43,10 +51,10 @@ function Credentials(props) {
   // Selectors
   const { t } = useTranslation();
   const credentialStatus = useAppSelector(selectCredentialsStatus);
-  const searchedCredentials = useAppSelector((state) => selectSearchedCredentials(state, search));
+  const searchedCredentials = useAppSelector(state => selectSearchedCredentials(state, search));
 
   // Function
-  const toggleModal = (v) => {
+  const toggleModal = v => {
     props.navigation.navigate('CredDetailScreen', {
       credentialId: v.credentialId,
     });
@@ -86,8 +94,8 @@ function Credentials(props) {
     let date = item.values['Issue Time']
       ? get_local_issue_date(item.values['Issue Time'])
       : item.issuedAtUtc
-        ? get_local_issue_date(item.issuedAtUtc)
-        : undefined;
+      ? get_local_issue_date(item.issuedAtUtc)
+      : undefined;
     return (
       <TouchableOpacity onPress={() => toggleModal(item)} activeOpacity={0.9}>
         <View style={styles.CredentialsCardContainer}>
@@ -118,26 +126,31 @@ function Credentials(props) {
       setLoader(true);
       let result = await CredentialAPI.get_uppass_url(user.phone);
       if (result.data.success) {
-        dispatch(updateWebViewUrl({ url: result.data.url, redirectUrl: `https://app.uppass.io/en/thankyou` }));
+        dispatch(
+          updateWebViewUrl({
+            url: result.data.url,
+            redirectUrl: `https://app.uppass.io/en/thankyou`,
+          })
+        );
       }
       setLoader(false);
     } catch (error) {
       setLoader(false);
       console.log({ error });
     }
-  }
+  };
   const onRequestCovidPass = () => {
     Linking.openURL('https://PHH.covidpass.id');
-  }
+  };
   const onRequestZadaCredential = () => {
     Linking.openURL('https://myzada.info');
-  }
+  };
 
   return (
     <>
       <View style={themeStyles.mainContainer}>
         <PullToRefresh />
-        {loader && <OverlayLoader text='Please wait...' height={'100%'} width={'100%'} />}
+        {loader && <OverlayLoader text="Please wait..." height={'100%'} width={'100%'} />}
         <FlatList
           refreshControl={
             <RefreshControl
@@ -155,46 +168,47 @@ function Credentials(props) {
           keyExtractor={(item, index) => item.credentialId + ':' + index.toString()}
           renderItem={renderItem}
         />
-
       </View>
       <View style={styles.floatingBtnContainerStyle}>
         <FloatingActionButton
           buttonColor={AppColors.PRIMARY}
-          actionItems={developmentMode ?
-            [
-              {
-                title: "myzada.info",
-                onPress: onRequestZadaCredential,
-                imageSrc: zadaLogo,
-                buttonColor: AppColors.WHITE,
-              },
-              {
-                title: "phh.covidpass.id",
-                onPress: onRequestCovidPass,
-                imageSrc: phhLogo,
-                buttonColor: AppColors.WHITE,
-              },
-              {
-                title: "Add Credential",
-                onPress: onRequestCredentialPress,
-                iconName: "badge-account-horizontal-outline",
-                buttonColor: AppColors.WHITE,
-              },
-            ]
-            : [
-              {
-                title: "myzada.info",
-                onPress: onRequestZadaCredential,
-                imageSrc: zadaLogo,
-                buttonColor: AppColors.WHITE,
-              },
-              {
-                title: "phh.covidpass.id",
-                onPress: onRequestCovidPass,
-                imageSrc: phhLogo,
-                buttonColor: AppColors.WHITE,
-              }
-            ]}
+          actionItems={
+            developmentMode
+              ? [
+                  {
+                    title: 'myzada.info',
+                    onPress: onRequestZadaCredential,
+                    imageSrc: zadaLogo,
+                    buttonColor: AppColors.WHITE,
+                  },
+                  {
+                    title: 'phh.covidpass.id',
+                    onPress: onRequestCovidPass,
+                    imageSrc: phhLogo,
+                    buttonColor: AppColors.WHITE,
+                  },
+                  {
+                    title: 'Add Credential',
+                    onPress: onRequestCredentialPress,
+                    iconName: 'badge-account-horizontal-outline',
+                    buttonColor: AppColors.WHITE,
+                  },
+                ]
+              : [
+                  {
+                    title: 'myzada.info',
+                    onPress: onRequestZadaCredential,
+                    imageSrc: zadaLogo,
+                    buttonColor: AppColors.WHITE,
+                  },
+                  {
+                    title: 'phh.covidpass.id',
+                    onPress: onRequestCovidPass,
+                    imageSrc: phhLogo,
+                    buttonColor: AppColors.WHITE,
+                  },
+                ]
+          }
         />
       </View>
     </>
@@ -238,8 +252,9 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   floatingBtnContainerStyle: {
-    bottom: height * 0.12,
-  }
+    // bottom: height * 0.12,
+    bottom: 20,
+  },
 });
 
 export default Credentials;
