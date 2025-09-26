@@ -19,6 +19,8 @@ import QRScreen from '../screens/qr/QRScreen';
 import CredDetailScreen from '../screens/credential/CredDetailScreen';
 import LanguageSelectionScreen from '../screens/settings/LanguageSelectionScreen';
 import { navigationRef } from './utils';
+import EmptyCredentialScreen from '../screens/qr/EmptyCredentialScreen';
+import VerificationRequestScreen from '../screens/qr/VerificationRequestScreen';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -175,6 +177,16 @@ const MainNavigator = () => {
         name="QRScreen"
         path="/scanqr/:pathParam1?/:pathParam2?" //npx uri-scheme open https://zadanetwork.com/type=connection_data --android
         component={QRScreen}
+      />
+      <MainStack.Screen
+        options={{ headerShown: false }}
+        name="EmptyCredentialScreen"
+        component={EmptyCredentialScreen}
+      />
+      <MainStack.Screen
+        options={{ headerShown: false }}
+        name="VerificationRequestScreen"
+        component={VerificationRequestScreen}
       />
     </MainStack.Navigator>
   );

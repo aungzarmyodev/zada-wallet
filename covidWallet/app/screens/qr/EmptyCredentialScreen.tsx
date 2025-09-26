@@ -3,11 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppColors } from '../../theme/Colors';
 
-const EmptyCredentialScreen = ({ navigation }: any) => {
-  const handleClose = () => {
-    navigation.goBack();
-  };
-
+const EmptyCredentialScreen = ({ onClose }: { onClose: () => void }) => {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.toolbar}>
@@ -48,7 +44,7 @@ const EmptyCredentialScreen = ({ navigation }: any) => {
         <Text style={styles.footerText}>
           Powered by ZADA • Your data is encrypted and only shared with your consent.
         </Text>
-        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
+        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
       </View>
@@ -59,13 +55,14 @@ const EmptyCredentialScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: AppColors.BACKGROUND,
   },
   toolbar: {
     height: 56,
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomWidth: 1,
+    backgroundColor: AppColors.WHITE,
     borderBottomColor: '#ddd',
   },
   toolbarTitle: {

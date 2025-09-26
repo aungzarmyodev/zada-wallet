@@ -34,6 +34,8 @@ export type MainStackParamList = {
   ProfileScreen: undefined;
   CredDetailScreen: { credentialId: string };
   QRScreen: undefined;
+  EmptyCredentialScreen: undefined;
+  VerificationRequestScreen: undefined;
 };
 
 export type TabStackParamList = {
