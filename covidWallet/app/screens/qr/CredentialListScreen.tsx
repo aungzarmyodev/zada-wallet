@@ -5,28 +5,56 @@ import { AppColors } from '../../theme/Colors';
 import Icon from 'react-native-vector-icons/Feather';
 
 type Credential = {
-  id: string;
-  title: string;
+  credentialId: string;
+  values: any;
+  policyName: string;
 };
 
 type Props = {
   data: Credential[];
-  onAccept?: () => void;
+  onAccept?: (credential: Credential) => void;
   onReject?: () => void;
+  onClose?: () => void;
 };
 
-const CredentialListScreen = ({ data, onAccept, onReject }: Props) => {
+const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
   };
 
+  const toggleExpand = (id: string) => {
+    if (expandedId === id) setExpandedId(null);
+    else setExpandedId(id);
+  };
+
+  const handleAccept = () => {
+    const selected = data.find(d => d.credentialId === selectedId);
+    if (!selected) {
+      alert('Please select a certificate.');
+      return;
+    }
+    onAccept?.(selected);
+  };
+
   const renderItem = ({ item }: { item: Credential }) => {
-    const isSelected = item.id === selectedId;
+    const isSelected = item.credentialId === selectedId;
+    const isExpanded = item.credentialId === expandedId;
+
+    const verificationName =
+      item.values?.Type ||
+      ((item.values != undefined || item.values != null) &&
+        item.values['Vaccine Name'] != undefined &&
+        item.values['Vaccine Name'].length != 0 &&
+        item.values['Dose'] != undefined &&
+        item.values['Dose'].length != 0)
+        ? 'COVIDpass (Vaccination)'
+        : 'Digital Certificate';
 
     return (
-      <TouchableOpacity onPress={() => handleSelect(item.id)}>
+      <TouchableOpacity onPress={() => handleSelect(item.credentialId)}>
         <View style={[styles.card, isSelected && styles.selectedCard]}>
           <View style={styles.row}>
             <View style={[styles.radioButton, isSelected && styles.radioButtonSelected]} />
@@ -36,16 +64,32 @@ const CredentialListScreen = ({ data, onAccept, onReject }: Props) => {
             />
 
             <View style={styles.textContainer}>
-              <Text style={styles.cardTitle}>{item.title}</Text>
+              <Text style={styles.cardTitle}>{verificationName}</Text>
+
               <View style={styles.subtitleRow}>
-                <Text style={styles.cardSubtitle}>Open Detail</Text>
-                <Icon
-                  name="chevron-right"
-                  size={24}
-                  color={AppColors.BLUE}
-                  style={{ marginLeft: 4 }}
-                />
+                <TouchableOpacity
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                  onPress={() => toggleExpand(item.credentialId)}>
+                  <Text style={styles.cardSubtitle}>Open Detail</Text>
+                  <Icon
+                    name={isExpanded ? 'chevron-up' : 'chevron-right'}
+                    size={24}
+                    color={AppColors.BLUE}
+                    style={{ marginLeft: 4 }}
+                  />
+                </TouchableOpacity>
               </View>
+
+              {isExpanded && (
+                <View style={{ marginTop: 10 }}>
+                  {Object.keys(item.values || {}).map(key => (
+                    <View key={key} style={styles.valueRow}>
+                      <Text style={styles.valueKey}>{key}</Text>
+                      <Text style={styles.valueValue}>{item.values[key]}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -56,6 +100,9 @@ const CredentialListScreen = ({ data, onAccept, onReject }: Props) => {
   return (
     <SafeAreaProvider style={styles.container}>
       <View style={styles.toolbar}>
+        <TouchableOpacity style={styles.closeIcon} onPress={onClose}>
+          <Icon name="x" size={24} color={AppColors.BLACK} />
+        </TouchableOpacity>
         <Text style={styles.toolbarTitle}>Verify With ZADA</Text>
       </View>
 
@@ -71,7 +118,7 @@ const CredentialListScreen = ({ data, onAccept, onReject }: Props) => {
 
         <FlatList
           data={data}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.credentialId}
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 100 }}
           ListFooterComponent={
@@ -86,10 +133,7 @@ const CredentialListScreen = ({ data, onAccept, onReject }: Props) => {
         <TouchableOpacity style={styles.rejectButton} onPress={onReject}>
           <Text style={styles.buttonText}>Reject</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.acceptButton]}
-          onPress={() => selectedId && onAccept?.()}
-          disabled={!selectedId}>
+        <TouchableOpacity style={[styles.acceptButton]} onPress={handleAccept}>
           <Text style={styles.buttonText}>Accept</Text>
         </TouchableOpacity>
       </View>
@@ -99,8 +143,6 @@ const CredentialListScreen = ({ data, onAccept, onReject }: Props) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, width: '100%', backgroundColor: AppColors.BACKGROUND },
-  itemList: { flex: 1, backgroundColor: AppColors.WHITE },
-
   toolbar: {
     height: 56,
     justifyContent: 'center',
@@ -108,13 +150,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     backgroundColor: AppColors.WHITE,
+    position: 'relative',
   },
   toolbarTitle: { fontSize: 18, fontWeight: 'bold', color: AppColors.BLACK },
-
+  closeIcon: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+  },
   body: { flex: 1, padding: 16, width: '100%' },
-
   logo: { width: 120, height: 120, alignSelf: 'center', marginBottom: 16 },
-
   title: {
     fontSize: 20,
     fontWeight: '600',
@@ -122,7 +167,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: AppColors.BLACK,
   },
-
   label: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -131,7 +175,6 @@ const styles = StyleSheet.create({
     color: AppColors.BLACK,
     opacity: 0.5,
   },
-
   card: {
     backgroundColor: '#fff',
     padding: 16,
@@ -147,40 +190,31 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   cardTitle: { fontSize: 16, fontWeight: 'bold' },
-  cardSubtitle: { fontSize: 14, color: AppColors.BLUE, fontWeight: 600 },
-  subtitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  cardSubtitle: { fontSize: 14, color: AppColors.BLUE, fontWeight: '600' },
+  subtitleRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
+  row: { flexDirection: 'row', alignItems: 'flex-start' },
   radioButton: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
+    marginTop: 10,
     borderColor: '#ccc',
     marginRight: 12,
   },
-
-  radioButtonSelected: {
-    borderColor: AppColors.BLUE,
-    borderWidth: 5,
+  radioButtonSelected: { borderColor: AppColors.BLUE, borderWidth: 5 },
+  circleLogo: { width: 40, height: 40, borderRadius: 20, marginRight: 12 },
+  textContainer: { flex: 1 },
+  valueRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#ccc',
+    marginBottom: 4,
+    paddingBottom: 2,
   },
-
-  circleLogo: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-
-  textContainer: {
-    flex: 1,
-  },
+  valueKey: { color: AppColors.BLACK, fontWeight: 'bold', width: '45%' },
+  valueValue: { color: AppColors.BLACK, width: '45%' },
   bottomBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',

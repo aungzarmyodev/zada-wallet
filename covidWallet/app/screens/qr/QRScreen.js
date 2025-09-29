@@ -432,15 +432,7 @@ const QRScreen = ({ route, navigation }) => {
         //   modalType="action"
         //   isIconVisible={true}
         // />
-        <VerificationRequestScreen
-          logoSource={require('../../assets/images/zada_logo.png')}
-          onAccept={selectedId => {
-            /* do verification */
-          }}
-          onReject={() => {
-            /* close / go back */
-          }}
-        />
+        <VerificationRequestScreen data={credentialData.credentials} />
       )}
 
       {/* On verification success */}

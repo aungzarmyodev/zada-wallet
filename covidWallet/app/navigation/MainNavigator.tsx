@@ -21,6 +21,7 @@ import LanguageSelectionScreen from '../screens/settings/LanguageSelectionScreen
 import { navigationRef } from './utils';
 import EmptyCredentialScreen from '../screens/qr/EmptyCredentialScreen';
 import VerificationRequestScreen from '../screens/qr/VerificationRequestScreen';
+import CredentialListScreen from '../screens/qr/CredentialListScreen';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -187,6 +188,11 @@ const MainNavigator = () => {
         options={{ headerShown: false }}
         name="VerificationRequestScreen"
         component={VerificationRequestScreen}
+      />
+      <MainStack.Screen
+        options={{ headerShown: false }}
+        name="CredentialListScreen"
+        component={CredentialListScreen}
       />
     </MainStack.Navigator>
   );

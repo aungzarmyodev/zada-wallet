@@ -54,11 +54,9 @@ const VerifyOTPScreen = (props: INProps) => {
   }, [loading]);
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', onBackButtonPress);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackButtonPress);
 
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', onBackButtonPress);
-    };
+    return () => backHandler.remove();
   }, []);
 
   const onBackButtonPress = () => {
