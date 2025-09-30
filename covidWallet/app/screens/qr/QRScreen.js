@@ -26,7 +26,7 @@ import { selectBaseUrl, selectNetworkStatus } from '../../store/app/selectors';
 import { convertStringToBase64 } from '../../helpers/utils';
 import { clearAllAndLogout } from '../../store/utils';
 import { addConnection } from '../../store/connections';
-import VerificationRequestScreen from './VerificationRequestScreen';
+import VerificationRequestScreen from '../verification_request_screen/VerificationRequestScreen';
 
 const defaultCredState = { type: 'none', credentials: [] };
 

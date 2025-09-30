@@ -3,15 +3,16 @@ import EmptyCredentialScreen from './EmptyCredentialScreen';
 import CredentialListScreen from './CredentialListScreen';
 import { useNavigation } from '@react-navigation/native';
 import { get_all_credentials_connectionless_verification } from '../../gateways/verifications';
-import { ActivityIndicator, View, Linking } from 'react-native';
+import { ActivityIndicator, View, Linking, StyleSheet } from 'react-native';
 import { VerificationAPI } from '../../gateways';
-import { showOKDialog } from '../../helpers/Toast';
+import LoadingDialog from '../../components/Dialogs/LoadingDialog';
+import { AppColors } from '../../theme/Colors';
 
 const VerificationRequestScreen = props => {
   const navigation = useNavigation();
-
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const verificationRequestId = props?.data?.metadata?.verificationRequestId ?? null;
   const redirectCallback = props?.data?.metadata?.redirectCallback || null;
@@ -52,7 +53,6 @@ const VerificationRequestScreen = props => {
         setData([]);
       }
     } catch (error) {
-      console.log('Error fetching verification list:', error);
       setData([]);
     } finally {
       setLoading(false);
@@ -79,6 +79,8 @@ const VerificationRequestScreen = props => {
     if (!credential) return;
 
     try {
+      setSubmitting(true);
+
       await VerificationAPI.submit_verification_connectionless(
         verificationRequestId,
         credential.policyName,
@@ -88,35 +90,46 @@ const VerificationRequestScreen = props => {
       if (redirectCallback && redirectCallback !== '') {
         Linking.openURL(redirectCallback);
       } else {
-        showOKDialog('ZADA', 'Submitted Successfully!', navigateToMainScreen);
+        closeButtonClick();
       }
     } catch (error) {
       alert('Please try again later!');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#000" />
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={AppColors.PRIMARY} />
       </View>
     );
   }
 
-  return (
-    <>
-      {data.length === 0 ? (
-        <EmptyCredentialScreen onClose={closeButtonClick} />
-      ) : (
-        <CredentialListScreen
-          data={data}
-          onAccept={acceptButtonClick}
-          onReject={rejectButtonClick}
-          onClose={closeButtonClick}
-        />
-      )}
-    </>
+  return data.length === 0 ? (
+    <EmptyCredentialScreen onClose={closeButtonClick} />
+  ) : (
+    <View style={{ flex: 1 }}>
+      <CredentialListScreen
+        data={data}
+        onAccept={acceptButtonClick}
+        onReject={rejectButtonClick}
+        onClose={closeButtonClick}
+      />
+      {submitting && <LoadingDialog visible={true} label="Submitting Verification..." />}
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100 %',
+    backgroundColor: AppColors.BACKGROUND,
+  },
+});
 
 export default VerificationRequestScreen;

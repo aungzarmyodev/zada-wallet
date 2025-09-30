@@ -58,10 +58,6 @@ const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
         <View style={[styles.card, isSelected && styles.selectedCard]}>
           <View style={styles.row}>
             <View style={[styles.radioButton, isSelected && styles.radioButtonSelected]} />
-            <Image
-              source={require('../../assets/images/zada_logo.png')}
-              style={styles.circleLogo}
-            />
 
             <View style={styles.textContainer}>
               <Text style={styles.cardTitle}>{verificationName}</Text>
