@@ -2,12 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppColors } from '../../theme/Colors';
+import { useTranslation } from 'react-i18next';
 
 const EmptyCredentialScreen = ({ onClose }: { onClose: () => void }) => {
+  const { t } = useTranslation();
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.toolbar}>
-        <Text style={styles.toolbarTitle}>Verify With ZADA</Text>
+        <Text style={styles.toolbarTitle}>{t('VerificationRequestScreen.toolbar')}</Text>
       </View>
       <View style={styles.body}>
         <Image
@@ -16,36 +19,25 @@ const EmptyCredentialScreen = ({ onClose }: { onClose: () => void }) => {
           resizeMode="contain"
         />
 
-        <Text style={styles.title}>ZADA Secure Verification</Text>
-        <Text style={styles.title2}>No Credentials Found</Text>
-
-        <Text style={styles.message}>
-          It looks like you don’t have any credentials available for this verification. What you can
-          do:
-        </Text>
+        <Text style={styles.title}>{t('VerificationRequestScreen.title')}</Text>
+        <Text style={styles.title2}>{t('VerificationRequestScreen.no_credentials_found')}</Text>
+        <Text style={styles.message}>{t('VerificationRequestScreen.description')}</Text>
         <View style={styles.bulletList}>
           <View style={styles.bulletRow}>
             <Text style={styles.bullet}>{'\u2022'}</Text>
-            <Text style={styles.bulletText}>
-              Go to the Credentials tab to claim or request one.
-            </Text>
+            <Text style={styles.bulletText}>{t('VerificationRequestScreen.description_1')}</Text>
           </View>
 
           <View style={styles.bulletRow}>
             <Text style={styles.bullet}>{'\u2022'}</Text>
-            <Text style={styles.bulletText}>
-              If your organization provides it, connect with them and accept the credential under
-              Actions.
-            </Text>
+            <Text style={styles.bulletText}>{t('VerificationRequestScreen.description_2')}</Text>
           </View>
         </View>
       </View>
       <View style={styles.bottom}>
-        <Text style={styles.footerText}>
-          Powered by ZADA • Your data is encrypted and only shared with your consent.
-        </Text>
+        <Text style={styles.footerText}>{t('VerificationRequestScreen.footer')}</Text>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeButtonText}>Close</Text>
+          <Text style={styles.closeButtonText}>{t('VerificationRequestScreen.close')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet, Image } from 'react
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppColors } from '../../theme/Colors';
 import Icon from 'react-native-vector-icons/Feather';
+import { useTranslation } from 'react-i18next';
 
 type Credential = {
   credentialId: string;
@@ -18,6 +19,7 @@ type Props = {
 };
 
 const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
+  const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -33,7 +35,7 @@ const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
   const handleAccept = () => {
     const selected = data.find(d => d.credentialId === selectedId);
     if (!selected) {
-      alert('Please select a certificate.');
+      alert(t('VerificationRequestScreen.alert_message'));
       return;
     }
     onAccept?.(selected);
@@ -66,7 +68,9 @@ const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
                 <TouchableOpacity
                   style={{ flexDirection: 'row', alignItems: 'center' }}
                   onPress={() => toggleExpand(item.credentialId)}>
-                  <Text style={styles.cardSubtitle}>Open Detail</Text>
+                  <Text style={styles.cardSubtitle}>
+                    {t('VerificationRequestScreen.open_detail')}
+                  </Text>
                   <Icon
                     name={isExpanded ? 'chevron-up' : 'chevron-right'}
                     size={24}
@@ -99,7 +103,7 @@ const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
         <TouchableOpacity style={styles.closeIcon} onPress={onClose}>
           <Icon name="x" size={24} color={AppColors.BLACK} />
         </TouchableOpacity>
-        <Text style={styles.toolbarTitle}>Verify With ZADA</Text>
+        <Text style={styles.toolbarTitle}>{t('VerificationRequestScreen.toolbar')}</Text>
       </View>
 
       <View style={styles.body}>
@@ -109,8 +113,8 @@ const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
           resizeMode="contain"
         />
 
-        <Text style={styles.title}>ZADA Verification</Text>
-        <Text style={styles.label}>Please review the request below to share your information.</Text>
+        <Text style={styles.title}>{t('VerificationRequestScreen.title')}</Text>
+        <Text style={styles.label}>{t('VerificationRequestScreen.label')}</Text>
 
         <FlatList
           data={data}
@@ -118,19 +122,17 @@ const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 100 }}
           ListFooterComponent={
-            <Text style={styles.footerText}>
-              Powered by ZADA • Your data is encrypted and only shared with your consent.
-            </Text>
+            <Text style={styles.footerText}>{t('VerificationRequestScreen.footer')}</Text>
           }
         />
       </View>
 
       <View style={styles.bottomBar}>
         <TouchableOpacity style={styles.rejectButton} onPress={onReject}>
-          <Text style={styles.buttonText}>Reject</Text>
+          <Text style={styles.buttonText}>{t('VerificationRequestScreen.reject')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.acceptButton]} onPress={handleAccept}>
-          <Text style={styles.buttonText}>Accept</Text>
+          <Text style={styles.buttonText}>{t('VerificationRequestScreen.accept')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaProvider>

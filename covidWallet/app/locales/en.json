@@ -126,6 +126,21 @@
     "text_4": "To contribute back to the community, the ZADA App is created as an open source project, originally created by Trustnet Pakistan, so other companies that want to launch a wallet on ZADA Network also can do that.",
     "text_5": "ZADA is not just an app but an ecosystem, a network, and a mission to ensure everyone can provide and use digital services without risk for fraud or privacy intrusion!"
   },
+  "VerificationRequestScreen": {
+    "toolbar": "Verify With ZADA",
+    "title": "ZADA Secure Verification",
+    "label": "Please review the request below to share your information.",
+    "open_detail": "Open Details",
+    "reject": "Reject",
+    "accept": "Accept",
+    "close": "Close",
+    "footer": " Powered by ZADA • Your data is encrypted and only shared with your consent.",
+    "no_credentials_found": "No Credentials Found",
+    "description": "It looks like you don’t have any credentials available for this verification. What you can do:",
+    "description_1": "Go to the Certificates tab to claim or request one.",
+    "description_2": "If your organization provides it, connect with them and accept the credential under Actions.",
+    "alert_message": "Please select the Certificate."
+  },
   "errors": {
     "warning": "Warning",
     "countryNotSupported": "Your connection appears to be blocked. Please try to disable any VPN, check your internet connection, and try again. If the issue persists, contact support for assistance.",

@@ -227,7 +227,7 @@ const BiometricModal = (props: IProps) => {
             <MaterialCommunityIcons name="arrow-left" size={30} color="#FFF" />
           </TouchableOpacity>
         )}
-        <Image source={require('../../assets/gifs/launch_screen_logo.gif')} style={styles.logo} />
+        <Image source={require('../../assets/images/splash_logo.png')} style={styles.logo} />
         <Text style={styles.title}>Enter your login PIN</Text>
         <PinInput pin={pin} />
         <NumericKeyboard />
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   logo: {
-    width: 100,
-    height: 50,
+    width: 120,
+    height: 120,
     marginTop: 100,
   },
   title: {
