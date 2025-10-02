@@ -176,23 +176,13 @@ const MainNavigator = () => {
       <MainStack.Screen
         options={{ headerShown: false }}
         name="QRScreen"
-        path="/scanqr/:pathParam1?/:pathParam2?" //npx uri-scheme open https://zadanetwork.com/type=connection_data --android
+        // path="/scanqr/:pathParam1?/:pathParam2?" //npx uri-scheme open https://zadanetwork.com/type=connection_data --android
         component={QRScreen}
-      />
-      <MainStack.Screen
-        options={{ headerShown: false }}
-        name="EmptyCredentialScreen"
-        component={EmptyCredentialScreen}
       />
       <MainStack.Screen
         options={{ headerShown: false }}
         name="VerificationRequestScreen"
         component={VerificationRequestScreen}
-      />
-      <MainStack.Screen
-        options={{ headerShown: false }}
-        name="CredentialListScreen"
-        component={CredentialListScreen}
       />
     </MainStack.Navigator>
   );

@@ -7,12 +7,17 @@ import { ActivityIndicator, View, Linking, StyleSheet } from 'react-native';
 import { VerificationAPI } from '../../gateways';
 import LoadingDialog from '../../components/Dialogs/LoadingDialog';
 import { AppColors } from '../../theme/Colors';
+import CommonErrorView from '../../components/Error/CommonErrorView';
+import { useTranslation } from 'react-i18next';
 
 const VerificationRequestScreen = props => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(false);
 
   const verificationRequestId = props?.data?.metadata?.verificationRequestId ?? null;
   const redirectCallback = props?.data?.metadata?.redirectCallback || null;
@@ -21,6 +26,7 @@ const VerificationRequestScreen = props => {
   const fetchVerificationList = async () => {
     try {
       setLoading(true);
+      setError(false);
       if (!verificationRequestId) {
         setData([]);
         setLoading(false);
@@ -53,7 +59,7 @@ const VerificationRequestScreen = props => {
         setData([]);
       }
     } catch (error) {
-      setData([]);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -63,37 +69,46 @@ const VerificationRequestScreen = props => {
     fetchVerificationList();
   }, [verificationRequestId]);
 
+  const resetState = () => {
+    setData([]);
+    setLoading(false);
+    setSubmitting(false);
+    setError(false);
+  };
+
   const closeButtonClick = () => {
     navigation.navigate('MainScreen');
   };
 
-  const rejectButtonClick = () => {
+  const goBackToMainScreen = async () => {
     if (redirectCallback && redirectCallback !== '') {
-      Linking.openURL(redirectCallback);
-    } else {
-      navigation.navigate('MainScreen');
+      const supported = await Linking.canOpenURL(redirectCallback);
+      if (supported) {
+        await Linking.openURL(redirectCallback);
+      } else {
+        alert(t('VerificationRequestScreen.cannot_open_link'));
+      }
     }
+    resetState();
+    navigation.navigate('MainScreen');
+  };
+
+  const rejectButtonClick = async () => {
+    goBackToMainScreen();
   };
 
   const acceptButtonClick = async credential => {
     if (!credential) return;
-
     try {
       setSubmitting(true);
-
       await VerificationAPI.submit_verification_connectionless(
         verificationRequestId,
         credential.policyName,
         credential.credentialId
       );
-
-      if (redirectCallback && redirectCallback !== '') {
-        Linking.openURL(redirectCallback);
-      } else {
-        closeButtonClick();
-      }
+      goBackToMainScreen();
     } catch (error) {
-      alert('Please try again later!');
+      alert(t('errors.something_went_wrong'));
     } finally {
       setSubmitting(false);
     }
@@ -107,6 +122,10 @@ const VerificationRequestScreen = props => {
     );
   }
 
+  if (error) {
+    return <CommonErrorView onRetry={fetchVerificationList} />;
+  }
+
   return data.length === 0 ? (
     <EmptyCredentialScreen onClose={closeButtonClick} />
   ) : (
@@ -117,7 +136,12 @@ const VerificationRequestScreen = props => {
         onReject={rejectButtonClick}
         onClose={closeButtonClick}
       />
-      {submitting && <LoadingDialog visible={true} label="Submitting Verification..." />}
+      {submitting && (
+        <LoadingDialog
+          visible={true}
+          label={t('VerificationRequestScreen.submittin_verification')}
+        />
+      )}
     </View>
   );
 };

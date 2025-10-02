@@ -10,7 +10,8 @@
     "pull_to_refresh": "Pull to refresh",
     "actions": "Actions",
     "certificates": "Certificates",
-    "connections": "Connections"
+    "connections": "Connections",
+    "try_again": "Try Again"
   },
   "PreferenceScreen": {
     "title": "Select Country & Language",
@@ -139,7 +140,9 @@
     "description": "It looks like you don’t have any credentials available for this verification. What you can do:",
     "description_1": "Go to the Certificates tab to claim or request one.",
     "description_2": "If your organization provides it, connect with them and accept the credential under Actions.",
-    "alert_message": "Please select the Certificate."
+    "alert_message": "Please select the Certificate.",
+    "submittin_verification": "Submitting Verification...",
+    "cannot_open_link": "Cannot Open Link."
   },
   "errors": {
     "warning": "Warning",
@@ -178,7 +181,8 @@
     "accept_credential_offer": "Credential offer is already accepted",
 
     "biometric_heading": "Biometric Unavailable",
-    "biometric_not_supported": "Please ensure your device has Biometric/FaceID and is configured correctly, then try again."
+    "biometric_not_supported": "Please ensure your device has Biometric/FaceID and is configured correctly, then try again.",
+    "something_went_wrong": "Oops! Something went wrong. Please try again later."
   },
   "messages": {
     "delete_account": "Do you want to DELETE your account?",

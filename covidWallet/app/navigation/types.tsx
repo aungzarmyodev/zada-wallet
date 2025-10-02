@@ -37,6 +37,7 @@ export type MainStackParamList = {
   EmptyCredentialScreen: undefined;
   CredentialListScreen: undefined;
   VerificationRequestScreen: undefined;
+  CommonErrorView: undefined;
 };
 
 export type TabStackParamList = {
