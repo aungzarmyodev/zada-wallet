@@ -164,7 +164,7 @@ const CredDetailScreen = (props: IProps) => {
         credentialDetails
       );
       // Share PDF
-      await sharePDF(htmlStr);
+      await sharePDF(htmlStr, data.type ?? 'Credential');
       setGeneratingPDF(false);
     } catch (error) {
       setGeneratingPDF(false);
