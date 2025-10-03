@@ -31,7 +31,7 @@ export const checkIfWalletExist = (token: string) => {
 
 export const LanguageList = [
   { label: 'English', value: 'en' },
-  {label: 'Burmese', value: 'my'},
+  { label: 'မြန်မာ', value: 'my' },
 ];
 
 export const CountryListbackup = [

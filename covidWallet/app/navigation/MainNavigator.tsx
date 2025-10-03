@@ -19,9 +19,7 @@ import QRScreen from '../screens/qr/QRScreen';
 import CredDetailScreen from '../screens/credential/CredDetailScreen';
 import LanguageSelectionScreen from '../screens/settings/LanguageSelectionScreen';
 import { navigationRef } from './utils';
-import EmptyCredentialScreen from '../screens/verification_request_screen/EmptyCredentialScreen';
 import VerificationRequestScreen from '../screens/verification_request_screen/VerificationRequestScreen';
-import CredentialListScreen from '../screens/verification_request_screen/CredentialListScreen';
 
 const navigationAnimation =
   Platform.OS == 'ios'

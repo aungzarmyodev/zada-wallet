@@ -42,7 +42,7 @@ export type MainStackParamList = {
 
 export type TabStackParamList = {
   Actions: undefined;
-  Certificates: undefined;
+  Credentials: undefined;
   Connections: undefined;
 };
 

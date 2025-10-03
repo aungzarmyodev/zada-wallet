@@ -7,9 +7,9 @@ import { _showAlert } from '../../helpers';
 import { AppDispatch, useAppDispatch, useAppSelector } from '../../store';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../navigation/types';
-import { LanguageList } from './utils';
 import { selectUser } from '../../store/auth/selectors';
 import { updateUser } from '../../store/auth';
+import { LanguageList } from '../utils';
 
 interface INProps {
   navigation: NativeStackNavigationProp<AuthStackParamList>;
@@ -38,7 +38,8 @@ const LanguageSelectionScreen = (props: INProps) => {
           style={[
             styles.radioButton,
             {
-              backgroundColor: item.value === selectedValue ? AppColors.SUBHEADING_BLUE : AppColors.WHITE,
+              backgroundColor:
+                item.value === selectedValue ? AppColors.SUBHEADING_BLUE : AppColors.WHITE,
             },
           ]}
           onPress={() => setSelectedValue(item.value)}>
@@ -70,7 +71,7 @@ const LanguageSelectionScreen = (props: INProps) => {
             <FlatList
               data={LanguageList}
               renderItem={RadioButtonTile}
-              keyExtractor={(item) => item.value}
+              keyExtractor={item => item.value}
               initialNumToRender={20}
               contentContainerStyle={styles.contentContainerStyle}
             />
