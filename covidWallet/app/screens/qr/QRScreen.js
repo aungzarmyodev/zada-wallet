@@ -27,6 +27,7 @@ import { convertStringToBase64 } from '../../helpers/utils';
 import { clearAllAndLogout } from '../../store/utils';
 import { addConnection } from '../../store/connections';
 import VerificationRequestScreen from '../verification_request_screen/VerificationRequestScreen';
+import ErrorHandler from '../../components/Error/ErrorHandler';
 
 const defaultCredState = { type: 'none', credentials: [] };
 
@@ -181,7 +182,7 @@ const QRScreen = ({ route, navigation }) => {
                 setProgress(false);
                 setDialogTitle('');
               } catch (err) {
-                throw 'Not a valid ZADA QR';
+                throw ErrorHandler(err, t);
               }
               return;
 
@@ -200,7 +201,7 @@ const QRScreen = ({ route, navigation }) => {
                   }, 500);
                 }
               } catch (err) {
-                throw 'Not a valid ZADA QR';
+                throw ErrorHandler(err, t);
               }
               return;
 
@@ -219,7 +220,7 @@ const QRScreen = ({ route, navigation }) => {
                   }, 500);
                 }
               } catch (err) {
-                throw 'Not a valid ZADA QR';
+                throw ErrorHandler(err, t);
               }
               return;
             default:

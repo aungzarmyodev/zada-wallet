@@ -182,7 +182,12 @@
 
     "biometric_heading": "Biometric Unavailable",
     "biometric_not_supported": "Please ensure your device has Biometric/FaceID and is configured correctly, then try again.",
-    "something_went_wrong": "Oops! Something went wrong. Please try again later."
+    "something_went_wrong": "Oops! Something went wrong. Please try again later.",
+    "error_400": "Bad Request – The server could not understand the request.",
+    "error_401": "Unauthorized – Please check your credentials.",
+    "error_403": "Your connection is blocked because a VPN or proxy was detected. Please turn off your VPN and try again.",
+    "error_404": "Not Found – The requested resource could not be found.",
+    "error_500": "Oops! Something went wrong. Please try again later."
   },
   "messages": {
     "delete_account": "Do you want to DELETE your account?",
