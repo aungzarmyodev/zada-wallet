@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet, Text, useWindowDimensions, View } from 'react-n
 import { useTranslation } from 'react-i18next';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { BACKGROUND_COLOR, PRIMARY_COLOR } from '../../theme/Colors';
+import { AppColors, BACKGROUND_COLOR, PRIMARY_COLOR } from '../../theme/Colors';
 import Credentials from './components/Credentials';
 import CredentialGroups from './components/CredentialGroups';
 import BannerComponent from '../../components/Banner/BannerComponent';
@@ -17,8 +17,7 @@ import { selectAppStatus } from '../../store/app/selectors';
 import { changeAppStatus } from '../../store/app';
 import { selectConnections } from '../../store/connections/selectors';
 
-
-const CredentialsScreen = (props) => {
+const CredentialsScreen = props => {
   // Constants
   const layout = useWindowDimensions();
   const dispatch = useAppDispatch();
@@ -28,7 +27,7 @@ const CredentialsScreen = (props) => {
   const titles = [
     { key: 'certificates', title: t('CredentialsScreen.all_certificates') },
     { key: 'groups', title: t('CredentialsScreen.groups') },
-  ]
+  ];
   const user = useAppSelector(selectUser);
   const credentials = useAppSelector(selectCredentials.selectAll);
   const connections = useAppSelector(selectConnections.selectAll);
@@ -46,19 +45,19 @@ const CredentialsScreen = (props) => {
 
   useEffect(() => {
     setRoutes(titles);
-  }, [t])
+  }, [t]);
 
   // Claim Zada Wallet ID credential Banner
   useEffect(() => {
-    let ifExist = credentials.find(c => c.credentialType === "ZADAWalletID")
+    let ifExist = credentials.find(c => c.credentialType === 'ZADAWalletID');
     if (user && !ifExist) {
       setShowBanner(true);
     } else {
       setShowBanner(false);
     }
-  }, [credentials])
+  }, [credentials]);
 
-  const CustomTabbAr = (props) => {
+  const CustomTabbAr = props => {
     return (
       <View style={styles._mainTabbarView}>
         {props.navigationState.routes.map((route, i) => {
@@ -84,9 +83,14 @@ const CredentialsScreen = (props) => {
   };
 
   const handleClaimCredentialPress = async () => {
-    let ifConnectionExist = connections.filter(conn => conn.name === "ZADA (Test)" || conn.name === "Acme (Test)" || conn.name === "ZADA")
+    let ifConnectionExist = connections.filter(
+      conn => conn.name === 'ZADA (Test)' || conn.name === 'Acme (Test)' || conn.name === 'ZADA'
+    );
     if (ifConnectionExist.length < 1) {
-      showOKDialog("ZADA WALLET", "To continue, please create a connection with ‘ZADA’. Tap the ‘+’ button on the Connections screen to get started.")
+      showOKDialog(
+        'ZADA WALLET',
+        'To continue, please create a connection with ‘ZADA’. Tap the ‘+’ button on the Connections screen to get started.'
+      );
       return;
     }
 
@@ -101,7 +105,7 @@ const CredentialsScreen = (props) => {
     }
     dispatch(changeAppStatus('idle'));
     setBannerButtonDisabled(false);
-  }
+  };
 
   return (
     <View style={styles._mainContainer}>
@@ -113,9 +117,10 @@ const CredentialsScreen = (props) => {
         buttonText={'Claim'}
         type="success"
         duration={0}
-        onPress={handleClaimCredentialPress} />
+        onPress={handleClaimCredentialPress}
+      />
       <TabView
-        renderTabBar={(props) => <CustomTabbAr {...props} />}
+        renderTabBar={props => <CustomTabbAr {...props} />}
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
@@ -129,7 +134,7 @@ const CredentialsScreen = (props) => {
 const styles = StyleSheet.create({
   _mainContainer: {
     flex: 1,
-    backgroundColor: BACKGROUND_COLOR,
+    backgroundColor: AppColors.BACKGROUND,
   },
   _mainTabbarView: {
     flexDirection: 'row',

@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { createStackNavigator } from '@react-navigation/stack';
 import { IConnectionList } from '../store/connections/interface';
+import { RouteProp } from '@react-navigation/native';
 
 export type AuthStackParamList = {
   PreferenceScreen: undefined;
@@ -52,6 +53,10 @@ const AuthStack = createStackNavigator<AuthStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
 const TabStack = createBottomTabNavigator<TabStackParamList>();
 
-export type MainStackNavigationProp = NativeStackNavigationProp<MainStackParamList>;
-
+export type MainStackNavigationProp = RouteProp<MainStackParamList, 'MainScreen'> & {
+  state?: {
+    index: number;
+    routes: Array<{ name: keyof TabStackParamList }>;
+  };
+};
 export { AuthStack, MainStack, TabStack };

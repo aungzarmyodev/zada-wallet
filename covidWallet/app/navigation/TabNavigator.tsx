@@ -28,7 +28,7 @@ function TabNavigator() {
             iconName = 'notifications-outline';
             return <Ionicons name={iconName} size={size} color={color} />;
           } else if (route.name === 'Connections') {
-            iconName = 'git-network';
+            iconName = 'swap-horizontal';
             return <Ionicons name={iconName} size={size} color={color} />;
           } else if (route.name === 'Credentials') {
             iconName = 'badge-account-horizontal-outline';
@@ -41,7 +41,7 @@ function TabNavigator() {
           height: 70,
           paddingBottom: 10,
           paddingTop: 5,
-          backgroundColor: AppColors.BACKGROUND,
+          backgroundColor: AppColors.WHITE,
         },
         tabBarLabelStyle: {
           fontSize: 14,
