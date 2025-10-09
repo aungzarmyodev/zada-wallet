@@ -85,6 +85,14 @@
     "group_name_error_message": "Group name should contain at least 2 characters",
     "select_credential_error_message": "Please select at least one credential"
   },
+  "EmptyCredentials": {
+    "title": "No Credentials Yet",
+    "message": "Your wallet is empty. Check the Actions tab for available offers, or tap + below to request your first Credential."
+  },
+  "EmptyGroupCredentials": {
+    "title": "No Group Created",
+    "message": "Organize your certificates into groups for easier access. Tap + below to create your first group."
+  },
   "ConnectionsScreen": {
     "list_empty_text": "You have no connections yet.",
     "select_connections": "Select Connection"

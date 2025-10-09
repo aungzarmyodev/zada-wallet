@@ -35,6 +35,8 @@ import { selectUser } from '../../../store/auth/selectors';
 import { selectDevelopmentMode } from '../../../store/app/selectors';
 import { updateWebViewUrl } from '../../../store/app';
 import OverlayLoader from '../../../components/OverlayLoader';
+import EmptyCredentials from '../EmptyCredentials';
+import CredentialCard from './CredentialCard';
 
 const { height } = Dimensions.get('window');
 
@@ -66,10 +68,10 @@ function Credentials(props) {
 
   // List Empty Component
   const emptyListComponent = () => (
-    <EmptyList
-      text={t('CredentialsScreen.all_certificates_empty_list_text')}
-      image={require('../../../assets/images/credentialsempty.png')}
-      style={styles.emptyListStyle}
+    <EmptyCredentials
+      title={t('EmptyCredentials.title')}
+      message={t('EmptyCredentials.message')}
+      iconName="folder"
     />
   );
 
@@ -91,28 +93,17 @@ function Credentials(props) {
 
   // List Items
   const renderItem = ({ item, index }) => {
-    let date = item.values['Issue Time']
-      ? get_local_issue_date(item.values['Issue Time'])
-      : item.issuedAtUtc
-      ? get_local_issue_date(item.issuedAtUtc)
-      : undefined;
+    let date = item.values['Issue Time'] ? item.values['Issue Time'] : item.issuedAtUtc;
     return (
-      <TouchableOpacity onPress={() => toggleModal(item)} activeOpacity={0.9}>
-        <View style={styles.CredentialsCardContainer}>
-          <CardBackground
-            updateBackgroundImage={updateBackgroundImage}
-            item={item}
-            schemeId={item.schemaId}>
-            <CertificateCard
-              item={item}
-              card_type={item.type}
-              issuer={item.organizationName}
-              date={date}
-              card_logo={{ uri: item.imageUrl }}
-            />
-          </CardBackground>
-        </View>
-      </TouchableOpacity>
+      <CredentialCard
+        credentialInfo={{
+          imageUrl: item.imageUrl ?? '',
+          title: item.type,
+          subtitle: item.organizationName,
+          issueDate: date,
+        }}
+        onPress={() => toggleModal(item)}
+      />
     );
   };
 
@@ -149,8 +140,7 @@ function Credentials(props) {
   return (
     <>
       <View style={themeStyles.mainContainer}>
-        <PullToRefresh />
-        {loader && <OverlayLoader text="Please wait..." height={'100%'} width={'100%'} />}
+        {/* {loader && <OverlayLoader text="Please wait..." height={'100%'} width={'100%'} />} */}
         <FlatList
           refreshControl={
             <RefreshControl
@@ -161,7 +151,9 @@ function Credentials(props) {
           }
           showsVerticalScrollIndicator={false}
           style={styles.flatListStyle}
-          ListHeaderComponent={listHeaderComponent}
+          ListHeaderComponent={
+            searchedCredentials.length > 0 || search.length > 0 ? listHeaderComponent : null
+          }
           ListEmptyComponent={emptyListComponent}
           data={searchedCredentials}
           contentContainerStyle={styles.flatListContainerStyle}
@@ -253,7 +245,7 @@ const styles = StyleSheet.create({
   },
   floatingBtnContainerStyle: {
     // bottom: height * 0.12,
-    bottom: 20,
+    bottom: 8,
   },
 });
 

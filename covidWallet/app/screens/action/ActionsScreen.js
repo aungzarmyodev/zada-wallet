@@ -120,14 +120,14 @@ function ActionsScreen({ navigation }) {
     const _checkPermission = async () => {
       const authorizationStatus = await messaging().hasPermission();
       if (authorizationStatus !== messaging.AuthorizationStatus.AUTHORIZED) {
-        let message = t('ActionsScreen.notification_alert_message')
+        let message = t('ActionsScreen.notification_alert_message');
         Alert.alert(
           'Zada Wallet',
           message,
           [
             {
               text: t('common.confirm'),
-              onPress: () => { },
+              onPress: () => {},
               style: t('common.cancel'),
             },
           ],
@@ -147,7 +147,7 @@ function ActionsScreen({ navigation }) {
     }, [])
   );
 
-  const getUrl = async (url) => {
+  const getUrl = async url => {
     let initialUrl = '';
     if (url != undefined) {
       initialUrl = url;
@@ -158,12 +158,12 @@ function ActionsScreen({ navigation }) {
       setDeepLink(true);
       return;
     } else {
-      const parsed = initialUrl.split("/");
+      const parsed = initialUrl.split('/');
       var item = {};
       // Base64 request
       if (initialUrl.includes('?data')) {
-        item['type'] = initialUrl.split('?data=')[0]
-        item['data'] = initialUrl.split('?data=')[1]
+        item['type'] = initialUrl.split('?data=')[0];
+        item['data'] = initialUrl.split('?data=')[1];
       } else {
         item['type'] = parsed[3];
         item['metadata'] = parsed[4];
@@ -172,7 +172,10 @@ function ActionsScreen({ navigation }) {
       const requestJson = JSON.parse(JSON.stringify(item));
       setDeepLink(true);
 
-      if (item['type'] === 'connection_request' || item['type'].includes('connectionless-verification')) {
+      if (
+        item['type'] === 'connection_request' ||
+        item['type'].includes('connectionless-verification')
+      ) {
         navigation.navigate('QRScreen', {
           request: requestJson,
           isLink: item['type'] === 'connection_request',
@@ -187,7 +190,7 @@ function ActionsScreen({ navigation }) {
     }
   };
 
-  const toggleModal = (v) => {
+  const toggleModal = v => {
     setSelectedItem(JSON.stringify(v));
 
     let data = JSON.parse(JSON.stringify(v));
@@ -196,22 +199,16 @@ function ActionsScreen({ navigation }) {
     setModalVisible(true);
   };
 
-  const acceptModal = async (v) => {
+  const acceptModal = async v => {
     if (!isLoading) {
       if (v.type === CRED_OFFER) {
-        setLoaderText(
-          t('messages.receiving_certificate')
-        );
+        setLoaderText(t('messages.receiving_certificate'));
         handleCredentialRequest();
       } else if (v.type === VER_REQ) {
-        setLoaderText(
-          t('messages.verifying_certificate')
-        );
+        setLoaderText(t('messages.verifying_certificate'));
         handleVerificationRequests(v);
       } else if (v.type === CONN_REQ) {
-        setLoaderText(
-          t('messages.creating_connection')
-        );
+        setLoaderText(t('messages.creating_connection'));
         handleConnectionRequest(v);
       }
     }
@@ -251,7 +248,7 @@ function ActionsScreen({ navigation }) {
 
           if (result.data.success) {
             // Delete Action from redux
-            let conn = actions.find((x) => x.connectionId === selectedItemObj.connectionId);
+            let conn = actions.find(x => x.connectionId === selectedItemObj.connectionId);
 
             // Adding Connection
             dispatch(fetchConnections());
@@ -289,10 +286,10 @@ function ActionsScreen({ navigation }) {
       setIsLoading(true);
 
       // Find cred action for deletion.
-      let credObj = credentialActions.find((x) => x.credentialId === selectedItemObj.credentialId);
+      let credObj = credentialActions.find(x => x.credentialId === selectedItemObj.credentialId);
 
       // Check if crendential already exist
-      let credArr = credentials.find((x) => x.credentialId === selectedItemObj.credentialId);
+      let credArr = credentials.find(x => x.credentialId === selectedItemObj.credentialId);
 
       if (credArr === undefined) {
         if (credObj) {
@@ -330,7 +327,7 @@ function ActionsScreen({ navigation }) {
       let selectedItemObj = JSON.parse(selectedItem);
 
       let credObj = verificationActions.find(
-        (x) => x.verificationId === selectedItemObj.verificationId
+        x => x.verificationId === selectedItemObj.verificationId
       );
       if (dialogData == null) {
         if (!isLoading) {
@@ -343,7 +340,6 @@ function ActionsScreen({ navigation }) {
           await delete_verification(selectedItemObj.verificationId);
 
           _showAlert('Zada Wallet', t('errors.verification_request'));
-
         }
       } else {
         setLoaderText(t('messages.submitting'));
@@ -355,21 +351,21 @@ function ActionsScreen({ navigation }) {
         dispatch(deleteAction(credObj.connectionId + credObj.verificationId));
       }
     } catch (err) {
-      console.log({ err })
-      _showAlert('Error: ', "Something unexpected happened, please try again.");
+      console.log({ err });
+      _showAlert('Error: ', 'Something unexpected happened, please try again.');
     } finally {
       setIsLoading(false);
       setLoaderText(null);
     }
-  }
+  };
 
   // Handle Verification Request
-  const handleVerificationRequests = async (data) => {
+  const handleVerificationRequests = async data => {
     setDialogData(data);
     setModalVisible(false);
     setTimeout(() => {
       setShowConfirmModal(true);
-    }, 500)
+    }, 500);
     setIsLoading(false);
     setLoaderText(null);
   };
@@ -404,7 +400,7 @@ function ActionsScreen({ navigation }) {
   };
 
   // Reject Modal
-  const rejectModal = async (v) => {
+  const rejectModal = async v => {
     let selectedItemObj = {};
     if (v.connectionId != undefined) {
       selectedItemObj = v;
@@ -446,14 +442,14 @@ function ActionsScreen({ navigation }) {
       setDialogData(null);
       setTimeout(() => {
         setShowConfirmModal(true);
-      }, 500)
+      }, 500);
     }
     setIsLoading(false);
     setLoaderText(null);
   };
 
   // Function that will show alert on acceptance of connection and credential
-  const _showSuccessAlert = (action) => {
+  const _showSuccessAlert = action => {
     let message = '';
     if (action == 'conn') message = t('messages.success_connection');
     else if (action == 'cred') message = t('messages.success_certificate');
@@ -465,7 +461,7 @@ function ActionsScreen({ navigation }) {
       [
         {
           text: 'Okay',
-          onPress: () => { },
+          onPress: () => {},
           style: 'cancel',
         },
       ],
@@ -475,17 +471,17 @@ function ActionsScreen({ navigation }) {
     );
   };
 
-  const dismissModal = (v) => {
+  const dismissModal = v => {
     setModalVisible(false);
     setModalVisible(false);
   };
 
-  const onDeletePressed = (item) => {
+  const onDeletePressed = item => {
     showAskDialog(
       'Are you sure?',
       t('messages.delete_request'),
       () => rejectModal(item),
-      () => { }
+      () => {}
     );
   };
 
@@ -533,10 +529,7 @@ function ActionsScreen({ navigation }) {
     setConfirmPincodeError('');
 
     if (pincode != confirmPincode) {
-      showMessage(
-        'Zada Wallet',
-        t('errors.pincode_confirm_not_match')
-      );
+      showMessage('Zada Wallet', t('errors.pincode_confirm_not_match'));
     }
 
     // Saving pincode in async
@@ -575,13 +568,13 @@ function ActionsScreen({ navigation }) {
         <PincodeModal
           isVisible={!isPincodeSet}
           pincode={pincode}
-          onPincodeChange={(text) => {
+          onPincodeChange={text => {
             setPincode(text);
             if (text.length == 0) setPincodeError('');
           }}
           pincodeError={pincodeError}
           confirmPincode={confirmPincode}
-          onConfirmPincodeChange={(text) => {
+          onConfirmPincodeChange={text => {
             setConfirmPincode(text);
             if (text.length == 0) setConfirmPincodeError('');
           }}
@@ -592,10 +585,6 @@ function ActionsScreen({ navigation }) {
           onContinueClick={_setPinCode}
         />
       )}
-
-      <PullToRefresh isLoading={isLoading} />
-
-      <HeadingComponent text={t('common.actions')} />
 
       {isLoading ? <OverlayLoader text={loaderText} /> : null}
 
@@ -662,11 +651,7 @@ function ActionsScreen({ navigation }) {
                     onPress={() => onDeletePressed(item)}
                     activeOpacity={0.8}
                     style={[styles.swipeableViewStyle]}>
-                    <MaterialCommunityIcons
-                      size={30}
-                      name="delete"
-                      color={RED_COLOR}
-                    />
+                    <MaterialCommunityIcons size={30} name="delete" color={RED_COLOR} />
                   </TouchableOpacity>
                 </Animated.View>
               </View>

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, useWindowDimensions, View, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { TabView, SceneMap } from 'react-native-tab-view';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { AppColors, BACKGROUND_COLOR, PRIMARY_COLOR } from '../../theme/Colors';
+import { AppColors, PRIMARY_COLOR } from '../../theme/Colors';
 import Credentials from './components/Credentials';
 import CredentialGroups from './components/CredentialGroups';
 import BannerComponent from '../../components/Banner/BannerComponent';
@@ -61,8 +60,9 @@ const CredentialsScreen = props => {
     return (
       <View style={styles._mainTabbarView}>
         {props.navigationState.routes.map((route, i) => {
+          const isActive = index === i;
           return (
-            <TouchableOpacity
+            <Pressable
               key={i}
               style={[
                 styles._tabbar,
@@ -72,10 +72,12 @@ const CredentialsScreen = props => {
                 },
               ]}
               onPress={() => setIndex(i)}>
-              <Text maxFontSizeMultiplier={1.3} style={[styles._tabText]}>
+              <Text
+                maxFontSizeMultiplier={1.3}
+                style={[styles._tabText, { color: isActive ? AppColors.PRIMARY : AppColors.GRAY }]}>
                 {route.title}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           );
         })}
       </View>
@@ -109,7 +111,7 @@ const CredentialsScreen = props => {
 
   return (
     <View style={styles._mainContainer}>
-      {appStatus === 'loading' && <OverlayLoader text="Please wait..." />}
+      {/* {appStatus === 'loading' && <OverlayLoader text="Please wait..." />} */}
       <BannerComponent
         show={showBanner}
         disabled={bannerButtonDisabled}
