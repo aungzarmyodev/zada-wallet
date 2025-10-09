@@ -1,12 +1,12 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Dimensions, View, Text } from 'react-native';
+import { Dimensions, View, Text, Alert } from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import QRCode from 'react-native-qrcode-svg';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTranslation } from 'react-i18next';
 
 import { BACKGROUND_COLOR, BLACK_COLOR, GRAY_COLOR, WHITE_COLOR } from '../../theme/Colors';
-import { getCredentialTemplate, replacePlaceHolders, sharePDF } from './utils';
+import { generatePDF, getCredentialTemplate, replacePlaceHolders, sharePDF } from './utils';
 import {
   get_local_issue_date,
   parse_date_time,
@@ -25,7 +25,7 @@ import RenderValues from '../../components/RenderValues';
 import usePreventScreenshot from '../../hooks/usePreventScreenshot';
 import { compressCredentials, removeCredentials } from '../../store/credentials/thunk';
 import { selectNetworkStatus } from '../../store/app/selectors';
-import { ICredentialObject } from '../../store/credentials/interface';
+import { ICredentialObject, ICredentialObjectValues } from '../../store/credentials/interface';
 
 interface IProps {
   route: any;
@@ -41,7 +41,7 @@ const CredDetailScreen = (props: IProps) => {
     ) as ICredentialObject) || {}; // Credential Object
 
   const dispatch = useAppDispatch<AppDispatch>();
-  const viewShotRef = useRef(null);
+  const viewShotRef = useRef<ViewShot>(null);
 
   // Selectors
   const { t } = useTranslation();
@@ -84,7 +84,13 @@ const CredDetailScreen = (props: IProps) => {
       headerRight: () => (
         <View style={{ flexDirection: 'row' }}>
           <MaterialIcons
-            onPress={() => createAndSharePDF()}
+            onPress={() => createAndSharePDF(true)}
+            style={styles.headerRightIcon}
+            size={25}
+            name="download"
+          />
+          <MaterialIcons
+            onPress={() => createAndSharePDF(false)}
             style={styles.headerRightIcon}
             size={25}
             name="share"
@@ -110,7 +116,7 @@ const CredDetailScreen = (props: IProps) => {
   }, [networkStatus]);
 
   // Make and Share PDF
-  const createAndSharePDF = async () => {
+  const createAndSharePDF = async (isDownload: boolean = false) => {
     // Return if internet is unavailable
     if (networkStatus === 'disconnected') {
       showNetworkMessage();
@@ -119,7 +125,7 @@ const CredDetailScreen = (props: IProps) => {
     setGeneratingPDF(true);
     try {
       // Ordering data
-      const orderedData = Object.keys(data.values)
+      const orderedData = (Object.keys(data.values) as (keyof ICredentialObjectValues)[])
         .sort()
         .reduce((obj: any, key) => {
           obj[key] = data.values[key];
@@ -148,7 +154,11 @@ const CredDetailScreen = (props: IProps) => {
       let template = await getCredentialTemplate(data.schemaId, data.definitionId);
 
       // Capturing QR image using viewshot library.
-      let qrUrl = await viewShotRef?.current?.capture();
+      if (!viewShotRef.current || !viewShotRef.current.capture) {
+        console.warn('ViewShot ref or capture method not ready');
+        return;
+      }
+      const qrUrl = await viewShotRef.current.capture();
 
       // Injecting data into template
       let htmlStr = template.file;
@@ -164,7 +174,15 @@ const CredDetailScreen = (props: IProps) => {
         credentialDetails
       );
       // Share PDF
-      await sharePDF(htmlStr, data.type ?? 'Credential');
+      if (isDownload) {
+        const result = await generatePDF(htmlStr, data.type ?? 'Credential');
+        setGeneratingPDF(false);
+        Alert.alert('Download Success', `PDF downloaded successfully!\nPath: ${result.url}`, [
+          { text: 'OK' },
+        ]);
+      } else {
+        await sharePDF(htmlStr, data.type ?? 'Credential');
+      }
       setGeneratingPDF(false);
     } catch (error) {
       setGeneratingPDF(false);
@@ -235,17 +253,16 @@ const CredDetailScreen = (props: IProps) => {
         </View>
 
         <RenderValues
-          listStyle={{
-            marginTop: 10,
-          }}
-          listContainerStyle={{
-            paddingBottom: '10%',
-          }}
+          listStyle={{ marginTop: 10 }}
+          listContainerStyle={{ paddingBottom: '10%' }}
           inputTextColor={GRAY_COLOR}
-          inputTextWeight={'normal'}
+          inputTextWeight="normal"
           inputTextSize={16}
           labelColor={BLACK_COLOR}
-          values={data?.values ? data?.values : {}}
+          values={data?.values ?? {}}
+          inputBackground={WHITE_COLOR}
+          width="100%"
+          mainStyle={{}}
         />
       </View>
     </View>
@@ -266,7 +283,7 @@ const styles = {
     borderColor: BACKGROUND_COLOR,
     borderWidth: 1,
     backgroundColor: WHITE_COLOR,
-    height: '100%',
+    flex: 1,
   },
   headerRightIcon: {
     paddingRight: 15,
