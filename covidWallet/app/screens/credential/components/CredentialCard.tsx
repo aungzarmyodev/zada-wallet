@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 32,
+    resizeMode: 'contain',
   },
   textContainer: {
     flex: 1,

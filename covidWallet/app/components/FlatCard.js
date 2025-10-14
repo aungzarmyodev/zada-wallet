@@ -71,9 +71,10 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   logo: {
-    width: 58,
-    height: 58,
+    width: 56,
+    height: 56,
     borderRadius: 32,
+    resizeMode: 'contain',
   },
   textContainer: {
     flex: 1,

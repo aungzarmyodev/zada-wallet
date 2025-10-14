@@ -50,7 +50,7 @@ const FloatingActionButton = ({ buttonColor, onPress, actionItems }: IProps) => 
           if (onPress) onPress();
           setOpen(!open);
         }}>
-        <Icon name={open ? 'close' : 'plus'} size={28} color="white" />
+        <Icon name="plus" size={28} color="white" />
       </Pressable>
     </View>
   );
