@@ -81,14 +81,20 @@ const VerificationRequestScreen = props => {
   };
 
   const goBackToMainScreen = async () => {
-    if (redirectCallback && redirectCallback !== '') {
-      const supported = await Linking.canOpenURL(redirectCallback);
-      if (supported) {
-        await Linking.openURL(redirectCallback);
-      } else {
-        alert(t('VerificationRequestScreen.cannot_open_link'));
-      }
+    if (!redirectCallback || redirectCallback === '') {
+      alert(t('VerificationRequestScreen.cannot_open_link'));
+      return;
     }
+
+    const supported = await Linking.canOpenURL(redirectCallback);
+    if (!supported) {
+      alert(t('VerificationRequestScreen.cannot_open_link'));
+      return;
+    }
+
+    // Open the link
+    await Linking.openURL(redirectCallback);
+    await new Promise(resolve => setTimeout(resolve, 1000));
     resetState();
     navigation.navigate('MainScreen');
   };

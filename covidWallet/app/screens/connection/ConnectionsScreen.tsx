@@ -136,22 +136,20 @@ function ConnectionsScreen() {
         </View>
       </View>
 
-      {connectionlist.length > 0 && (
-        <>
-          <View style={{ bottom: 10 }}>
-            <FloatingActionButton buttonColor={AppColors.PRIMARY} onPress={handleAddButton} />
-          </View>
+      <>
+        <View style={{ bottom: 10 }}>
+          <FloatingActionButton buttonColor={AppColors.PRIMARY} onPress={handleAddButton} />
+        </View>
 
-          <SelectModal
-            title={t('ConnectionsScreen.select_connections')}
-            subTitle="Select a connection to add"
-            isVisible={isVisible}
-            data={connectionlist}
-            onSelect={onConnectionSelect}
-            onClose={() => setVisible(false)}
-          />
-        </>
-      )}
+        <SelectModal
+          title={t('ConnectionsScreen.select_connections')}
+          subTitle="Select a connection to add"
+          isVisible={isVisible}
+          data={connectionlist}
+          onSelect={onConnectionSelect}
+          onClose={() => setVisible(false)}
+        />
+      </>
     </>
   );
 }
