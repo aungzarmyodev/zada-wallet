@@ -58,7 +58,8 @@ target 'ZADA' do
     # :flipper_configuration => flipper_config,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",   
-     :new_arch_enabled => false
+    :new_arch_enabled => false,
+    :hermes_enabled => true
   )
 
   target 'ZADATests' do
