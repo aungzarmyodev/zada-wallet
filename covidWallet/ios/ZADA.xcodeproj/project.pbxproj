@@ -20,7 +20,7 @@
 		8158AE25486F330E1D82832C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B1A562A02F9A0575AE700421 /* PrivacyInfo.xcprivacy */; };
 		8AE9346B66485B15ED523A38 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B1A562A02F9A0575AE700421 /* PrivacyInfo.xcprivacy */; };
 		991EB6202AF9398400E0B8C0 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 991EB61F2AF9398400E0B8C0 /* AppDelegate.mm */; };
-		998BC8142AF957B500B27C88 /* double-conversion.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 998BC8132AF957B500B27C88 /* double-conversion.xcframework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		998BC8142AF957B500B27C88 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (Weak, ); }; };
 		998BC8162AF957BD00B27C88 /* libDoubleConversion.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 998BC8152AF957BD00B27C88 /* libDoubleConversion.a */; };
 		B0B70478D2B351FC07D43362 /* libPods-ZADA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1341FCFC426C0B048063E745 /* libPods-ZADA.a */; };
 		C0D8C5C52C7C88A03264AD68 /* libPods-ZADA-ZADATests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6BF56E4DCF6DEB601CD25B /* libPods-ZADA-ZADATests.a */; };
@@ -78,7 +78,6 @@
 		87A2C4C9263E45CE830578C0 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		9409FA3CEB136EC6A06A76F5 /* Pods-ZADA-ZADATests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZADA-ZADATests.debug.xcconfig"; path = "Target Support Files/Pods-ZADA-ZADATests/Pods-ZADA-ZADATests.debug.xcconfig"; sourceTree = "<group>"; };
 		991EB61F2AF9398400E0B8C0 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = ZADA/AppDelegate.mm; sourceTree = "<group>"; };
-		998BC8132AF957B500B27C88 /* double-conversion.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = "double-conversion.xcframework"; path = "Pods/Flipper-DoubleConversion/Frameworks/double-conversion.xcframework"; sourceTree = "<group>"; };
 		998BC8152AF957BD00B27C88 /* libDoubleConversion.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libDoubleConversion.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		998C9C0029DC2711009BFE75 /* ZADA-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ZADA-Bridging-Header.h"; sourceTree = "<group>"; };
 		998C9C0129DC2711009BFE75 /* ZADA-tvOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ZADA-tvOS-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -112,7 +111,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				998BC8162AF957BD00B27C88 /* libDoubleConversion.a in Frameworks */,
-				998BC8142AF957B500B27C88 /* double-conversion.xcframework in Frameworks */,
+				998BC8142AF957B500B27C88 /* BuildFile in Frameworks */,
 				B0B70478D2B351FC07D43362 /* libPods-ZADA.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -192,7 +191,6 @@
 			isa = PBXGroup;
 			children = (
 				998BC8152AF957BD00B27C88 /* libDoubleConversion.a */,
-				998BC8132AF957B500B27C88 /* double-conversion.xcframework */,
 				047DE886271035FA00CF09F1 /* libswiftWebKit.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,

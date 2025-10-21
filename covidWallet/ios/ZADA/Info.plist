@@ -73,7 +73,7 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>ZADA Wallet needs photos access so that you can easily browse ZADA generated QRCode to handle connection and credentials requests</string>
 	<key>RCTNewArchEnabled</key>
-	<true/>
+	<false/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
