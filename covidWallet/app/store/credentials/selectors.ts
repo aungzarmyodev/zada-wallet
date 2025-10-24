@@ -25,7 +25,7 @@ export const selectSingleCredential = createSelector(
 );
 
 // Select sorted array
-export const selectSortedCredentials = createSelector(selectCredentials.selectAll, (cred) =>
+export const selectSortedCredentials = createSelector(selectCredentials.selectAll, cred =>
   cred.sort((a, b) => new Date(a.issuedAtUtc).getTime() - new Date(b.issuedAtUtc).getTime())
 );
 
@@ -36,7 +36,7 @@ export const selectSearchedCredentials = createSelector(
     // Return sorted array
     if (searchTerm.length == 0) {
       return cred.sort(
-        (a, b) => new Date(a.issuedAtUtc).getTime() - new Date(b.issuedAtUtc).getTime()
+        (a, b) => new Date(b.issuedAtUtc).getTime() - new Date(a.issuedAtUtc).getTime()
       );
     }
 

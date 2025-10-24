@@ -26,6 +26,8 @@ import { selectBaseUrl, selectNetworkStatus } from '../../store/app/selectors';
 import { convertStringToBase64 } from '../../helpers/utils';
 import { clearAllAndLogout } from '../../store/utils';
 import { addConnection } from '../../store/connections';
+import VerificationRequestScreen from '../verification_request_screen/VerificationRequestScreen';
+import ErrorHandler from '../../components/Error/ErrorHandler';
 
 const defaultCredState = { type: 'none', credentials: [] };
 
@@ -68,7 +70,7 @@ const QRScreen = ({ route, navigation }) => {
   useEffect(() => {
     // Alert
     if (connectionStatus === 'succeeded') {
-      showOKDialog('ZADA', t('messages.success_connection'), () => { });
+      showOKDialog('ZADA', t('messages.success_connection'), () => {});
       navigateToMainScreen();
     }
   }, [connectionStatus, navigateToMainScreen]);
@@ -163,7 +165,7 @@ const QRScreen = ({ route, navigation }) => {
                   connectionId = parsedData.metadata.connectionId;
                   parsedData = convertStringToBase64(JSON.stringify(parsedData));
                 } else {
-                  parsedData = parsedData.data
+                  parsedData = parsedData.data;
                 }
                 let result = await VerificationAPI.send_request_to_agency(parsedData);
                 if (result.data.success) {
@@ -173,15 +175,14 @@ const QRScreen = ({ route, navigation }) => {
                       type: 'connectionless-verification',
                       credentials: { ...res.credential, connectionId },
                     });
-                  }, 500)
-
+                  }, 500);
                 }
 
                 setScan(false);
                 setProgress(false);
                 setDialogTitle('');
               } catch (err) {
-                throw 'Not a valid ZADA QR';
+                throw ErrorHandler(err, t);
               }
               return;
 
@@ -197,10 +198,10 @@ const QRScreen = ({ route, navigation }) => {
                       type: 'cred_ver',
                       credentials: credObj.credential,
                     });
-                  }, 500)
+                  }, 500);
                 }
               } catch (err) {
-                throw 'Not a valid ZADA QR';
+                throw ErrorHandler(err, t);
               }
               return;
 
@@ -216,10 +217,10 @@ const QRScreen = ({ route, navigation }) => {
                       type: 'cred_ver',
                       credentials: credObj.credential,
                     });
-                  }, 500)
+                  }, 500);
                 }
               } catch (err) {
-                throw 'Not a valid ZADA QR';
+                throw ErrorHandler(err, t);
               }
               return;
             default:
@@ -279,10 +280,7 @@ const QRScreen = ({ route, navigation }) => {
         }
 
         if (qrJSON.type === ConstantsList.CONN_REQ) {
-          if (
-            API_URL === 'https://test-agency.zadanetwork.com' &&
-            qrJSON.env === 'production'
-          ) {
+          if (API_URL === 'https://test-agency.zadanetwork.com' && qrJSON.env === 'production') {
             throw 'You are trying to scan production QR code with test app!';
           }
           if (
@@ -297,7 +295,7 @@ const QRScreen = ({ route, navigation }) => {
 
           let data = await getConnectionDetails(qrJSON.metadata, qrJSON);
 
-          let connectionExists = connections.find((x) => x.name === data.organizationName);
+          let connectionExists = connections.find(x => x.name === data.organizationName);
           if (connectionExists) {
             showOKDialog(
               'ZADA',
@@ -335,7 +333,7 @@ const QRScreen = ({ route, navigation }) => {
   );
 
   // Accept modal handler
-  const acceptModal = async (e) => {
+  const acceptModal = async e => {
     setTimeout(() => {
       setProgress(true);
       setDialogTitle('Submitting Verification...');
@@ -361,7 +359,7 @@ const QRScreen = ({ route, navigation }) => {
       await VerificationAPI.submit_verification_connectionless(
         metadata,
         e.policyName,
-        e.credentialId,
+        e.credentialId
       );
 
       setProgress(false);
@@ -374,8 +372,11 @@ const QRScreen = ({ route, navigation }) => {
 
       // Create connection if connectionId is available
       if (e.connectionId) {
-        let data = await getConnectionDetails(e.connectionId, { "type": "connection_request", metadata });
-        let connectionExists = connections.find((x) => x.name === data.organizationName);
+        let data = await getConnectionDetails(e.connectionId, {
+          type: 'connection_request',
+          metadata,
+        });
+        let connectionExists = connections.find(x => x.name === data.organizationName);
 
         // Don't add connection if already exists
         if (!connectionExists) {
@@ -423,15 +424,16 @@ const QRScreen = ({ route, navigation }) => {
       />
 
       {credentialData.type === 'connectionless-verification' && (
-        <ActionDialog
-          isVisible={credentialData.type === 'connectionless-verification'}
-          rejectModal={rejectModal}
-          data={credentialData.credentials}
-          dismissModal={dismissModal}
-          acceptModal={acceptModal}
-          modalType="action"
-          isIconVisible={true}
-        />
+        // <ActionDialog
+        //   isVisible={credentialData.type === 'connectionless-verification'}
+        //   rejectModal={rejectModal}
+        //   data={credentialData.credentials}
+        //   dismissModal={dismissModal}
+        //   acceptModal={acceptModal}
+        //   modalType="action"
+        //   isIconVisible={true}
+        // />
+        <VerificationRequestScreen data={credentialData.credentials} />
       )}
 
       {/* On verification success */}
@@ -473,7 +475,7 @@ const QRScreen = ({ route, navigation }) => {
             </View>
           }
           onRead={_handleQRScan}
-          topContent={<Text style={styles.textBold}>{t("QRScreen.title")}</Text>}
+          topContent={<Text style={styles.textBold}>{t('QRScreen.title')}</Text>}
           bottomContent={
             <TouchableOpacity style={styles.buttonTouchable} onPress={navigateToMainScreen}>
               <Text style={styles.buttonText}>{t('QRScreen.cancel_scan')}</Text>

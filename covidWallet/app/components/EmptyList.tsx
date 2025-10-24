@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, ScrollView, RefreshControl, ScrollViewProps } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { BACKGROUND_COLOR, BLACK_COLOR } from '../theme/Colors';
+import { AppColors, BACKGROUND_COLOR, BLACK_COLOR } from '../theme/Colors';
 import BorderButton from './BorderButton';
 import ImageBoxComponent from './ImageBoxComponent';
 import TextComponent from './TextComponent';
@@ -39,7 +39,7 @@ const EmptyList = (props: IProps) => {
             text={t('ActionsScreen.qr_code')}
             color={BLACK_COLOR}
             textColor={BLACK_COLOR}
-            backgroundColor={BACKGROUND_COLOR}
+            backgroundColor={AppColors.BACKGROUND}
             isIconVisible={true}
           />
         </View>

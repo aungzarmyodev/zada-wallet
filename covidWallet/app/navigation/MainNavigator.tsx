@@ -1,13 +1,13 @@
 import React from 'react';
 import { TransitionPresets } from '@react-navigation/stack';
-import { Platform, Text, Modal } from 'react-native';
+import { Platform, Text, View, Modal } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { BACKGROUND_COLOR, BLACK_COLOR } from '../theme/Colors';
-import { MainStack } from './types';
+import { AppColors, BACKGROUND_COLOR, BLACK_COLOR } from '../theme/Colors';
+import { MainStack, MainStackNavigationProp, TabStackParamList } from './types';
 
 // Screens
 import TabNavigator from './TabNavigator';
@@ -19,6 +19,8 @@ import QRScreen from '../screens/qr/QRScreen';
 import CredDetailScreen from '../screens/credential/CredDetailScreen';
 import LanguageSelectionScreen from '../screens/settings/LanguageSelectionScreen';
 import { navigationRef } from './utils';
+import VerificationRequestScreen from '../screens/verification_request_screen/VerificationRequestScreen';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -29,18 +31,42 @@ const MainNavigator = () => {
   const { t } = useTranslation();
 
   const backIcon = Platform.OS === 'ios' ? 'chevron-left' : 'arrow-back';
+
+  function getHeaderTitle(route: any): string {
+    const routeName = getFocusedRouteNameFromRoute(route) ?? t('common.actions');
+
+    switch (routeName) {
+      case 'Actions':
+        return t('common.actions');
+      case 'Credentials':
+        return t('common.credentials');
+      case 'Connections':
+        return t('common.connections');
+      default:
+        return routeName;
+    }
+  }
+
   return (
     <MainStack.Navigator screenOptions={{ ...navigationAnimation }} initialRouteName="MainScreen">
       <MainStack.Screen
         name="MainScreen"
         options={({ navigation, route }) => ({
           headerStyle: {
-            backgroundColor: BACKGROUND_COLOR,
+            backgroundColor: AppColors.BACKGROUND,
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,
           },
-          headerTitle: '',
+          headerTitle: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <MaterialCommunityIcons name="shield-check" size={20} color={AppColors.PRIMARY} />
+              <Text style={{ fontSize: 18, fontWeight: '600', color: AppColors.BLACK }}>
+                {getHeaderTitle(route)}
+              </Text>
+            </View>
+          ),
+          headerTitleAlign: 'center',
           headerLeft: () => (
             <FontAwesome
               onPress={() => {
@@ -173,8 +199,13 @@ const MainNavigator = () => {
       <MainStack.Screen
         options={{ headerShown: false }}
         name="QRScreen"
-        path="/scanqr/:pathParam1?/:pathParam2?" //npx uri-scheme open https://zadanetwork.com/type=connection_data --android
+        // path="/scanqr/:pathParam1?/:pathParam2?" //npx uri-scheme open https://zadanetwork.com/type=connection_data --android
         component={QRScreen}
+      />
+      <MainStack.Screen
+        options={{ headerShown: false }}
+        name="VerificationRequestScreen"
+        component={VerificationRequestScreen}
       />
     </MainStack.Navigator>
   );

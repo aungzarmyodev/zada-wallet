@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { GREEN_COLOR, WHITE_COLOR } from '../theme/Colors';
+import { AppColors, GREEN_COLOR, WHITE_COLOR } from '../theme/Colors';
 
 function GreenPrimaryButton(props) {
   const styles = StyleSheet.create({
     primaryButton: {
-      borderColor: GREEN_COLOR,
+      borderColor: AppColors.PRIMARY,
       borderWidth: 2,
       borderRadius: 20,
-      backgroundColor: GREEN_COLOR,
+      backgroundColor: AppColors.PRIMARY,
       paddingTop: 10,
       paddingLeft: 20,
       paddingBottom: 10,

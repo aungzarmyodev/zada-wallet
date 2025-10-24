@@ -5,10 +5,10 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { CredentialAPI } from '../../gateways';
 import { parse_date_time } from '../../helpers';
 
-export const generatePDF = async (html: any) => {
+export const generatePDF = async (html: any, fileName: string) => {
   let options = {
     html: html,
-    fileName: 'credential',
+    fileName: fileName,
     directory: 'Documents',
     padding: 0,
     height: 842,
@@ -20,8 +20,8 @@ export const generatePDF = async (html: any) => {
 };
 
 // Generating and sharing pdf
-export const sharePDF = async (htmlStr: any) => {
-  let result = await generatePDF(htmlStr);
+export const sharePDF = async (htmlStr: any, fileName: string) => {
+  let result = await generatePDF(htmlStr, fileName);
   const shareOptions = {
     title: 'Credential',
     url: result.url,

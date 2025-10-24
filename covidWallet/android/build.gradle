@@ -4,22 +4,22 @@ buildscript {
     ext {
         firebaseMessagingVersion = "21.1.0" // default: "21.1.0"
 
-        buildToolsVersion = "34.0.0"
-        minSdkVersion = 23
-        compileSdkVersion = 34
+        buildToolsVersion = "36.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 36
         targetSdkVersion = 34
-        ndkVersion = "25.1.8937393"
-        kotlinVersion = "1.8.0"
+        ndkVersion = "28.2.13676358"
+        kotlinVersion = "1.8.22"
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.4.0")
+        classpath("com.android.tools.build:gradle:8.5.1")      
         classpath("com.facebook.react:react-native-gradle-plugin")
-        classpath('com.google.gms:google-services:4.4.0')
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("com.google.gms:google-services:4.4.0")
     }
     allprojects {
       repositories {
@@ -32,6 +32,19 @@ buildscript {
           maven { url 'https://maven.zohodl.com' }
           maven { url 'https://www.jitpack.io' }
       }
+    }
+    subprojects { subproject ->
+        afterEvaluate {
+            if (subproject.hasProperty("android")) {
+                subproject.android.ndkVersion = rootProject.ext.ndkVersion
+            }
+            if (subproject.plugins.hasPlugin('kotlin-android')) {
+                subproject.extensions.findByName("kotlinOptions")?.with {
+                    jvmTarget = "1.8"
+                    freeCompilerArgs += ["-Xjvm-default=all"]
+                }
+            }
+        }
     }
 }
 

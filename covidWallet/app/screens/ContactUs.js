@@ -19,35 +19,10 @@ function ContactUs() {
         }}
         contentContainerStyle={styles.contentContainer}>
         <View style={styles.centerView}>
-          <Text style={styles.MainText}>
-            {t('ContactUsScreen.title')}
-          </Text>
+          <Text style={styles.MainText}>{t('ContactUsScreen.title')}</Text>
         </View>
 
         <View>
-          <View style={styles.flexRow}>
-            <TouchableComponent
-              onPress={() => {
-                Linking.openURL('tel://+959765606651');
-              }}
-              addShadow={true}>
-              <View style={styles.callViewStyle}>
-                <MaterialIcons name="phone" size={35} color={AppColors.WHITE} />
-                <Text style={[styles.ItemText, { color: AppColors.WHITE }]}>Call Us</Text>
-              </View>
-            </TouchableComponent>
-
-            <TouchableComponent
-              onPress={() => {
-                Linking.openURL('mailto:help@zada.io');
-              }}
-              addShadow={true}>
-              <View style={styles.callViewStyle}>
-                <MaterialIcons name="mail" size={35} color={AppColors.WHITE} />
-                <Text style={[styles.ItemText, { color: AppColors.WHITE }]}>Email</Text>
-              </View>
-            </TouchableComponent>
-          </View>
           <View style={styles.flexRow}>
             <TouchableComponent
               onPress={() => {
@@ -72,6 +47,30 @@ function ContactUs() {
               <View style={styles.callViewStyle}>
                 <MaterialCommunityIcons name="chat-processing" size={35} color={AppColors.WHITE} />
                 <Text style={[styles.ItemText, { color: AppColors.WHITE }]}>Chat Now!</Text>
+              </View>
+            </TouchableComponent>
+          </View>
+
+          <View style={styles.flexRow}>
+            {/* <TouchableComponent
+              onPress={() => {
+                Linking.openURL('tel://+959765606651');
+              }}
+              addShadow={true}>
+              <View style={styles.callViewStyle}>
+                <MaterialIcons name="phone" size={35} color={AppColors.WHITE} />
+                <Text style={[styles.ItemText, { color: AppColors.WHITE }]}>Call Us</Text>
+              </View>
+            </TouchableComponent> */}
+
+            <TouchableComponent
+              onPress={() => {
+                Linking.openURL('mailto:help@zada.io');
+              }}
+              addShadow={true}>
+              <View style={styles.callViewStyle}>
+                <MaterialIcons name="mail" size={35} color={AppColors.WHITE} />
+                <Text style={[styles.ItemText, { color: AppColors.WHITE }]}>Email</Text>
               </View>
             </TouchableComponent>
           </View>

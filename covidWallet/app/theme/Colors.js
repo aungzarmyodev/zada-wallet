@@ -1,4 +1,6 @@
-export const PRIMARY_COLOR = '#001871';
+import { MEDIUM } from '../helpers/ConfigApp';
+
+export const PRIMARY_COLOR = '#1B3760';
 export const SECONDARY_COLOR = 'gray';
 export const BLACK_COLOR = 'black';
 export const WHITE_COLOR = 'white';
@@ -10,18 +12,23 @@ export const BACKGROUND_COLOR = '#e4e2de';
 
 // New Way
 export const AppColors = {
-  PRIMARY: '#001871',
+  PRIMARY: '#1B3760',
   SUBHEADING_BLUE: '#5258a8',
-  BACKGROUND: '#e4e2de',
+  BACKGROUND: '#F3F4F6',
   DANGER: '#f32013',
   BLUE: '#2870da',
   TURQUOISE: '#3ab6ae',
   GRAY: '#708090',
   LIGHT_GRAY: '#dddddd',
   DISABLED_COLOR: '#dddddd60',
-  WHITE: 'white',
-  BLACK: 'black',
+  WHITE: '#FFFFFF',
+  BLACK: '#000000',
   GREEN: '#19cb94',
-  TRANSPARENT_LOADER: "00000000",
+  BRIGHT_GREEN: '#21C55E',
+  TRANSPARENT_LOADER: '00000000',
   TRANSPARENT: '#00000000',
+  MEDIUM_GRAY: '#6b7280',
+  SELECTED_BACKGROUND_COLOR: '#F0F6FF',
+  TEXT_TITLE_COLOR: '#111827',
+  TEXT_LABEL_COLOR: '#6B7280',
 };
