@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import BiometricModal from '../../components/Modal/BiometricModal';
 import { useAppDispatch } from '../../store';
 
-const ConnectionBaseVerificationScreen = props => {
+const ConnectionBaseVerificationScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const dispatch = useAppDispatch();
@@ -24,12 +24,11 @@ const ConnectionBaseVerificationScreen = props => {
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(false);
   const [showBioMetric, setShowBioMetric] = useState(false);
   const [selectedCredential, setSelectedCredential] = useState(null);
 
-  const verificationRequest = route.params?.data || props?.data;
+  const verificationRequest = route.params;
   const verificationId = verificationRequest?.verificationId ?? null;
   const connectionId = verificationRequest?.connectionId ?? null;
 
@@ -91,16 +90,13 @@ const ConnectionBaseVerificationScreen = props => {
     navigation.navigate('MainScreen');
   };
 
-  const acceptHandler =
-    props?.acceptModal ||
-    (async credential => {
-      // fallback internal logic
-      if (!credential) return;
-      setSelectedCredential(credential);
-      setTimeout(() => {
-        setShowBioMetric(true);
-      }, 500);
-    });
+  const acceptHandler = async credential => {
+    if (!credential) return;
+    setSelectedCredential(credential);
+    setTimeout(() => {
+      setShowBioMetric(true);
+    }, 500);
+  };
 
   const onBiometricSuccess = async () => {
     setShowBioMetric(false);
@@ -151,12 +147,6 @@ const ConnectionBaseVerificationScreen = props => {
         onReject={rejectButtonClick}
         onClose={closeButtonClick}
       />
-      {submitting && (
-        <LoadingDialog
-          visible={true}
-          label={t('VerificationRequestScreen.submittin_verification')}
-        />
-      )}
       {showBioMetric && (
         <BiometricModal
           oneTimeAuthentication={true}
