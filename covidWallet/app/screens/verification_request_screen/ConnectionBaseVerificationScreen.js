@@ -9,7 +9,6 @@ import {
 import { deleteAction } from '../../store/actions';
 import { showOKDialog, _showAlert, showMessage } from '../../helpers/Toast';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
-import LoadingDialog from '../../components/Dialogs/LoadingDialog';
 import { AppColors } from '../../theme/Colors';
 import CommonErrorView from '../../components/Error/CommonErrorView';
 import { useTranslation } from 'react-i18next';
@@ -146,6 +145,7 @@ const ConnectionBaseVerificationScreen = () => {
         onAccept={acceptHandler}
         onReject={rejectButtonClick}
         onClose={closeButtonClick}
+        imageurl={verificationRequest?.imageUrl}
       />
       {showBioMetric && (
         <BiometricModal

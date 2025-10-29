@@ -16,9 +16,10 @@ type Props = {
   onAccept?: (credential: Credential) => void;
   onReject?: () => void;
   onClose?: () => void;
+  imageurl?: string;
 };
 
-const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
+const CredentialListScreen = ({ data, onAccept, onReject, onClose, imageurl }: Props) => {
   const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -55,12 +56,22 @@ const CredentialListScreen = ({ data, onAccept, onReject, onClose }: Props) => {
         ? 'COVIDpass (Vaccination)'
         : 'Digital Certificate';
 
+    const connectionLogo = !!(imageurl && imageurl.trim().length > 0);
+
     return (
       <TouchableOpacity onPress={() => handleSelect(item.credentialId)}>
         <View style={[styles.card, isSelected && styles.selectedCard]}>
           <View style={styles.row}>
             <View style={[styles.radioButton, isSelected && styles.radioButtonSelected]} />
-
+            {connectionLogo && (
+              <View style={styles.connectionLogoContainer}>
+                <Image
+                  source={{ uri: imageurl }}
+                  style={styles.connectionLogo}
+                  resizeMode="cover"
+                />
+              </View>
+            )}
             <View style={styles.textContainer}>
               <Text style={styles.cardTitle}>{verificationName}</Text>
 
@@ -203,7 +214,21 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   radioButtonSelected: { borderColor: AppColors.BLUE, borderWidth: 5 },
-  circleLogo: { width: 40, height: 40, borderRadius: 20, marginRight: 12 },
+  connectionLogoContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    backgroundColor: AppColors.LIGHT_GRAY,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  connectionLogo: {
+    width: 44,
+    height: 44,
+    borderRadius: 20,
+    resizeMode: 'contain',
+  },
   textContainer: { flex: 1 },
   valueRow: {
     flexDirection: 'row',
