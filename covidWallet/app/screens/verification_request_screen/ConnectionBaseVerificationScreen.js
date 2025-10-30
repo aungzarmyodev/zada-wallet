@@ -5,6 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   get_all_credentials_for_verification,
   submit_verification,
+  delete_verification,
 } from '../../gateways/verifications';
 import { deleteAction } from '../../store/actions';
 import { showOKDialog, _showAlert, showMessage } from '../../helpers/Toast';
@@ -26,6 +27,7 @@ const ConnectionBaseVerificationScreen = () => {
   const [error, setError] = useState(false);
   const [showBioMetric, setShowBioMetric] = useState(false);
   const [selectedCredential, setSelectedCredential] = useState(null);
+  const [buttonType, setButtonType] = useState(null);
 
   const verificationRequest = route.params;
   const verificationId = verificationRequest?.verificationId ?? null;
@@ -86,11 +88,15 @@ const ConnectionBaseVerificationScreen = () => {
   };
 
   const rejectButtonClick = async () => {
-    navigation.navigate('MainScreen');
+    setButtonType('REJECT');
+    setTimeout(() => {
+      setShowBioMetric(true);
+    }, 500);
   };
 
   const acceptHandler = async credential => {
     if (!credential) return;
+    setButtonType('ACCEPT');
     setSelectedCredential(credential);
     setTimeout(() => {
       setShowBioMetric(true);
@@ -99,28 +105,40 @@ const ConnectionBaseVerificationScreen = () => {
 
   const onBiometricSuccess = async () => {
     setShowBioMetric(false);
-    if (!selectedCredential) return;
-    try {
-      let result = await submit_verification(
-        verificationId,
-        selectedCredential.credentialId,
-        selectedCredential.policyName
-      );
-
-      if (result.data.success) {
-        showOKDialog(
-          'Zada Wallet',
-          t('messages.success_verification_request_submit'),
-          goBackToMainScreen
-        );
-      } else {
-        showMessage('Zada', result.data.error);
+    if (buttonType === 'REJECT') {
+      try {
+        await delete_verification(verificationId);
+        goBackToMainScreen();
+        // Delete Verficication request from action list.
+        dispatch(deleteAction(connectionId + verificationId));
+      } catch (err) {
+        console.log({ err });
+        _showAlert('Error: ', 'Something unexpected happened, please try again.');
       }
-      // // Delete Credential from list.
-      dispatch(deleteAction(connectionId + verificationId));
-    } catch (err) {
-      console.log({ err });
-      _showAlert('Error: ', 'Something unexpected happened, please try again.');
+    } else if (buttonType === 'ACCEPT') {
+      if (!selectedCredential) return;
+      try {
+        let result = await submit_verification(
+          verificationId,
+          selectedCredential.credentialId,
+          selectedCredential.policyName
+        );
+
+        if (result.data.success) {
+          showOKDialog(
+            'Zada Wallet',
+            t('messages.success_verification_request_submit'),
+            goBackToMainScreen
+          );
+        } else {
+          showMessage('Zada', result.data.error);
+        }
+        // Delete Verficication request from action list.
+        dispatch(deleteAction(connectionId + verificationId));
+      } catch (err) {
+        console.log({ err });
+        _showAlert('Error: ', 'Something unexpected happened, please try again.');
+      }
     }
   };
 
@@ -145,7 +163,7 @@ const ConnectionBaseVerificationScreen = () => {
         onAccept={acceptHandler}
         onReject={rejectButtonClick}
         onClose={closeButtonClick}
-        imageurl={verificationRequest?.imageUrl}
+        imageUrl={verificationRequest?.imageUrl}
       />
       {showBioMetric && (
         <BiometricModal
