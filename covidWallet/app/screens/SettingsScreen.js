@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Linking,
-  Switch,
   Dimensions,
   Platform,
   TouchableOpacity,
@@ -27,6 +26,7 @@ import { selectAppStatus, selectNetworkStatus } from '../store/app/selectors';
 import useDevelopment from '../hooks/useDevelopment';
 import OverlayLoader from '../components/OverlayLoader';
 import BiometricModal from '../components/Modal/BiometricModal';
+import CustomSwitchButton from '../components/Buttons/CustomSwitchButton';
 
 export default function SettingsScreen(props) {
   // Constants
@@ -170,34 +170,15 @@ export default function SettingsScreen(props) {
         <Text style={styles._rowHeading}>{t('SettingsScreen.general')}</Text>
         <View style={styles._row}>
           <Text style={styles._rowLabel}>{t('SettingsScreen.authenticate_with_biometric')}</Text>
-          <View style={styles.switchContainer}>
-            <Switch
-              trackColor={{
-                false: AppColors.BACKGROUND,
-                true: AppColors.BLUE,
-              }}
-              thumbColor="#ffffff"
-              ios_backgroundColor="#ffffff"
-              onValueChange={_toggleBio}
-              value={isBioEnable}
-            />
-          </View>
+          <CustomSwitchButton value={isBioEnable} onValueChange={_toggleBio} />
         </View>
 
         <View style={styles._row}>
           <Text style={styles._rowLabel}>{t('SettingsScreen.auto_accept_connections')}</Text>
-          <View style={styles.switchContainer}>
-            <Switch
-              trackColor={{
-                false: AppColors.BACKGROUND,
-                true: AppColors.BLUE,
-              }}
-              thumbColor="#ffffff"
-              ios_backgroundColor="#ffffff"
-              onValueChange={_toggleAcceptConnection}
-              value={isAcceptConnectionEnabled}
-            />
-          </View>
+          <CustomSwitchButton
+            value={isAcceptConnectionEnabled}
+            onValueChange={_toggleAcceptConnection}
+          />
         </View>
 
         <TouchableOpacity
@@ -271,18 +252,10 @@ export default function SettingsScreen(props) {
         {developmentMode && (
           <View activeOpacity={0.8} style={styles._row}>
             <Text style={styles._rowLabel}>Development Mode</Text>
-            <View style={styles.switchContainer}>
-              <Switch
-                trackColor={{
-                  false: AppColors.BACKGROUND,
-                  true: AppColors.BLUE,
-                }}
-                thumbColor="#ffffff"
-                ios_backgroundColor="#ffffff"
-                onValueChange={() => setDevelopmentMode(!developmentMode)}
-                value={developmentMode}
-              />
-            </View>
+            <CustomSwitchButton
+              value={developmentMode}
+              onValueChange={() => setDevelopmentMode(!developmentMode)}
+            />
           </View>
         )}
       </ScrollView>
@@ -363,12 +336,5 @@ const styles = StyleSheet.create({
   devTextStyle: {
     textAlign: 'center',
     marginTop: 24,
-  },
-  switchContainer: {
-    transform: Platform.OS === 'ios' ? [{ scale: 0.8 }] : [{ scale: 1 }],
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginEnd: Platform.OS === 'ios' ? 50 : 0,
-    marginBottom: Platform.OS === 'ios' ? 20 : 0,
   },
 });
