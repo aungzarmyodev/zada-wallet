@@ -8,6 +8,7 @@ import { selectUser } from '../../../store/auth/selectors';
 import { _showAlert } from '../../../helpers';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../../navigation/types';
+import { OTP_CHANNEL } from '../../../store/auth/OtpChannel';
 
 interface INProps {
   navigation: NativeStackNavigationProp<AuthStackParamList>;
@@ -50,9 +51,11 @@ const ResendCode = (props: INProps) => {
   const resendCode = async () => {
     if (user.phone) {
       setLoading(true);
-      dispatch(sendOTP({ phone: user.phone, secret: user.walletSecret }))
+      dispatch(
+        sendOTP({ phone: user.phone, secret: user.walletSecret, channel: OTP_CHANNEL.WHATSAPP })
+      )
         .unwrap()
-        .then((res) => {
+        .then(res => {
           if (res.success) {
             _showAlert('ZADA', 'Code sent successfully!');
             setPhoneMins(1);
@@ -61,7 +64,7 @@ const ResendCode = (props: INProps) => {
             setLoading(false);
           }
         })
-        .catch((e) => {
+        .catch(e => {
           setLoading(false);
         });
     } else {
