@@ -364,8 +364,18 @@ const QRScreen = ({ route, navigation }) => {
     [auto_accept_connection, connections, dispatch, navigateToMainScreen, networkStatus]
   );
 
-  if (!hasPermission) return <Text>Waiting for camera permission...</Text>;
-  if (!device) return <Text>No camera found</Text>;
+  if (!hasPermission)
+    return (
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Waiting for camera permission...</Text>
+      </View>
+    );
+  if (!device)
+    return (
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Your centered text</Text>
+      </View>
+    );
 
   return (
     <View style={styles.mainContainer}>
@@ -497,6 +507,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: AppColors.WHITE,
     zIndex: 10,
+  },
+  labelContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  label: {
+    textAlign: 'center',
+    fontWeight: '600',
+    color: AppColors.BLACK,
   },
   button: {
     backgroundColor: '#FF3B30',
