@@ -70,7 +70,13 @@ const QRScreen = ({ route, navigation }) => {
       const status = await Camera.requestCameraPermission();
       setHasPermission(status === 'granted');
       if (status !== 'granted') {
-        Alert.alert('Camera Permission Denied', 'Enable camera in settings.');
+        setTimeout(() => {
+          showOKDialog(
+            'Permission Denied',
+            'Please allow camera access in ZADA app info to continue.',
+            navigateToMainScreen
+          );
+        }, 500);
       }
     })();
   }, []);
@@ -435,7 +441,7 @@ const QRScreen = ({ route, navigation }) => {
         }}
       />
 
-      {scan && (
+      {scan && cameraActive && (
         <View style={styles.container}>
           <Camera
             style={StyleSheet.absoluteFill}
