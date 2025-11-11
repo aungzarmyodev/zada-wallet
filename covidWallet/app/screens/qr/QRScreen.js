@@ -385,9 +385,10 @@ const QRScreen = ({ route, navigation }) => {
         heading={isScanning ? 'Verifying...' : 'Credential\nInformation'}
         isScanning={isScanning}
         onCloseClick={() => {
-          setScan(true);
           setValues(null);
-          setCredentialData(defaultCredState);
+          setTimeout(() => {
+            navigateToMainScreen();
+          }, 300);
         }}
         onVerifyPress={_handleVerifyClick}
       />
@@ -403,10 +404,15 @@ const QRScreen = ({ route, navigation }) => {
         info="Credential is verified successfully"
         onCloseClick={() => {
           setShowSuccessModal(false);
+          setTimeout(() => {
+            navigateToMainScreen();
+          }, 300);
         }}
         onOkayPress={() => {
           setShowSuccessModal(false);
-          setScan(true);
+          setTimeout(() => {
+            navigateToMainScreen();
+          }, 300);
         }}
       />
 
@@ -417,10 +423,15 @@ const QRScreen = ({ route, navigation }) => {
         info={errMsg}
         onCloseClick={() => {
           setShowErrorModal(false);
+          setTimeout(() => {
+            navigateToMainScreen();
+          }, 300);
         }}
         onOkayPress={() => {
           setShowErrorModal(false);
-          setScan(true);
+          setTimeout(() => {
+            navigateToMainScreen();
+          }, 300);
         }}
       />
 
