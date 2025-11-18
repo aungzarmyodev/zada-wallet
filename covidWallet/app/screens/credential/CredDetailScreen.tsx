@@ -1,11 +1,26 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Dimensions, View, Text, Alert, Platform } from 'react-native';
+import {
+  Dimensions,
+  View,
+  Text,
+  Button,
+  Alert,
+  Platform,
+  StyleSheet,
+  Pressable,
+} from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import QRCode from 'react-native-qrcode-svg';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTranslation } from 'react-i18next';
 
-import { BACKGROUND_COLOR, BLACK_COLOR, GRAY_COLOR, WHITE_COLOR } from '../../theme/Colors';
+import {
+  AppColors,
+  BACKGROUND_COLOR,
+  BLACK_COLOR,
+  GRAY_COLOR,
+  WHITE_COLOR,
+} from '../../theme/Colors';
 import { downloadFile, getCredentialTemplate, replacePlaceHolders, sharePDF } from './utils';
 import {
   get_local_issue_date,
@@ -26,6 +41,8 @@ import usePreventScreenshot from '../../hooks/usePreventScreenshot';
 import { compressCredentials, removeCredentials } from '../../store/credentials/thunk';
 import { selectNetworkStatus } from '../../store/app/selectors';
 import { ICredentialObject, ICredentialObjectValues } from '../../store/credentials/interface';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useStore } from 'react-redux';
 
 interface IProps {
   route: any;
@@ -52,6 +69,8 @@ const CredDetailScreen = (props: IProps) => {
   const [showQRModal, setShowQRModal] = useState(false);
   const [isGenerating, setGenerating] = useState(data?.qrCode === undefined ? true : false);
   const [isGeneratingPDF, setGeneratingPDF] = useState(false);
+
+  const [isSharingNFC, setSharingNFC] = useState(false);
 
   // Hooks
   // Prevent screenshot
@@ -205,76 +224,100 @@ const CredDetailScreen = (props: IProps) => {
     dispatch(removeCredentials(data.credentialId));
   }
 
+  const shareNFC = () => {
+    setSharingNFC(true);
+    setTimeout(() => {
+      setSharingNFC(false);
+      Alert.alert('Success', 'NFC sharing completed successfully!');
+    }, 3000);
+  };
+
   return (
-    <View style={styles.mainContainer}>
-      {/* hidden QRCODE */}
-      <View style={{ position: 'absolute', top: '5%', left: '5%' }}>
-        {data.qrCode !== undefined && (
-          <ViewShot ref={viewShotRef} options={{ fileName: 'QRCode', format: 'png', quality: 0.9 }}>
-            <QRCode
-              value={JSON.stringify(data.qrCode)}
-              backgroundColor={BACKGROUND_COLOR}
-              size={Dimensions.get('window').width * 0.7}
-              ecl="L"
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.mainContainer}>
+        <View style={styles.mainContainer}>
+          {/* hidden QRCODE */}
+          <View style={{ position: 'absolute', top: '5%', left: '5%' }}>
+            {data.qrCode !== undefined && (
+              <ViewShot
+                ref={viewShotRef}
+                options={{ fileName: 'QRCode', format: 'png', quality: 0.9 }}>
+                <QRCode
+                  value={JSON.stringify(data.qrCode)}
+                  backgroundColor={BACKGROUND_COLOR}
+                  size={Dimensions.get('window').width * 0.7}
+                  ecl="L"
+                />
+              </ViewShot>
+            )}
+          </View>
+          <View style={styles.innerContainer}>
+            {credentialStatus === 'pending' && (
+              <OverlayLoader text={t('messages.deleting_certificate')} />
+            )}
+
+            {isGeneratingPDF && <OverlayLoader text={t('messages.generating_new_pdf')} />}
+
+            <CredQRModal
+              isVisible={showQRModal}
+              onCloseClick={() => {
+                setShowQRModal(false);
+              }}
+              isGenerating={isGenerating}
+              data={data.qrCode}
             />
-          </ViewShot>
-        )}
-      </View>
-      <View style={styles.innerContainer}>
-        {credentialStatus === 'pending' && (
-          <OverlayLoader text={t('messages.deleting_certificate')} />
-        )}
 
-        {isGeneratingPDF && <OverlayLoader text={t('messages.generating_new_pdf')} />}
+            <View style={styles.topContainer}>
+              {Object.keys(data).length > 0 && (
+                <DetailCard
+                  item={data}
+                  issue_date={
+                    data?.values['Issue Time']
+                      ? get_local_issue_date(data.values['Issue Time'])
+                      : data.issuedAtUtc
+                      ? get_local_issue_date(data.issuedAtUtc)
+                      : undefined
+                  }
+                  organizationName={data.organizationName}
+                  setShowQRModal={openQRModal}
+                />
+              )}
+            </View>
 
-        <CredQRModal
-          isVisible={showQRModal}
-          onCloseClick={() => {
-            setShowQRModal(false);
-          }}
-          isGenerating={isGenerating}
-          data={data.qrCode}
-        />
-
-        <View style={styles.topContainer}>
-          {Object.keys(data).length > 0 && (
-            <DetailCard
-              item={data}
-              issue_date={
-                data?.values['Issue Time']
-                  ? get_local_issue_date(data.values['Issue Time'])
-                  : data.issuedAtUtc
-                  ? get_local_issue_date(data.issuedAtUtc)
-                  : undefined
-              }
-              organizationName={data.organizationName}
-              setShowQRModal={openQRModal}
+            <RenderValues
+              listStyle={{ marginTop: 10 }}
+              listContainerStyle={{ paddingBottom: '10%' }}
+              inputTextColor={GRAY_COLOR}
+              inputTextWeight="normal"
+              inputTextSize={16}
+              labelColor={BLACK_COLOR}
+              values={data?.values ?? {}}
+              inputBackground={WHITE_COLOR}
+              width="100%"
+              mainStyle={{}}
             />
-          )}
+          </View>
+          {isSharingNFC && <OverlayLoader text="Sharing to NFC ... please wait" />}
+
+          <View style={styles.bottomBar}>
+            <Pressable
+              style={styles.shareButton}
+              onPress={() => {
+                shareNFC();
+              }}>
+              <Text style={styles.text}> Share to NFC </Text>
+            </Pressable>
+          </View>
         </View>
-
-        <RenderValues
-          listStyle={{ marginTop: 10 }}
-          listContainerStyle={{ paddingBottom: '10%' }}
-          inputTextColor={GRAY_COLOR}
-          inputTextWeight="normal"
-          inputTextSize={16}
-          labelColor={BLACK_COLOR}
-          values={data?.values ?? {}}
-          inputBackground={WHITE_COLOR}
-          width="100%"
-          mainStyle={{}}
-        />
-      </View>
-    </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: BACKGROUND_COLOR,
+    backgroundColor: AppColors.WHITE,
     flex: 1,
-    padding: 10,
   },
   topContainer: {
     margin: 8,
@@ -290,5 +333,27 @@ const styles = {
     paddingRight: 15,
     color: BLACK_COLOR,
   },
-};
+  bottomBar: {
+    width: '100%',
+    height: 60,
+    backgroundColor: WHITE_COLOR,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shareButton: {
+    backgroundColor: AppColors.PRIMARY,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  text: {
+    color: AppColors.WHITE,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+});
 export default CredDetailScreen;

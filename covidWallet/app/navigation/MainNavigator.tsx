@@ -182,7 +182,7 @@ const MainNavigator = () => {
         options={({ navigation }) => ({
           headerTintColor: 'black',
           headerStyle: {
-            backgroundColor: BACKGROUND_COLOR,
+            backgroundColor: AppColors.WHITE,
           },
           headerTitle: () => (
             <Text
