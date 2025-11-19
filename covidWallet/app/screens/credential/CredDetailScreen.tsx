@@ -173,15 +173,18 @@ const CredDetailScreen = (props: IProps) => {
         },
         credentialDetails
       );
-      // Share PDF
+
       if (isDownload && Platform.OS === 'android') {
-        const result = await downloadFile(htmlStr, data.type ?? 'Credential');
-        setGeneratingPDF(false);
-        Alert.alert(
-          'Download Success',
-          "PDF downloaded successfully! You can find it in your device's Downloads folder.",
-          [{ text: 'OK' }]
-        );
+        try {
+          const result = await downloadFile(htmlStr, data.type ?? 'Credential');
+          if (result?.success) {
+            Alert.alert('Download Success', result.message, [{ text: 'OK' }]);
+          }
+        } catch (err: any) {
+          Alert.alert('Error', err.message);
+        } finally {
+          setGeneratingPDF(false);
+        }
       } else {
         await sharePDF(htmlStr, data.type ?? 'Credential');
       }

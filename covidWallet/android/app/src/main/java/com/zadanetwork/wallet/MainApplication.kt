@@ -12,6 +12,7 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 
+import com.zadanetwork.wallet.PdfDownloadPackage
 
 // Custom Imports
 import com.wix.reactnativenotifications.RNNotificationsPackage;
@@ -27,6 +28,7 @@ class MainApplication : Application(), ReactApplication {
             PackageList(this).packages.apply {
               // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
+              add(PdfDownloadPackage())
             }
 
         override fun getJSMainModuleName(): String = "index"
