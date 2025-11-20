@@ -225,11 +225,7 @@ const CredDetailScreen = (props: IProps) => {
   }
 
   const shareNFC = () => {
-    setSharingNFC(true);
-    setTimeout(() => {
-      setSharingNFC(false);
-      Alert.alert('Success', 'NFC sharing completed successfully!');
-    }, 3000);
+    props.navigation.navigate('NFCSharing');
   };
 
   return (

@@ -22,6 +22,7 @@ import { navigationRef } from './utils';
 import VerificationRequestScreen from '../screens/verification_request_screen/VerificationRequestScreen';
 import ConnectionBaseVerificationScreen from '../screens/verification_request_screen/ConnectionBaseVerificationScreen';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import NFCSharing from '../screens/nfc_sharing/NFCSharing';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -213,6 +214,7 @@ const MainNavigator = () => {
         name="ConnectionBaseVerificationScreen"
         component={ConnectionBaseVerificationScreen}
       />
+      <MainStack.Screen options={{ headerShown: false }} name="NFCSharing" component={NFCSharing} />
     </MainStack.Navigator>
   );
 };

@@ -40,6 +40,7 @@ export type MainStackParamList = {
   VerificationRequestScreen: undefined;
   ConnectionBaseVerificationScreen: undefined;
   CommonErrorView: undefined;
+  NFCSharing: undefined;
 };
 
 export type TabStackParamList = {
