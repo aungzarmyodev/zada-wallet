@@ -17,7 +17,7 @@ import { themeStyles } from '../../theme/Styles';
 import { AppColors, RED_COLOR, SECONDARY_COLOR } from '../../theme/Colors';
 import { useAppSelector } from '../../store';
 import { selectConnectionsStatus } from '../../store/connections/selectors';
-import { showAskDialog } from '../../helpers/Toast';
+import { showAskDialog, showOKDialog } from '../../helpers/Toast';
 import { selectDevelopmentMode } from '../../store/app/selectors';
 import { IConnectionObject } from '../../store/connections/interface';
 import SelectModal from '../../components/Modal/SelectModal';
@@ -52,13 +52,23 @@ function ConnectionsScreen() {
   };
 
   async function onSuccessPress(connection: IConnectionObject) {
-    onDeleteConnection(connection.connectionId);
+    // onDeleteConnection(connection.connectionId);
+    try {
+      const result = await onDeleteConnection(connection.connectionId);
+      if (result.success) {
+        showOKDialog('', t(result.message), () => {});
+      } else {
+        showOKDialog('', t(result.message), () => {});
+      }
+    } catch (error) {
+      showOKDialog('', t('errors.something_went_wrong'), () => {});
+    }
   }
 
   function onDeletePressed(item: IConnectionObject) {
     showAskDialog(
-      'Are you sure you want to delete this connection?',
-      'This will also delete all certificates issued by this connection.',
+      t('messages.delete_connection_title'),
+      t('messages.delete_connection_message'),
       () => onSuccessPress(item),
       () => {}
     );
@@ -120,7 +130,7 @@ function ConnectionsScreen() {
             }
             useFlatList
             disableRightSwipe
-            disableLeftSwipe={!developmentMode}
+            disableLeftSwipe={false}
             ListEmptyComponent={EmptyConnections}
             data={connections}
             style={styles.flatListStyle}
@@ -181,6 +191,7 @@ const styles = StyleSheet.create({
   },
   flatListStyle: {
     flexGrow: 1,
+    paddingBottom: 100,
   },
   swipeableViewStyle: {
     width: 40,

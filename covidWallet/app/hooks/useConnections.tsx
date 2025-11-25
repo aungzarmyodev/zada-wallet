@@ -9,6 +9,8 @@ import {
 } from '../store/connections/thunk';
 import { updateConnectionlist } from '../store/connections';
 import { selectUser } from '../store/auth/selectors';
+import { CredentialAPI } from '../gateways';
+import { ICredentialObject } from '../store/credentials/interface';
 
 const useConnections = () => {
   // Constants
@@ -39,10 +41,26 @@ const useConnections = () => {
     });
   };
 
-  const onDeleteConnection = (connectionId: string) => {
-    dispatch(removeConnection(connectionId)).then(() => {
-      dispatch(fetchConnectionList(user.country));
-    });
+  const onDeleteConnection = async (connectionId: string) => {
+    try {
+      const response = await CredentialAPI.get_all_credentials();
+      const credentials: ICredentialObject[] = response.data.credentials || [];
+      const hasCredential = credentials.some(cred => cred.connectionId === connectionId);
+
+      if (hasCredential) {
+        return {
+          success: false,
+          message: 'messages.credential_exit',
+        };
+      }
+
+      await dispatch(removeConnection(connectionId)).unwrap();
+      await dispatch(fetchConnectionList(user.country));
+
+      return { success: true, message: 'messages.delete_connection_success' };
+    } catch (error) {
+      return { success: false, message: 'messages.delete_connection_fail' };
+    }
   };
 
   return {
