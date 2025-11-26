@@ -32,7 +32,7 @@ export interface ICredentialObject {
   connectionId: string;
   correlationId: string;
   credentialId: string;
-  threadId: string,
+  threadId: string;
   definitionId: string;
   issuedAtUtc: Date;
   schemaId: string;
@@ -48,4 +48,16 @@ export interface ICredentialObject {
   };
   organizationName?: string;
   selected?: boolean;
+}
+
+export interface Action {
+  state: string;
+  credentialId: string;
+  connectionId: string;
+  threadId: string;
+  issuedAtUtc: string;
+  values: {
+    [key: string]: string;
+  };
+  correlationId: string;
 }

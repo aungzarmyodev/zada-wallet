@@ -10,7 +10,7 @@ import {
 import { updateConnectionlist } from '../store/connections';
 import { selectUser } from '../store/auth/selectors';
 import { CredentialAPI } from '../gateways';
-import { ICredentialObject } from '../store/credentials/interface';
+import { ICredentialObject, Action } from '../store/credentials/interface';
 
 const useConnections = () => {
   // Constants
@@ -43,6 +43,7 @@ const useConnections = () => {
 
   const onDeleteConnection = async (connectionId: string) => {
     try {
+      // check Credential exit after delete Connection
       const response = await CredentialAPI.get_all_credentials();
       const credentials: ICredentialObject[] = response.data.credentials || [];
       const hasCredential = credentials.some(cred => cred.connectionId === connectionId);
@@ -51,6 +52,18 @@ const useConnections = () => {
         return {
           success: false,
           message: 'messages.credential_exit',
+        };
+      }
+
+      // check Action exit after delete Connection
+      const responseActions = await CredentialAPI.get_all_credentials_offers();
+      const actions: Action[] = responseActions.data.offers || [];
+      const hasActions = actions.some(action => action.connectionId === connectionId);
+
+      if (hasActions) {
+        return {
+          success: false,
+          message: 'messages.action_exit',
         };
       }
 
