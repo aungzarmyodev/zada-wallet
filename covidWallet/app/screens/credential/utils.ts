@@ -20,8 +20,7 @@ export const generatePDF = async (html: any, fileName: string) => {
     };
 
     const file = await RNHTMLtoPDF.convert(options);
-
-    return { url: file.filePath };
+    return { url: Platform.OS === 'android' ? `file://${file.filePath}` : file.filePath };
   } catch (error) {
     console.error('Error generating PDF:', error);
     throw error;
