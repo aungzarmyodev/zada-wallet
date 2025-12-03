@@ -15,6 +15,7 @@
     "build:android": "rm -f ./android/app/src/main/assets/index.android.bundle && react-native bundle --platform android --dev false --entry-file index.js --bundle-output ./android/app/src/main/assets/index.android.bundle",
     "build:android-debug": "npm-run-all -l build:android && pushd android && ./gradlew assembleDebug && popd",
     "build:android-release": "npm-run-all -l build:android && pushd android && ./gradlew assembleRelease && popd",
+    "build:android-release-aab": "rm -f ./android/app/src/main/assets/index.android.bundle && react-native bundle --platform android --dev false --entry-file index.js --bundle-output ./android/app/src/main/assets/index.android.bundle && pushd android && ./gradlew bundleRelease && popd",
     "build:android-all": "npm-run-all -l clean:android build:android-debug build:android-release",
     "build:all": "npm-run-all -l build:android build:ios",
     "///": "Clean:",
