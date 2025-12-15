@@ -99,7 +99,9 @@
   },
   "QRScreen": {
     "title": "Point your camera to a QR code to scan",
-    "cancel_scan": "Cancel Scan"
+    "cancel_scan": "Cancel Scan",
+    "no_access_camera": "Camera can't open. Please allow camera access in ZADA app info to continue.",
+    "close": "Close"
   },
   "SettingsScreen": {
     "general": "General",

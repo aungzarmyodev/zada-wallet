@@ -16,6 +16,7 @@ import ContactUs from '../screens/ContactUs';
 import AboutUs from '../screens/AboutUs';
 import ProfileScreen from '../screens/settings/ProfileScreen';
 import QRScreen from '../screens/qr/QRScreen';
+import NewQRScreen from '../screens/qr/NewQRScreen';
 import CredDetailScreen from '../screens/credential/CredDetailScreen';
 import LanguageSelectionScreen from '../screens/settings/LanguageSelectionScreen';
 import { navigationRef } from './utils';
@@ -202,6 +203,11 @@ const MainNavigator = () => {
         name="QRScreen"
         // path="/scanqr/:pathParam1?/:pathParam2?" //npx uri-scheme open https://zadanetwork.com/type=connection_data --android
         component={QRScreen}
+      />
+      <MainStack.Screen
+        name="NewQRScreen"
+        options={{ headerShown: false }}
+        component={NewQRScreen}
       />
       <MainStack.Screen
         options={{ headerShown: false }}

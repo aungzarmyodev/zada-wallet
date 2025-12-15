@@ -47,7 +47,9 @@
   },
   "QRScreen": {
     "title": "စကင်န်ဖတ်ရန် သင့်ကင်မရာကို QR ကုဒ်သို့ ညွှန်ပါ။",
-    "cancel_scan": "စကင်န်ကို ပယ်ဖျက်ပါ။"
+    "cancel_scan": "စကင်န်ကို ပယ်ဖျက်ပါ။",
+    "no_access_camera": "Camera can't open. Please allow camera access in ZADA app info to continue.",
+    "close": "Close"
   },
   "SecurityScreen": {
     "title": "လုံခြုံပါစေ။",

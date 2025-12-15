@@ -176,10 +176,7 @@ function ActionsScreen({ navigation }) {
         item['type'] === 'connection_request' ||
         item['type'].includes('connectionless-verification')
       ) {
-        navigation.navigate('QRScreen', {
-          request: requestJson,
-          isLink: item['type'] === 'connection_request',
-        });
+        navigation.navigate('NewQRScreen');
       } else {
         _showAlert('Zada Wallet', 'Invalid URL');
       }
@@ -673,7 +670,7 @@ function ActionsScreen({ navigation }) {
           text={t('ActionsScreen.empty_list_text')}
           image={require('../../assets/images/action.png')}
           onPress={() => {
-            navigation.navigate('QRScreen');
+            navigation.navigate('NewQRScreen');
           }}
           screen="actions"
         />
