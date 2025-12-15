@@ -203,7 +203,11 @@
     "error_401": "Unauthorized – Please check your Credentials.",
     "error_403": "Your connection is blocked because a VPN or proxy was detected. Please turn off your VPN and try again.",
     "error_404": "Not Found – The requested resource could not be found.",
-    "error_500": "Oops! Something went wrong. Please try again later."
+    "error_500": "Oops! Something went wrong. Please try again later.",
+    "verification_fail_title": "Verification Failed",
+    "verification_fail_message": "Failed to verify the QR code. Please try again.",
+    "verification_fail_title_1": "Error",
+    "verification_fail_message_1": "An error occurred while processing the QR code. Please try again."
   },
   "messages": {
     "delete_account": "Do you want to DELETE your account?",
@@ -232,7 +236,8 @@
     "credential_exit": "You cannot delete this Connection because it has associated Credentials.",
     "action_exit": "You cannot delete this Connection because it has associated Actions.",
     "delete_connection_success": "Connection deleted successfully.",
-    "delete_connection_fail": "Failed to delete Connection."
+    "delete_connection_fail": "Failed to delete Connection.",
+    "please_wait": "Please wait..."
   },
   "success": {
     "updated_password": "Password has been updated successfully",

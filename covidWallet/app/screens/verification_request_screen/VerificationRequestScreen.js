@@ -20,8 +20,10 @@ const VerificationRequestScreen = props => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(false);
 
-  const verificationRequestId = props?.data?.metadata?.verificationRequestId ?? null;
-  const redirectCallback = props?.data?.metadata?.redirectCallback || null;
+  // Support both props and route params
+  const credentialData = props?.route?.params?.data || props?.data;
+  const verificationRequestId = credentialData?.metadata?.verificationRequestId ?? null;
+  const redirectCallback = credentialData?.metadata?.redirectCallback || null;
 
   // Get verification list
   const fetchVerificationList = async () => {

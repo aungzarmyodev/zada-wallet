@@ -6,6 +6,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../../navigation/types';
 import { AppColors } from '../../theme/Colors';
 import { useTranslation } from 'react-i18next';
+import { makeVerificationObject } from './utils';
+import { convertStringToBase64 } from '../../helpers/utils';
+import { VerificationAPI } from '../../gateways';
+import { showOKDialog } from '../../helpers/Toast';
+import CustomProgressBar from './components/CustomProgressBar';
 
 const NewQRScreen = () => {
   const { t } = useTranslation();
@@ -15,6 +20,7 @@ const NewQRScreen = () => {
   const device = useCameraDevice('back');
   const [cameraActive, setCameraActive] = useState(true);
   const [hasPermission, setHasPermission] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const requestPermission = async () => {
@@ -29,13 +35,63 @@ const NewQRScreen = () => {
     codeTypes: ['qr'],
     onCodeScanned: codes => {
       if (codes.length > 0 && cameraActive) {
-        const value = codes[0]?.value;
-        if (value) {
+        const scanResult = codes[0]?.value;
+        if (scanResult) {
           setCameraActive(false);
+          checkVerificationCode(scanResult);
         }
       }
     },
   });
+
+  const checkVerificationCode = async (scanResult: string) => {
+    try {
+      setIsLoading(true);
+
+      let parsedData = JSON.parse(scanResult);
+      let connectionId = undefined;
+
+      if (parsedData.data === undefined) {
+        connectionId = parsedData.metadata.connectionId;
+        parsedData = convertStringToBase64(JSON.stringify(parsedData));
+      } else {
+        parsedData = parsedData.data;
+      }
+
+      const result = await VerificationAPI.send_request_to_agency(parsedData);
+
+      if (result.data.success) {
+        const res = await makeVerificationObject(result.data.verification);
+        setTimeout(() => {
+          setIsLoading(false);
+          navigation.replace('VerificationRequestScreen', {
+            data: {
+              ...res.credential,
+              connectionId: connectionId,
+            },
+          });
+        }, 500);
+      } else {
+        setIsLoading(false);
+        showOKDialog(
+          t('messages.verification_fail_title'),
+          t('messages.verification_fail_message'),
+          () => {
+            navigation.navigate('MainScreen');
+          }
+        );
+      }
+    } catch (error) {
+      setIsLoading(false);
+      showOKDialog(
+        t('messages.verification_fail_title_1'),
+        t('messages.verification_fail_message_1'),
+        () => {
+          navigation.navigate('MainScreen');
+        }
+      );
+    }
+  };
 
   const goBack = () => {
     navigation.navigate('MainScreen');
@@ -54,19 +110,28 @@ const NewQRScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Camera
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={cameraActive}
-        codeScanner={codeScanner}
-      />
-      <View style={styles.overlay}>
-        <Text style={styles.title}>{t('QRScreen.title')}</Text>
-        <View style={styles.frame} />
-        <TouchableOpacity style={styles.cancelButton} onPress={() => goBack()}>
-          <Text style={styles.cancelText}>{t('QRScreen.cancel_scan')}</Text>
-        </TouchableOpacity>
-      </View>
+      {cameraActive && (
+        <>
+          <Camera
+            style={StyleSheet.absoluteFill}
+            device={device}
+            isActive={cameraActive}
+            codeScanner={codeScanner}
+          />
+          <View style={styles.overlay}>
+            <Text style={styles.title}>{t('QRScreen.title')}</Text>
+            <View style={styles.frame} />
+            <TouchableOpacity style={styles.cancelButton} onPress={() => goBack()}>
+              <Text style={styles.cancelText}>{t('QRScreen.cancel_scan')}</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+      {!cameraActive && isLoading && (
+        <View style={styles.progressViewStyle}>
+          <CustomProgressBar isVisible={true} text={t('messages.please_wait')} />
+        </View>
+      )}
     </View>
   );
 };
@@ -121,14 +186,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 12,
     paddingHorizontal: 25,
-    backgroundColor: AppColors.WHITE,
+    backgroundColor: AppColors.DANGER,
     borderRadius: 10,
   },
 
   cancelText: {
-    color: AppColors.PRIMARY,
+    color: AppColors.WHITE,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  progressViewStyle: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
 });
 

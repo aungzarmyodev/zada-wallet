@@ -37,7 +37,15 @@ export type MainStackParamList = {
   QRScreen: undefined;
   EmptyCredentialScreen: undefined;
   CredentialListScreen: undefined;
-  VerificationRequestScreen: undefined;
+  VerificationRequestScreen: {
+    data: {
+      metadata?: any;
+      type?: string;
+      imageUrl?: string;
+      organizationName?: string;
+      connectionId?: string;
+    };
+  };
   ConnectionBaseVerificationScreen: undefined;
   CommonErrorView: undefined;
   NewQRScreen: undefined;
