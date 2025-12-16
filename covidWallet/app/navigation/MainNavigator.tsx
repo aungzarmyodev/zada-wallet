@@ -17,6 +17,7 @@ import AboutUs from '../screens/AboutUs';
 import ProfileScreen from '../screens/settings/ProfileScreen';
 import QRScreen from '../screens/qr/QRScreen';
 import NewQRScreen from '../screens/qr/NewQRScreen';
+import ConnectionAccept from '../screens/qr/ConnectionAccept';
 import CredDetailScreen from '../screens/credential/CredDetailScreen';
 import LanguageSelectionScreen from '../screens/settings/LanguageSelectionScreen';
 import { navigationRef } from './utils';
@@ -208,6 +209,11 @@ const MainNavigator = () => {
         name="NewQRScreen"
         options={{ headerShown: false }}
         component={NewQRScreen}
+      />
+      <MainStack.Screen
+        name="ConnectionAccept"
+        options={{ headerShown: false }}
+        component={ConnectionAccept}
       />
       <MainStack.Screen
         options={{ headerShown: false }}

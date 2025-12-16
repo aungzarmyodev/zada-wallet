@@ -44,11 +44,15 @@ export type MainStackParamList = {
       imageUrl?: string;
       organizationName?: string;
       connectionId?: string;
+      scanData?: string;
     };
   };
   ConnectionBaseVerificationScreen: undefined;
   CommonErrorView: undefined;
   NewQRScreen: undefined;
+  ConnectionAccept: {
+    qrJSON: any;
+  };
 };
 
 export type TabStackParamList = {

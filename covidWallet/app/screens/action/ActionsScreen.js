@@ -172,11 +172,18 @@ function ActionsScreen({ navigation }) {
       const requestJson = JSON.parse(JSON.stringify(item));
       setDeepLink(true);
 
-      if (
-        item['type'] === 'connection_request' ||
-        item['type'].includes('connectionless-verification')
-      ) {
-        navigation.navigate('NewQRScreen');
+      if (item['type'] === 'connection_request') {
+        // Navigate to ConnectionAccept for connection requests
+        navigation.navigate('ConnectionAccept', {
+          qrJSON: item,
+        });
+      } else if (item['type'].includes('connectionless-verification')) {
+        // Navigate to VerificationRequestScreen for verification requests
+        navigation.navigate('VerificationRequestScreen', {
+          data: {
+            scanData: JSON.stringify(item),
+          },
+        });
       } else {
         _showAlert('Zada Wallet', 'Invalid URL');
       }
