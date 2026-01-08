@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import {
   Alert,
   View,
@@ -18,7 +18,6 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import FlatCard from '../../components/FlatCard';
 import TextComponent from '../../components/TextComponent';
 import ActionDialog from '../../components/Dialogs/ActionDialog';
-import HeadingComponent from '../../components/HeadingComponent';
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -26,7 +25,12 @@ import { themeStyles } from '../../theme/Styles';
 import { BLACK_COLOR, RED_COLOR, SECONDARY_COLOR } from '../../theme/Colors';
 
 import { getItem, saveItem } from '../../helpers/Storage';
-import ConstantsList, { CONN_REQ, CRED_OFFER, VER_REQ } from '../../helpers/ConfigApp';
+import ConstantsList, {
+  CONN_REQ,
+  CRED_OFFER,
+  VER_REQ,
+  CONNLESS_VER_REQ,
+} from '../../helpers/ConfigApp';
 
 import { showMessage, showAskDialog, _showAlert } from '../../helpers/Toast';
 import { getActionHeader } from '../../helpers/ActionList';
@@ -79,7 +83,7 @@ function ActionsScreen({ navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [selectedItem, setSelectedItem] = useState('');
-  const [deepLink, setDeepLink] = useState(false);
+  //const [deepLink, setDeepLink] = useState(false);
   const [dialogData, setDialogData] = useState(null);
 
   // For Pincode
@@ -92,27 +96,35 @@ function ActionsScreen({ navigation }) {
 
   // Confirming pin
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [verifyPincode, setVerifyPincode] = useState('');
-  const [verifyPincodeError, setVerifyPincodeError] = useState('');
+
+  // Deep link guard (prevents double navigation)
+  const deepLinkHandledRef = useRef(false);
 
   // Notification hook
   useNotification();
 
-  var requestArray = [];
-
+  // Deep Link handling
   useEffect(() => {
-    if (!deepLink) getUrl();
-  }, [deepLink]);
+    const handleIncomingUrl = async incomingUrl => {
+      if (deepLinkHandledRef.current) return;
 
-  useEffect(() => {
-    // Setting listener for deeplink
-    let deepEvent = undefined;
-    if (!deepLink) {
-      deepEvent = Linking.addEventListener('url', ({ url }) => {
-        getUrl(url);
-      });
-    }
-    return () => deepEvent && deepEvent;
+      const url = incomingUrl ?? (await Linking.getInitialURL());
+
+      if (!url) return;
+
+      deepLinkHandledRef.current = true;
+      handleDeepLink(url);
+    };
+
+    handleIncomingUrl();
+
+    // Background / foreground
+    const subscription = Linking.addEventListener('url', ({ url }) => {
+      handleIncomingUrl(url);
+      deepLinkHandledRef.current = false;
+    });
+
+    return () => subscription.remove();
   }, []);
 
   //Checking Notification Status
@@ -147,38 +159,24 @@ function ActionsScreen({ navigation }) {
     }, [])
   );
 
-  const getUrl = async url => {
-    let initialUrl = '';
-    if (url != undefined) {
-      initialUrl = url;
-    } else {
-      initialUrl = await Linking.getInitialURL();
-    }
-    if (initialUrl === null) {
-      setDeepLink(true);
-      return;
-    } else {
-      const parsed = initialUrl.split('/');
-      var item = {};
-      // Base64 request
-      if (initialUrl.includes('?data')) {
-        item['type'] = initialUrl.split('?data=')[0];
-        item['data'] = initialUrl.split('?data=')[1];
-      } else {
-        item['type'] = parsed[3];
-        item['metadata'] = parsed[4];
-      }
-      requestArray.push(item);
-      const requestJson = JSON.parse(JSON.stringify(item));
-      setDeepLink(true);
+  const handleDeepLink = url => {
+    try {
+      console.log('Deep link:', url);
 
-      if (item['type'] === 'connection_request') {
-        // Navigate to ConnectionAccept for connection requests
-        navigation.navigate('ConnectionAccept', {
-          qrJSON: item,
-        });
-      } else if (item['type'].includes('connectionless-verification')) {
-        // Navigate to VerificationRequestScreen for verification requests
+      let item = {};
+
+      if (url.includes('?data=')) {
+        item.type = url.split('?data=')[0];
+        item.data = url.split('?data=')[1];
+      } else {
+        const parsed = url.split('/');
+        item.type = parsed[3];
+        item.metadata = parsed[4];
+      }
+
+      const requestType = item.type.includes('/') ? item.type.split('/').pop() : item.type;
+
+      if (requestType === CONNLESS_VER_REQ) {
         navigation.navigate('VerificationRequestScreen', {
           data: {
             scanData: JSON.stringify(item),
@@ -187,10 +185,8 @@ function ActionsScreen({ navigation }) {
       } else {
         _showAlert('Zada Wallet', 'Invalid URL');
       }
-    }
-
-    if (initialUrl.includes('Details')) {
-      Alert.alert(initialUrl);
+    } catch (e) {
+      _showAlert('Zada Wallet', 'Failed to handle deep link');
     }
   };
 

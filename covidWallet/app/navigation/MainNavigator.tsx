@@ -83,7 +83,7 @@ const MainNavigator = () => {
           headerRight: () => (
             <MaterialCommunityIcons
               onPress={() => {
-                navigation.navigate('QRScreen');
+                navigation.navigate('NewQRScreen');
               }}
               style={styles.headerRightIcon}
               size={30}
@@ -199,12 +199,12 @@ const MainNavigator = () => {
           ),
         })}
       />
-      <MainStack.Screen
+      {/* <MainStack.Screen
         options={{ headerShown: false }}
         name="QRScreen"
         // path="/scanqr/:pathParam1?/:pathParam2?" //npx uri-scheme open https://zadanetwork.com/type=connection_data --android
         component={QRScreen}
-      />
+      /> */}
       <MainStack.Screen
         name="NewQRScreen"
         options={{ headerShown: false }}

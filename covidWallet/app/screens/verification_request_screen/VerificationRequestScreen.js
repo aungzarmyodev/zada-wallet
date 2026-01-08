@@ -8,9 +8,7 @@ import { ActivityIndicator, View, Linking, StyleSheet } from 'react-native';
 import { VerificationAPI } from '../../gateways';
 import LoadingDialog from '../../components/Dialogs/LoadingDialog';
 import { AppColors } from '../../theme/Colors';
-import CommonErrorView from '../../components/Error/CommonErrorView';
 import { useTranslation } from 'react-i18next';
-import { makeVerificationObject } from '../qr/utils';
 import { convertStringToBase64 } from '../../helpers/utils';
 
 const VerificationRequestScreen = props => {
@@ -22,29 +20,24 @@ const VerificationRequestScreen = props => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(false);
+  const [verificationRequestId, setVerificationRequestId] = useState(null);
+  const [redirectCallback, setRedirectCallback] = useState(null);
 
   // Support both props and route params
   const credentialData = props?.route?.params?.data || props?.data || route?.params?.data;
-  const scanData = credentialData?.scanData; // New field for QR scan data
-  const verificationRequestId = credentialData?.metadata?.verificationRequestId ?? null;
-  const redirectCallback = credentialData?.metadata?.redirectCallback || null;
+  const scanData = credentialData?.scanData;
 
-  // Single effect to handle both scan data and verification request ID
   useEffect(() => {
     initializeScreen();
-  }, [scanData, verificationRequestId]);
+  }, [scanData]);
 
   const initializeScreen = async () => {
     try {
       setLoading(true);
       setError(false);
-
       if (scanData) {
-        // Process QR scan verification
+        // Process QR scan verification first
         await processVerificationRequest(scanData);
-      } else if (verificationRequestId) {
-        // Fetch credentials list for verification request
-        await fetchVerificationList(verificationRequestId);
       } else {
         setData([]);
         setLoading(false);
@@ -58,23 +51,23 @@ const VerificationRequestScreen = props => {
   const processVerificationRequest = async scanData => {
     try {
       let parsedData = JSON.parse(scanData);
-      let connectionId = undefined;
 
       if (parsedData.data === undefined) {
-        connectionId = parsedData.metadata.connectionId;
         parsedData = convertStringToBase64(JSON.stringify(parsedData));
       } else {
         parsedData = parsedData.data;
       }
-
       const result = await VerificationAPI.send_request_to_agency(parsedData);
 
       if (result.data.success) {
-        const res = await makeVerificationObject(result.data.verification);
-        const credentials = res.credential;
+        const credentials = result.data.verification;
         const verificationId = credentials.metadata?.verificationRequestId;
+        const callback = credentials.metadata?.redirectCallback || null;
 
-        // Fetch available credentials for this verification
+        // Store in state for use in acceptButtonClick
+        setVerificationRequestId(verificationId);
+        setRedirectCallback(callback);
+
         if (verificationId) {
           await fetchVerificationList(verificationId);
         } else {
@@ -82,7 +75,6 @@ const VerificationRequestScreen = props => {
           setLoading(false);
         }
       } else {
-        setError(true);
         setLoading(false);
         showOKDialog(
           t('messages.verification_fail_title'),
@@ -93,7 +85,6 @@ const VerificationRequestScreen = props => {
         );
       }
     } catch (error) {
-      setError(true);
       setLoading(false);
       showOKDialog(
         t('messages.verification_fail_title_1'),
@@ -190,17 +181,12 @@ const VerificationRequestScreen = props => {
     }
   };
 
-  // Render based on state
   if (loading) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={AppColors.PRIMARY} />
       </View>
     );
-  }
-
-  if (error) {
-    return <CommonErrorView onRetry={initializeScreen} />;
   }
 
   return data.length === 0 ? (
