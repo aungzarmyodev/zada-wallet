@@ -4,6 +4,7 @@ import { StyleSheet, Text } from 'react-native';
 import { AuthStackParamList } from '../../../../navigation/types';
 import TouchableComponent from '../../../../components/Buttons/TouchableComponent';
 import { AppColors } from '../../../../theme/Colors';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const HeaderRightButton = ({ onPress }: { onPress: () => void }) => (
   <TouchableComponent style={styles.headerRightContainerStyle} onPress={onPress}>
@@ -32,7 +33,13 @@ const HeaderLeftButton = ({
         ? navigation.navigate('PhoneNumberScreen')
         : navigation?.goBack()
     }>
-    <Text style={styles.headerLeftTextStyle}>Back</Text>
+    {/* <Text style={styles.headerLeftTextStyle}>Back</Text> */}
+    <MaterialCommunityIcons
+      name="arrow-left"
+      size={28}
+      color="#fff"
+      style={styles.headerLeftIcon}
+    />
   </TouchableComponent>
 );
 
@@ -52,6 +59,10 @@ const styles = StyleSheet.create({
   headerRightTextStyle: {
     fontFamily: 'Poppins-Regular',
     color: AppColors.PRIMARY,
+  },
+  headerLeftIcon: {
+    marginLeft: -10,
+    color: AppColors.BLACK,
   },
 });
 

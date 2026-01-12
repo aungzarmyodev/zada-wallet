@@ -24,6 +24,7 @@ import { selectAppSetupComplete } from '../store/app/selectors';
 import PreferenceScreen from '../screens/auth/PreferenceScreen';
 import RecoveryPhraseScreen from '../screens/auth/RecoveryPhraseScreen';
 import MigrationScreen from '../screens/auth/MigrationScreen';
+import PincodeScreen from '../screens/pincode/PincodeScreen';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -150,6 +151,11 @@ const AuthNavigator = () => {
         options={{ headerShown: false }}
         name="SecurityScreen"
         component={SecurityScreen}
+      />
+      <AuthStack.Screen
+        options={{ headerShown: false }}
+        name="PincodeScreen"
+        component={PincodeScreen}
       />
       <AuthStack.Screen
         options={{ headerShown: false }}

@@ -16,10 +16,9 @@ export type AuthStackParamList = {
   ConsentScreen: undefined;
   PhoneNumberScreen: undefined;
   VerifyOTPScreen: undefined;
+  PincodeScreen: { biometricAvailable?: boolean; isVerifyPin?: boolean };
   PassCodeContainer: undefined;
-  SecurityScreen: {
-    navigation: NativeStackNavigationProp<AuthStackParamList>;
-  };
+  SecurityScreen: undefined;
   SecureidContainer: undefined;
   NotifyMeScreen: undefined;
   ConnectionListScreen: { connections: IConnectionList[] };
@@ -53,6 +52,12 @@ export type MainStackParamList = {
   ConnectionAccept: {
     qrJSON: any;
   };
+};
+
+export type RootStackParamList = {
+  Loading: undefined;
+  AuthStack: undefined;
+  MainStack: undefined;
 };
 
 export type TabStackParamList = {

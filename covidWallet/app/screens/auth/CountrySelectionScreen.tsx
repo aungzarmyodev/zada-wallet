@@ -57,7 +57,6 @@ const CountrySelectionScreen = (props: INProps) => {
     );
   };
 
-  // console.log();
   return (
     <FadeView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -71,7 +70,7 @@ const CountrySelectionScreen = (props: INProps) => {
             <FlatList
               data={CountryList}
               renderItem={RadioButtonTile}
-              keyExtractor={(item) => item.value}
+              keyExtractor={item => item.value}
               initialNumToRender={20}
               contentContainerStyle={styles.contentContainerStyle}
             />

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Text,
   View,
@@ -24,153 +24,130 @@ import { useTranslation } from 'react-i18next';
 import { saveItemInLocalStorage, showMessage } from '../../helpers';
 import ConstantsList from '../../helpers/ConfigApp';
 
+const OTP_LENGTH = 6;
+
 interface INProps {
   navigation: NativeStackNavigationProp<AuthStackParamList>;
 }
 
-const VerifyOTPScreen = (props: INProps) => {
-  // Constants
+const VerifyOTPScreen = ({ navigation }: INProps) => {
   const dispatch = useAppDispatch<AppDispatch>();
-
-  // Selectors
   const user = useAppSelector(selectUser);
   const { t } = useTranslation();
 
-  // States
   const [code, setCode] = useState('');
-  const [codeError, setCodeError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useLayoutEffect(() => {
-    props.navigation.setOptions({
-      headerBackground: () => (
-        <View
-          style={{
-            backgroundColor: loading ? 'rgba(0, 0, 0, 0.25)' : AppColors.TRANSPARENT,
-            height: '100%',
-          }}
-        />
-      ),
-    });
-  }, [loading]);
-
+  // Handle Android back button
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackButtonPress);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.navigate('PhoneNumberScreen');
+      return true;
+    });
 
     return () => backHandler.remove();
-  }, []);
+  }, [navigation]);
 
-  const onBackButtonPress = () => {
-    props.navigation.navigate('PhoneNumberScreen');
-    return true;
-  };
-
+  // Auto verify OTP when completed
   useEffect(() => {
-    if (code.length === 6 && user.phone) {
-      let phone = user.phone;
+    if (code.length === OTP_LENGTH && user.phone) {
+      verifyOTP();
+    }
+  }, [code, user.phone]);
+
+  const verifyOTP = useCallback(async () => {
+    try {
       Keyboard.dismiss();
       setLoading(true);
-      dispatch(validateUserOTP({ phone, code }))
-        .unwrap()
-        .then(response => {
-          setLoading(false);
-          if (response.isRegistered) {
-            if (user.isMigrated) {
-              props.navigation.navigate('SecurityScreen', { navigation: props.navigation });
-            } else {
-              props.navigation.navigate('MigrationScreen');
-            }
-            // clear authentication count.
-            saveItemInLocalStorage(ConstantsList.AUTH_COUNT, 0);
-          } else {
-            props.navigation.navigate('RegistrationScreen');
-          }
-        })
-        .catch(error => {
-          showMessage('ZADA Wallet', error.message);
-          setLoading(false);
-        });
+
+      const response = await dispatch(validateUserOTP({ phone: user.phone!, code })).unwrap();
+
+      handleOTPResult(response);
+    } catch (error: any) {
+      showMessage('ZADA Wallet', error.message);
+    } finally {
+      setLoading(false);
     }
-  }, [code]);
+  }, [dispatch, code, user.phone]);
 
-  const codeEmptyComponent = () => {
-    return (
-      <View
-        style={{
-          height: 30,
-          width: 30,
-          borderBottomWidth: 2,
-          borderColor: AppColors.BLACK,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Text
-          style={{
-            color: AppColors.BLACK,
-            fontFamily: 'Poppins-Regular',
-            fontSize: 20,
-          }}>
-          *
-        </Text>
-      </View>
-    );
+  const handleOTPResult = (response: any) => {
+    // reset auth attempt count
+    saveItemInLocalStorage(ConstantsList.AUTH_COUNT, 0);
+
+    if (!response.isRegistered) {
+      navigation.navigate('RegistrationScreen');
+      return;
+    }
+
+    if (!user.isMigrated) {
+      navigation.navigate('MigrationScreen');
+      return;
+    }
+
+    // Existing user
+    if (!response.hasPin) {
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'PincodeScreen',
+            params: { isVerifyPin: true },
+          },
+        ],
+      });
+    } else {
+      navigation.navigate('SecurityScreen');
+    }
   };
 
-  const codeFilledComponent = (digit: string) => {
-    return (
-      <View
-        style={{
-          height: 30,
-          width: 30,
-          borderBottomWidth: 2,
-          borderColor: AppColors.BLACK,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Text
-          style={{
-            color: AppColors.BLACK,
-            fontFamily: 'Poppins-Regular',
-            fontSize: 20,
-          }}>
-          {digit}
-        </Text>
-      </View>
-    );
-  };
+  const renderEmptyDigit = () => (
+    <View style={styles.digitBox}>
+      <Text style={styles.digitPlaceholder}>*</Text>
+    </View>
+  );
+
+  const renderFilledDigit = (digit: string) => (
+    <View style={styles.digitBox}>
+      <Text style={styles.digitText}>{digit}</Text>
+    </View>
+  );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: AppColors.WHITE }}>
-      <FadeView style={{ flex: 2 }}>
-        <View style={styles.imageStyle}>
+    <SafeAreaView style={styles.root}>
+      <FadeView style={styles.fade}>
+        <View style={styles.imageContainer}>
           <Image
             resizeMode="contain"
             source={require('../../assets/images/otp.gif')}
-            style={{ width: '100%', height: '100%' }}
+            style={styles.image}
           />
         </View>
+
         <KeyboardAvoidingView
           style={styles.container}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
-          <Text style={styles.headingStyle}>{t('VerifyOTPScreen.title')}</Text>
-          <Text style={styles.subheadingStyle}>
+          <Text style={styles.title}>{t('VerifyOTPScreen.title')}</Text>
+
+          <Text style={styles.subtitle}>
             {t('VerifyOTPScreen.sub_title_1')} {user.phone}, {t('VerifyOTPScreen.sub_title_2')}
           </Text>
+
           <View style={styles.inputContainer}>
             <InputPinComponent
               OTP
               onPincodeChange={setCode}
-              pincodeError={codeError}
-              emptyComponent={codeEmptyComponent}
-              filledComponent={codeFilledComponent}
+              pincodeError=""
+              emptyComponent={renderEmptyDigit}
+              filledComponent={renderFilledDigit}
             />
           </View>
         </KeyboardAvoidingView>
+
         {loading && <AnimatedLoading type="FadingCircleAlt" color={AppColors.PRIMARY} />}
 
-        <View style={styles.resendOTPContainer}>
-          {<ResendCode navigation={props.navigation} />}
+        <View style={styles.resendContainer}>
+          <ResendCode navigation={navigation} />
         </View>
       </FadeView>
     </SafeAreaView>
@@ -178,46 +155,69 @@ const VerifyOTPScreen = (props: INProps) => {
 };
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: AppColors.WHITE,
+  },
+  fade: {
+    flex: 1,
+  },
   container: {
     flex: 1,
   },
-  imageStyle: {
+  imageContainer: {
     flex: 0.5,
     marginTop: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headingStyle: {
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  title: {
     fontSize: 18,
     fontFamily: 'Poppins-Bold',
     color: AppColors.PRIMARY,
-    paddingLeft: 16,
-    paddingRight: 16,
     marginTop: 16,
     marginBottom: 8,
     textAlign: 'center',
   },
-  subheadingStyle: {
+  subtitle: {
     fontSize: 14,
     fontFamily: 'Poppins-Regular',
     color: AppColors.GRAY,
-    paddingLeft: 16,
-    paddingRight: 16,
-    marginTop: 4,
     marginBottom: 8,
     textAlign: 'center',
+    paddingHorizontal: 16,
   },
   inputContainer: {
     marginTop: 16,
     alignItems: 'center',
   },
-  resendOTPContainer: {
+  digitBox: {
+    height: 30,
+    width: 30,
+    borderBottomWidth: 2,
+    borderColor: AppColors.BLACK,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  digitText: {
+    fontSize: 20,
+    fontFamily: 'Poppins-Regular',
+    color: AppColors.BLACK,
+  },
+  digitPlaceholder: {
+    fontSize: 20,
+    color: AppColors.BLACK,
+  },
+  resendContainer: {
     position: 'absolute',
     bottom: Platform.OS === 'ios' ? 40 : 20,
     left: 0,
     right: 0,
     alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

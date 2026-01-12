@@ -1,404 +1,220 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-  Animated,
-  Easing,
-  Alert,
-  SafeAreaView,
-} from 'react-native';
-import { AppColors, RED_COLOR } from '../../theme/Colors';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Pressable } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ReactNativeBiometrics from 'react-native-biometrics';
 import { useTranslation } from 'react-i18next';
-import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
-interface IProps {
-  isVisible?: boolean;
-  onDismiss?: () => void;
-  onPincodeChange?: (text: string) => void;
-  pincode?: string;
-  pincodeError?: string;
-  onConfirmPincodeChange: (text: string) => void;
-  confirmPincode: string;
-  confirmPincodeError: string;
-  savePincode: () => void;
-  isVerifyPin?: boolean; // pass this when using this screen to authorize user,
-  onBiometricSuccess?: () => void;
-}
+import { AppColors } from '../../theme/Colors';
+import { AuthStackParamList } from '../../navigation/types';
+import { useDispatch } from 'react-redux';
+import { updateIsAuthorized } from '../../store/auth';
+import { saveItemInLocalStorage } from '../../helpers/Storage';
 
-const PincodeScreen = ({
-  pincode,
-  onPincodeChange,
-  onDismiss,
-  isVisible,
-  pincodeError,
-  confirmPincode,
-  onConfirmPincodeChange,
-  savePincode,
-  isVerifyPin,
-  confirmPincodeError,
-  onBiometricSuccess
-}: IProps) => {
+type Props = NativeStackScreenProps<AuthStackParamList, 'PincodeScreen'>;
 
-  // states
-  const [isVerify, setIsVerify] = useState(!!isVerifyPin);
-  const animateLeftValue = useState(new Animated.Value(0))[0];
-  const animateOpacity = useState(new Animated.Value(1))[0];
+const PIN_LENGTH = 6;
 
+const PincodeScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
-  const rnBiometrics = new ReactNativeBiometrics({ allowDeviceCredentials: true });
+  const { isVerifyPin = false, biometricAvailable = false } = route.params ?? {};
+
+  const rnBiometrics = new ReactNativeBiometrics({
+    allowDeviceCredentials: true,
+  });
+
+  const [pincode, setPincode] = useState('');
+  const [confirmPincode, setConfirmPincode] = useState('');
+  const [step, setStep] = useState<'pin' | 'confirm'>(isVerifyPin ? 'confirm' : 'pin');
 
   useEffect(() => {
-    if (pincode?.length === 6 && !pincodeError) {
-      Animated.sequence([
-        Animated.parallel([
-          Animated.timing(animateLeftValue, {
-            toValue: -500, // Move out of the screen to the left
-            duration: 250,
-            easing: Easing.linear,
-            useNativeDriver: false,
-          }),
-          Animated.timing(animateOpacity, {
-            toValue: 0, // Fade out
-            duration: 250,
-            easing: Easing.linear,
-            useNativeDriver: false,
-          }),
-        ]),
-      ]).start(() => {
-        setIsVerify(true);
+    if (isVerifyPin && biometricAvailable) {
+      checkBiometric();
+    }
+  }, []);
 
-        // Reset animation values
-        animateLeftValue.setValue(500); // Move out of the screen to the right
-        animateOpacity.setValue(0); // Fully transparent
+  const checkBiometric = async () => {
+    try {
+      const { available } = await rnBiometrics.isSensorAvailable();
+      if (!available) return;
 
-        // Animate back to visible
-        Animated.parallel([
-          Animated.timing(animateLeftValue, {
-            toValue: 0, // Move into the screen from the right
-            duration: 250,
-            easing: Easing.linear,
-            useNativeDriver: false,
-          }),
-          Animated.timing(animateOpacity, {
-            toValue: 1, // Fade in
-            duration: 250,
-            easing: Easing.linear,
-            useNativeDriver: false,
-          }),
-        ]).start();
+      const result = await rnBiometrics.simplePrompt({
+        promptMessage: 'Authenticate',
       });
+
+      if (result.success) {
+        goToMain();
+      }
+    } catch {
+      // silent fail
+    }
+  };
+
+  useEffect(() => {
+    if (!isVerifyPin && pincode.length === PIN_LENGTH) {
+      setStep('confirm');
     }
   }, [pincode]);
 
-
   useEffect(() => {
-    // reset pin if there is any error
-    if (pincodeError && onPincodeChange) {
-      onPincodeChange("");
-    }
-    if (confirmPincodeError) {
-      onConfirmPincodeChange("")
-    }
-  }, [pincodeError, confirmPincodeError]);
-
-  useEffect(() => {
-    // when confirm pincode is correct, save the pin code
-    if (confirmPincode.length === 6 && !confirmPincodeError) {
-      savePincode();
+    if (isVerifyPin && confirmPincode.length === PIN_LENGTH) {
+      goToMain();
     }
   }, [confirmPincode]);
 
   useEffect(() => {
-    if (isVerifyPin) {
-      isBiometricAvailable();
-    }
-  }, [])
-
-  const handleBiometricAuth = async () => {
-    try {
-      const resultObject = await rnBiometrics.simplePrompt({ promptMessage: 'Authenticate' });
-      const { success } = resultObject;
-      if (success) {
-        onConfirmPincodeChange("");
-        return true;
-      } else {
-        return false;
+    if (!isVerifyPin && confirmPincode.length === PIN_LENGTH) {
+      if (pincode !== confirmPincode) {
+        Alert.alert('PIN Error', 'PIN does not match');
+        setConfirmPincode('');
+        return;
       }
-    } catch {
-      Alert.alert('Biometric Authentication', 'Biometrics not supported or error occurred');
-      return false;
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'NotifyMeScreen' }],
+      });
     }
+  }, [confirmPincode]);
+
+  const goToMain = async () => {
+    await saveItemInLocalStorage('isAuthorized', 'true');
+
+    dispatch(updateIsAuthorized(true));
   };
 
-  //Biometric funciton
-  const isBiometricAvailable = async () => {
-    const { available, biometryType } = await rnBiometrics.isSensorAvailable();
-    if (
-      (biometryType === BiometryTypes.FaceID ||
-        biometryType === BiometryTypes.Biometrics ||
-        biometryType === BiometryTypes.TouchID) &&
-      available
-    ) {
-      let result = await handleBiometricAuth();
-      if (result && onBiometricSuccess) {
-        onBiometricSuccess();
-      }
-    }
-  };
-
-  const handleKeyPress = (key: string) => {
-    if (onPincodeChange) {
-      if (key === 'biometric') return;
-      if (key === 'delete') {
-        onPincodeChange(pincode!.slice(0, -1));
-      } else if (pincode!.length < 6) {
-        onPincodeChange(pincode + key);
-      }
-    }
-  };
-
-  const handleConfirmModalKeyPress = (key: string) => {
-    if (key === 'biometric' && isVerifyPin) {
-      isBiometricAvailable();
-      return;
-    } else if (key === 'biometric') return;
+  const onKeyPress = (key: string) => {
     if (key === 'delete') {
-      onConfirmPincodeChange(confirmPincode.slice(0, -1));
-    } else if (confirmPincode.length < 6) {
-      onConfirmPincodeChange(confirmPincode + key);
+      step === 'pin'
+        ? setPincode(pincode.slice(0, -1))
+        : setConfirmPincode(confirmPincode.slice(0, -1));
+      return;
+    }
+
+    if (key === 'biometric' && isVerifyPin) {
+      checkBiometric();
+      return;
+    }
+
+    if (step === 'pin' && pincode.length < PIN_LENGTH) {
+      setPincode(pincode + key);
+    }
+
+    if (step === 'confirm' && confirmPincode.length < PIN_LENGTH) {
+      setConfirmPincode(confirmPincode + key);
     }
   };
 
-  const PinInput = ({ pin }: { pin: string }) => {
-    return (
-      <View style={styles.pinContainer}>
-        {Array(6)
-          .fill('')
-          .map((_, index) => (
-            <View key={index} style={styles.pinInput}>
-              <Text style={styles.pinText}>{pin[index] ? '•' : ''}</Text>
-            </View>
-          ))}
-      </View>
-    );
-  };
-
-  const handleBackFromConfirmPinScreen = () => {
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(animateLeftValue, {
-          toValue: 500, // Move out of the screen to the right
-          duration: 250,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-        Animated.timing(animateOpacity, {
-          toValue: 0, // Fade out
-          duration: 250,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-      ]),
-    ]).start(() => {
-      onPincodeChange && onPincodeChange("");
-      onConfirmPincodeChange("");
-      setIsVerify(false);
-      // Reset animations after the state change
-      animateLeftValue.setValue(-500); // Move out of the screen to the left
-      animateOpacity.setValue(0); // Fully transparent
-
-      // Animate back to visible
-      Animated.parallel([
-        Animated.timing(animateLeftValue, {
-          toValue: 0, // Move into the screen from the left
-          duration: 250,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-        Animated.timing(animateOpacity, {
-          toValue: 1, // Fade in
-          duration: 250,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-      ]).start();
-    });
-  }
-
-
-  const NumericKeyboard = () => {
-    const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'biometric', '0', 'delete'];
-
-    return (
-      <View style={styles.keyboardContainer}>
-        {keys.map(key => (
-          <TouchableOpacity
-            key={key}
-            style={styles.key}
-            onPress={() => (isVerify ? handleConfirmModalKeyPress(key) : handleKeyPress(key))}>
-            <Text style={styles.keyText}>
-              {key === 'biometric' ? (
-                !isVerifyPin ? <></> : <MaterialCommunityIcons name="fingerprint" size={35} />
-              ) : key === 'delete' ? (
-                '⌫'
-              ) : (
-                key
-              )}
-            </Text>
-          </TouchableOpacity>
+  const renderDots = (value: string) => (
+    <View style={styles.pinRow}>
+      {Array(PIN_LENGTH)
+        .fill('')
+        .map((_, i) => (
+          <View key={i} style={styles.dot}>
+            <Text style={styles.dotText}>{value[i] ? '•' : ''}</Text>
+          </View>
         ))}
-      </View>
-    );
-  };
+    </View>
+  );
 
-  const PincodeModal = () => {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <Animated.View style={[styles.container, { left: animateLeftValue, opacity: animateOpacity }]}>
-          <Image
-            source={require('../../assets/images/lock.png')}
-            style={styles.logo}
-          />
-          <Text style={styles.title}>{t('PincodeScreen.title')}</Text>
-          <Text style={styles.subTitle}>{t('PincodeScreen.sub_title')}</Text>
-          <PinInput pin={pincode ?? ""} />
-          {pincodeError && (
-            <View style={{ height: 20, justifyContent: 'center' }}>
-              <Text style={styles.errorStyle}>{pincodeError}</Text>
-            </View>
-          )}
-          <NumericKeyboard />
-        </Animated.View>
-      </SafeAreaView>
-    )
-  }
-
-  const VerifyPincodeModal = () => {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <Animated.View style={[styles.container, { left: animateLeftValue, opacity: animateOpacity }]}>
-          <TouchableOpacity
-            style={styles.backIconStyle}
-            onPress={isVerifyPin ? onDismiss : handleBackFromConfirmPinScreen}>
-            <MaterialCommunityIcons name="arrow-left" size={30} color="#FFF" />
-          </TouchableOpacity>
-          <Image
-            source={require('../../assets/images/lock.png')}
-            style={styles.logo}
-          />
-          <Text style={styles.title}>{isVerifyPin ? "VERIFY" : t('PincodeScreen.confirm_pin_title')}</Text>
-          <Text style={styles.subTitle}>{isVerifyPin ? "Please enter your 6 digit pincode to verify request" : t('PincodeScreen.confirm_pin_sub_title')}</Text>
-          <PinInput pin={confirmPincode} />
-          <NumericKeyboard />
-        </Animated.View>
-      </SafeAreaView>
-    )
-  }
+  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'biometric', '0', 'delete'];
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-      onDismiss={onDismiss}>
-      <View style={{
-        backgroundColor: AppColors.PRIMARY,
-        flex: 1
-      }}>
-        {isVerify ?
-          <VerifyPincodeModal />
-          : <PincodeModal />
-        }
+    <SafeAreaView style={styles.root}>
+      <Text style={styles.title}>
+        {isVerifyPin ? t('Enter PIN') : step === 'pin' ? t('Create PIN') : t('Confirm PIN')}
+      </Text>
+
+      {renderDots(step === 'pin' ? pincode : confirmPincode)}
+
+      <View style={styles.keyboard}>
+        {keys.map(k => (
+          <Pressable
+            key={k}
+            onPress={() => onKeyPress(k)}
+            style={({ pressed }) => [styles.key, pressed && styles.keyPressed]}>
+            {k === 'delete' ? (
+              <Text style={styles.keyText}>⌫</Text>
+            ) : k === 'biometric' ? (
+              isVerifyPin && biometricAvailable ? (
+                <MaterialCommunityIcons name="fingerprint" size={32} color="#fff" />
+              ) : null
+            ) : (
+              <Text style={styles.keyText}>{k}</Text>
+            )}
+          </Pressable>
+        ))}
       </View>
-    </Modal>
+
+      {isVerifyPin && (
+        <TouchableOpacity
+          onPress={() => {
+            Alert.alert('Forgot PIN', 'Please contact support or reset your account.');
+            // or navigation.navigate('ForgotPinScreen');
+          }}>
+          <Text style={styles.forgotPinText}>{t('Forgot PIN?')}</Text>
+        </TouchableOpacity>
+      )}
+    </SafeAreaView>
   );
 };
 
+export default PincodeScreen;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+  root: {
+    flex: 1,
     backgroundColor: AppColors.PRIMARY,
-  },
-  backIconStyle: {
-    position: 'absolute',
-    top: 20,
-    left: 30,
-    padding: 10,
-  },
-  logo: {
-    width: 100,
-    marginTop: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlignVertical: 'center',
-    color: '#FFF',
-    marginTop: 20,
+    color: '#fff',
+    fontSize: 18,
+    marginBottom: 20,
   },
-  subTitle: {
-    flex: 1,
-    paddingHorizontal: 20,
-    textAlign: 'center',
-    marginTop: 8,
-    fontSize: 12,
-    fontFamily: 'Poppins-Regular',
-    color: AppColors.WHITE,
-  },
-  pinContainer: {
-    flex: 1,
+  pinRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 30,
   },
-  pinInput: {
-    width: 20,
-    height: 50,
+  dot: {
+    width: 40,
+    height: 40,
     borderBottomWidth: 2,
-    borderColor: '#FFF',
-    justifyContent: 'center',
+    borderColor: '#fff',
+    marginHorizontal: 6,
     alignItems: 'center',
-    marginHorizontal: 5,
+    justifyContent: 'center',
   },
-  pinText: {
+  dotText: {
+    color: '#fff',
     fontSize: 24,
-    color: '#FFF',
   },
-  forgotPin: {
-    color: '#FFF',
-    marginBottom: 20,
-    textDecorationLine: 'underline',
-  },
-  keyboardContainer: {
-    width: '100%',
+  keyboard: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    width: '80%',
     justifyContent: 'center',
   },
   key: {
-    width: '25%',
-    padding: 20,
-    margin: 5,
+    width: '30%',
+    padding: 18,
     alignItems: 'center',
   },
   keyText: {
-    fontSize: 24,
-    color: '#FFF',
+    color: '#fff',
+    fontSize: 22,
   },
-  errorStyle: {
-    color: RED_COLOR,
-    fontSize: 10,
-    paddingLeft: 24,
-    paddingRight: 16,
+  keyPressed: {
+    opacity: 0.5,
+  },
+  forgotPinText: {
+    color: '#fff',
+    marginTop: 30,
+    fontSize: 18,
+    textDecorationLine: 'underline',
+    opacity: 0.9,
   },
 });
-
-export default PincodeScreen;

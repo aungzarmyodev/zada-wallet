@@ -1,126 +1,131 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import SpInAppUpdates, { IAUUpdateKind, StartUpdateOptions } from 'sp-react-native-in-app-updates';
-import SplashScreen from 'react-native-splash-screen';
 import { createStackNavigator } from '@react-navigation/stack';
+import SplashScreen from 'react-native-splash-screen';
+import SpInAppUpdates, { IAUUpdateKind } from 'sp-react-native-in-app-updates';
+import DeviceInfo from 'react-native-device-info';
 
 import useInit from '../hooks/useInit';
-import { getItemFromLocalStorage, saveItem, saveItemInLocalStorage } from '../helpers/Storage';
-import { AppDispatch, useAppSelector } from '../store';
-import { selectNetworkStatus } from '../store/app/selectors';
-import LoadingScreen from '../screens/LoadingScreen';
-import { selectIsAuthorized } from '../store/auth/selectors';
-import MainNavigator from './MainNavigator';
-import AuthNavigator from './AuthNavigator';
 import useNetwork from '../hooks/useNetwork';
-import { navigationRef } from './utils';
-import { updateAppSetupComplete } from '../store/app';
-import { useAppDispatch } from '../store/index-old';
 import useWebview from '../hooks/useWebview';
+
+import { navigationRef } from './utils';
+import AuthNavigator from './AuthNavigator';
+import MainNavigator from './MainNavigator';
+
+import LoadingScreen from '../screens/LoadingScreen';
 import BiometricModal from '../components/Modal/BiometricModal';
-import DeviceInfo from 'react-native-device-info';
-import ConfigApp from '../helpers/ConfigApp';
+
+import { useAppDispatch, useAppSelector } from '../store';
+import { selectIsAuthorized } from '../store/auth/selectors';
+import { selectNetworkStatus } from '../store/app/selectors';
+import { updateAppSetupComplete } from '../store/app';
 import { clearAllAndLogout } from '../store/utils';
 
-const Stack = createStackNavigator();
+import { getItemFromLocalStorage, saveItemInLocalStorage } from '../helpers/Storage';
+import ConfigApp from '../helpers/ConfigApp';
+import { updateIsAuthorized } from '../store/auth';
+
+export type RootStackParamList = {
+  Loading: undefined;
+  Auth: undefined;
+  Main: undefined;
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
+
 const RootNavigator = () => {
-  // Constants
-  const linking = {
-    prefixes: ['https://zadanetwork.com', 'zada://'], //npx uri-scheme open https://zadanetwork.com/connection_request/abcd --android
-  };
-  const dispatch = useAppDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const appStarted = useRef(true);
 
-  // Selectors
-  const networkStatus = useAppSelector(selectNetworkStatus);
   const isAuthorized = useAppSelector(selectIsAuthorized);
+  const networkStatus = useAppSelector(selectNetworkStatus);
 
-  // States
-
-  // Hooks
   useNetwork();
+
   const { isAppReady, messageIndex, setMessageIndex, startApp } = useInit();
 
-  // Checking for latest version.
+  const linking = {
+    prefixes: ['https://zadanetwork.com', 'zada://'],
+  };
+
   useEffect(() => {
     (async () => {
       setMessageIndex(0);
       SplashScreen.hide();
-      let isAppSetupComplete = await getItemFromLocalStorage('isAppSetupComplete');
+
+      const isAppSetupComplete = await getItemFromLocalStorage('isAppSetupComplete');
       dispatch(updateAppSetupComplete(isAppSetupComplete));
 
-      // Check for updates
       checkForUpdates();
     })();
-  }, [networkStatus, setMessageIndex]);
+  }, [networkStatus]);
 
-  // Check for app version and clear all data if the app has been updated
   useEffect(() => {
-    const checkAppVersion = async () => {
+    const checkVersion = async () => {
       const currentVersion = DeviceInfo.getVersion();
       const storedVersion = await getItemFromLocalStorage(ConfigApp.APP_VERSION);
 
       if (storedVersion && storedVersion !== currentVersion) {
-        // Uncomment if users needs to be logged after app update
         clearAllAndLogout(dispatch);
-        await saveItemInLocalStorage(ConfigApp.APP_VERSION, currentVersion);
-      } else {
-        // Store the current version if it's the first time running the app
-        await saveItemInLocalStorage(ConfigApp.APP_VERSION, currentVersion);
+      }
+
+      await saveItemInLocalStorage(ConfigApp.APP_VERSION, currentVersion);
+    };
+
+    checkVersion();
+  }, []);
+
+  useEffect(() => {
+    const restoreAuth = async () => {
+      const storedAuth = await getItemFromLocalStorage('isAuthorized');
+
+      if (storedAuth === 'true') {
+        dispatch(updateIsAuthorized(true));
       }
     };
 
-    checkAppVersion();
+    restoreAuth();
   }, []);
 
-  // Functions
   const checkForUpdates = async () => {
-    const inAppUpdates = new SpInAppUpdates(
-      false // isDebug
-    );
-    inAppUpdates.checkNeedsUpdate().then(result => {
-      if (result.shouldUpdate) {
-        let updateOptions: StartUpdateOptions = {};
-        if (Platform.OS === 'android') {
-          // android only, on iOS the user will be promped to go to your app store page
-          updateOptions = {
-            updateType: IAUUpdateKind.FLEXIBLE,
-          };
-        }
-        inAppUpdates.startUpdate(updateOptions);
-      }
-    });
+    const updater = new SpInAppUpdates(false);
+    const result = await updater.checkNeedsUpdate();
+
+    if (result.shouldUpdate && Platform.OS === 'android') {
+      updater.startUpdate({
+        updateType: IAUUpdateKind.FLEXIBLE,
+      });
+    }
+
     startApp();
   };
 
-  const renderNavigator = useCallback(() => {
-    if (!isAuthorized) {
-      return <AuthNavigator />;
-    } else {
-      return (
-        <>
-          <MainNavigator />
-          <BiometricModal appStarted={appStarted} />
-        </>
-      );
-    }
-  }, [isAuthorized]);
-
   return (
-    <NavigationContainer linking={linking} ref={navigationRef}>
+    <NavigationContainer ref={navigationRef} linking={linking}>
       {useWebview()}
-      {!isAppReady ? (
-        <Stack.Navigator>
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="LoadingScreen"
-            children={() => <LoadingScreen messageIndex={messageIndex} />}
-          />
-        </Stack.Navigator>
-      ) : (
-        renderNavigator()
-      )}
+
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!isAppReady && (
+          <Stack.Screen name="Loading">
+            {() => <LoadingScreen messageIndex={messageIndex} />}
+          </Stack.Screen>
+        )}
+
+        {isAppReady && !isAuthorized && <Stack.Screen name="Auth" component={AuthNavigator} />}
+
+        {isAppReady && isAuthorized && (
+          <Stack.Screen name="Main">
+            {() => (
+              <>
+                <MainNavigator />
+                <BiometricModal appStarted={appStarted} />
+              </>
+            )}
+          </Stack.Screen>
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };
