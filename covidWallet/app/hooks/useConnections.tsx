@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 import { AppDispatch, useAppDispatch, useAppSelector } from '../store';
 import { selectConnectionList, selectConnections } from '../store/connections/selectors';
 import {
@@ -20,9 +20,17 @@ const useConnections = () => {
   const user = useAppSelector(selectUser);
   const connections = useAppSelector(selectConnections.selectAll);
   const allConnectionlist = useAppSelector(selectConnectionList);
-  const connectionlist = useAppSelector(selectConnectionList).map(item => {
-    return { label: item.name, value: item.metadata, imageUrl: item.image };
-  });
+
+  // Filter connectionlist to exclude already accepted connections based on name ( need to change with unique id later metadata )
+  const connectionMetadataSet = new Set(connections.map(conn => conn.name));
+
+  const connectionlist = useAppSelector(selectConnectionList)
+    .filter(item => !connectionMetadataSet.has(item.name))
+    .map(item => ({
+      label: item.name,
+      value: item.metadata,
+      imageUrl: item.image,
+    }));
 
   // UseEffect
   useEffect(() => {

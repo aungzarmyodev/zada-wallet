@@ -47,6 +47,7 @@ function ConnectionsScreen() {
   }
 
   const onConnectionSelect = (label: string, value: string) => {
+    console.log('Selected connection metadata: ', value);
     onAcceptConnection(value);
     setVisible(false);
   };
