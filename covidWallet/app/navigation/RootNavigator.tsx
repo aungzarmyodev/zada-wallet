@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import SpInAppUpdates, { IAUUpdateKind, StartUpdateOptions } from 'sp-react-native-in-app-updates';
-import SplashScreen from 'react-native-splash-screen';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import useInit from '../hooks/useInit';
@@ -46,7 +45,6 @@ const RootNavigator = () => {
   useEffect(() => {
     (async () => {
       setMessageIndex(0);
-      SplashScreen.hide();
       let isAppSetupComplete = await getItemFromLocalStorage('isAppSetupComplete');
       dispatch(updateAppSetupComplete(isAppSetupComplete));
 

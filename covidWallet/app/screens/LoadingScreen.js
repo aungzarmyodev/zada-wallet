@@ -17,7 +17,7 @@ function LoadingScreen(props) {
         style={{
           alignItems: 'center',
         }}>
-        <LogoAnimation />
+        {/* <LogoAnimation /> */}
         <View style={styles.textViewStyle}>
           <ChangingText messageIndex={props.messageIndex} />
         </View>
