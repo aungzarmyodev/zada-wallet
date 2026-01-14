@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { createStackNavigator } from '@react-navigation/stack';
 import { IConnectionList } from '../store/connections/interface';
-import { RouteProp } from '@react-navigation/native';
+import { NavigatorScreenParams, RouteProp } from '@react-navigation/native';
 
 export type AuthStackParamList = {
   PreferenceScreen: undefined;
@@ -23,6 +23,9 @@ export type AuthStackParamList = {
   NotifyMeScreen: undefined;
   ConnectionListScreen: { connections: IConnectionList[] };
   MigrationScreen: undefined;
+  ForgetPinCodeScreen: undefined;
+  ResetPinByEmailScreen: undefined;
+  ResetPinBySecretCodeScreen: undefined;
 };
 
 export type MainStackParamList = {
@@ -56,8 +59,8 @@ export type MainStackParamList = {
 
 export type RootStackParamList = {
   Loading: undefined;
-  AuthStack: undefined;
-  MainStack: undefined;
+  Auth: NavigatorScreenParams<AuthStackParamList>;
+  Main: NavigatorScreenParams<MainStackParamList>;
 };
 
 export type TabStackParamList = {
@@ -78,4 +81,5 @@ export type MainStackNavigationProp = RouteProp<MainStackParamList, 'MainScreen'
     routes: Array<{ name: keyof TabStackParamList }>;
   };
 };
+
 export { AuthStack, MainStack, TabStack };

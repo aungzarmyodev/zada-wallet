@@ -25,6 +25,9 @@ import PreferenceScreen from '../screens/auth/PreferenceScreen';
 import RecoveryPhraseScreen from '../screens/auth/RecoveryPhraseScreen';
 import MigrationScreen from '../screens/auth/MigrationScreen';
 import PincodeScreen from '../screens/pincode/PincodeScreen';
+import ForgetPinCodeScreen from '../screens/pincode/ForgetPinCodeScreen';
+import ResetPinByEmailScreen from '../screens/pincode/ResetPinByEmailScreen';
+import ResetPinBySecretCodeScreen from '../screens/pincode/ResetPinBySecretCodeScreen';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -166,6 +169,21 @@ const AuthNavigator = () => {
         options={{ headerShown: false }}
         name="NotifyMeScreen"
         component={NotifyMeScreen}
+      />
+      <AuthStack.Screen
+        options={{ headerShown: false }}
+        name="ForgetPinCodeScreen"
+        component={ForgetPinCodeScreen}
+      />
+      <AuthStack.Screen
+        options={{ headerShown: false }}
+        name="ResetPinByEmailScreen"
+        component={ResetPinByEmailScreen}
+      />
+      <AuthStack.Screen
+        options={{ headerShown: false }}
+        name="ResetPinBySecretCodeScreen"
+        component={ResetPinBySecretCodeScreen}
       />
     </AuthStack.Navigator>
   );

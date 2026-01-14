@@ -151,8 +151,7 @@ const PincodeScreen = ({ navigation, route }: Props) => {
       {isVerifyPin && (
         <TouchableOpacity
           onPress={() => {
-            Alert.alert('Forgot PIN', 'Please contact support or reset your account.');
-            // or navigation.navigate('ForgotPinScreen');
+            navigation.navigate('ForgetPinCodeScreen');
           }}>
           <Text style={styles.forgotPinText}>{t('Forgot PIN?')}</Text>
         </TouchableOpacity>
