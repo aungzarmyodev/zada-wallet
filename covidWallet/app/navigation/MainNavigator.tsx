@@ -81,14 +81,36 @@ const MainNavigator = () => {
             />
           ),
           headerRight: () => (
-            <MaterialCommunityIcons
-              onPress={() => {
-                navigation.navigate('NewQRScreen');
-              }}
-              style={styles.headerRightIcon}
-              size={30}
-              name="qrcode"
-            />
+            // <MaterialCommunityIcons
+            //   onPress={() => {
+            //     navigation.navigate('NewQRScreen');
+            //   }}
+            //   style={styles.headerRightIcon}
+            //   size={30}
+            //   name="qrcode"
+            // />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {/* Refresh Icon */}
+              <MaterialIcons
+                onPress={() => {
+                  console.log('Refresh pressed');
+                  // TODO: trigger refresh logic here
+                }}
+                style={styles.headerRightIcon}
+                size={28}
+                name="refresh"
+              />
+
+              {/* QR Icon */}
+              <MaterialCommunityIcons
+                onPress={() => {
+                  navigation.navigate('NewQRScreen');
+                }}
+                style={styles.headerRightIcon}
+                size={30}
+                name="qrcode"
+              />
+            </View>
           ),
         })}
         component={TabNavigator}
