@@ -1,6 +1,6 @@
 import React from 'react';
 import { TransitionPresets } from '@react-navigation/stack';
-import { Platform, Text, View, Modal } from 'react-native';
+import { Platform, Text, View, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -24,6 +24,10 @@ import { navigationRef } from './utils';
 import VerificationRequestScreen from '../screens/verification_request_screen/VerificationRequestScreen';
 import ConnectionBaseVerificationScreen from '../screens/verification_request_screen/ConnectionBaseVerificationScreen';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { useAppDispatch } from '../store';
+import { fetchActions } from '../store/actions/thunk';
+import { fetchCredentials } from '../store/credentials/thunk';
+import { fetchConnections } from '../store/connections/thunk';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -32,6 +36,7 @@ const navigationAnimation =
 
 const MainNavigator = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const backIcon = Platform.OS === 'ios' ? 'chevron-left' : 'arrow-back';
 
@@ -49,6 +54,33 @@ const MainNavigator = () => {
         return routeName;
     }
   }
+
+  const onRefresh = async (route: any) => {
+    const routeName = getFocusedRouteNameFromRoute(route) ?? t('common.actions');
+
+    switch (routeName) {
+      case 'Actions':
+        return getActions();
+      case 'Credentials':
+        return getCredentials();
+      case 'Connections':
+        return getConnections();
+      default:
+        return;
+    }
+  };
+
+  const getActions = async () => {
+    dispatch(fetchActions() as any);
+  };
+
+  const getCredentials = () => {
+    dispatch(fetchCredentials() as any);
+  };
+
+  const getConnections = () => {
+    dispatch(fetchConnections() as any);
+  };
 
   return (
     <MainStack.Navigator screenOptions={{ ...navigationAnimation }} initialRouteName="MainScreen">
@@ -81,14 +113,22 @@ const MainNavigator = () => {
             />
           ),
           headerRight: () => (
-            <MaterialCommunityIcons
-              onPress={() => {
-                navigation.navigate('NewQRScreen');
-              }}
-              style={styles.headerRightIcon}
-              size={30}
-              name="qrcode"
-            />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity
+                onPress={() => {
+                  onRefresh(route);
+                }}>
+                <MaterialIcons size={28} name="refresh" style={styles.headerRightIcon} />
+              </TouchableOpacity>
+              <MaterialCommunityIcons
+                onPress={() => {
+                  navigation.navigate('NewQRScreen');
+                }}
+                style={styles.headerRightIcon}
+                size={30}
+                name="qrcode"
+              />
+            </View>
           ),
         })}
         component={TabNavigator}
