@@ -61,7 +61,7 @@ export const fetchCredentials = createAsyncThunk(
         };
         credObj.credentials.push(obj);
       }
-
+      console.log('Fetched Credentials: ', credObj.credentials);
       return credObj;
     } catch (e: any) {
       throw e;

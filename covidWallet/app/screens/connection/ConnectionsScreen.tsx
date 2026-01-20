@@ -1,13 +1,5 @@
-import React, { useState } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Animated,
-  StyleSheet,
-  RefreshControl,
-  Dimensions,
-  Text,
-} from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, TouchableOpacity, Animated, StyleSheet, RefreshControl, Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useTranslation } from 'react-i18next';
@@ -18,14 +10,13 @@ import { AppColors, RED_COLOR, SECONDARY_COLOR } from '../../theme/Colors';
 import { useAppSelector } from '../../store';
 import { selectConnectionsStatus } from '../../store/connections/selectors';
 import { showAskDialog, showOKDialog } from '../../helpers/Toast';
-import { selectDevelopmentMode } from '../../store/app/selectors';
 import { IConnectionObject } from '../../store/connections/interface';
 import SelectModal from '../../components/Modal/SelectModal';
 import useConnections from '../../hooks/useConnections';
 import FloatingActionButton from '../../components/Buttons/FloatingActionButton';
 import EmptyConnections from './EmptyConnection';
+import { useFocusEffect } from '@react-navigation/native';
 
-const { height } = Dimensions.get('window');
 function ConnectionsScreen() {
   // Selectors
   const { t } = useTranslation();
@@ -35,12 +26,20 @@ function ConnectionsScreen() {
     onAcceptConnection,
     onDeleteConnection,
     refreshConnections,
+    fetchAllConnections,
   } = useConnections();
   const connectionStatus = useAppSelector(selectConnectionsStatus);
-  const developmentMode = useAppSelector(selectDevelopmentMode);
 
   // States
   const [isVisible, setVisible] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (connectionStatus === 'initial') {
+        fetchAllConnections();
+      }
+    }, [connectionStatus])
+  );
 
   async function handleAddButton() {
     setVisible(true);

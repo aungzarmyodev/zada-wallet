@@ -30,6 +30,8 @@ export const fetchActions = createAsyncThunk('actions/fetchActions', async (args
     let verifications = await createVerificationObject(connArr);
     actions.actions = actions.actions.concat(verifications);
 
+    console.log('Actions Fetched: ', actions);
+
     return actions;
   } catch (e: any) {
     throw e;

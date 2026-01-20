@@ -5,7 +5,7 @@ import { ConnectionAdapter } from './selectors';
 
 // State initialization
 export const ConnectionState: IConnectionState = {
-  status: 'loading',
+  status: 'initial',
   error: {
     code: undefined,
     message: undefined,
@@ -33,21 +33,20 @@ export const slice = createSlice({
     },
     resetConnection: () => ConnectionAdapter.getInitialState(ConnectionState),
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // Fetch connection.
     builder.addCase(fetchConnections.pending, (state, action) => {
-      if (state.status === 'idle') {
-        state.status = 'loading';
-      }
+      if (state.status === 'loading') return;
+      state.status = 'loading';
     });
     builder.addCase(fetchConnections.fulfilled, (state, action) => {
       if (action.payload.success) {
         ConnectionAdapter.upsertMany(state, action.payload.connections);
-        state.status = 'idle';
+        state.status = 'success';
       }
     });
     builder.addCase(fetchConnections.rejected, (state, action) => {
-      state.status = 'failed';
+      state.status = 'error';
       state.error = action?.error;
     });
 
@@ -57,11 +56,11 @@ export const slice = createSlice({
     });
     builder.addCase(acceptConnection.fulfilled, (state, action) => {
       if (action.payload) {
-        state.status = 'succeeded';
+        state.status = 'success';
       }
     });
     builder.addCase(acceptConnection.rejected, (state, action) => {
-      state.status = 'failed';
+      state.status = 'error';
       state.error = action?.error;
     });
 
@@ -71,11 +70,11 @@ export const slice = createSlice({
     });
     builder.addCase(removeConnection.fulfilled, (state, action) => {
       if (action.payload) {
-        state.status = 'succeeded';
+        state.status = 'success';
       }
     });
     builder.addCase(removeConnection.rejected, (state, action) => {
-      state.status = 'failed';
+      state.status = 'error';
       state.error = action?.error;
     });
 
@@ -85,28 +84,35 @@ export const slice = createSlice({
     });
     builder.addCase(fetchConnectionList.fulfilled, (state, action) => {
       if (action.payload) {
-        state.status = 'succeeded';
+        state.status = 'success';
         let connectionsArray = [] as IConnectionList[];
 
         // create an array where the connection is not present in the state
         connectionsArray = action.payload.connections.filter((item: IConnectionList) => {
-          return Object.values(state.entities).length > 0 ? Object.values(state.entities).every((value) => {
-            return value?.name !== item.name
-          }) : true
-        })
+          return Object.values(state.entities).length > 0
+            ? Object.values(state.entities).every(value => {
+                return value?.name !== item.name;
+              })
+            : true;
+        });
 
-        state.connectionlist = connectionsArray
+        state.connectionlist = connectionsArray;
       }
     });
     builder.addCase(fetchConnectionList.rejected, (state, action) => {
-      state.status = 'failed';
+      state.status = 'error';
       state.error = action?.error;
     });
   },
 });
 
 // Exporting Actions
-export const { changeConnectionStatus, addConnection, deleteConnection, updateConnectionlist, resetConnection } =
-  slice.actions;
+export const {
+  changeConnectionStatus,
+  addConnection,
+  deleteConnection,
+  updateConnectionlist,
+  resetConnection,
+} = slice.actions;
 
 export { slice as ConnectionSlice };

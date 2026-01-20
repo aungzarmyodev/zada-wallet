@@ -1,40 +1,21 @@
 import * as React from 'react';
-import { Animated, View, Text, Image, StyleSheet, ActivityIndicator, Easing } from 'react-native';
-import ChangingText from '../components/Animations/ChangingText';
-import LogoAnimation from '../components/Animations/LogoAnimation';
-import { PRIMARY_COLOR, BACKGROUND_COLOR } from '../theme/Colors';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { PRIMARY_COLOR, AppColors } from '../theme/Colors';
 
-function LoadingScreen(props) {
+function LoadingScreen() {
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: PRIMARY_COLOR,
-      }}>
-      <View
-        style={{
-          alignItems: 'center',
-        }}>
-        {/* <LogoAnimation /> */}
-        <View style={styles.textViewStyle}>
-          <ChangingText messageIndex={props.messageIndex} />
-        </View>
-      </View>
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color={AppColors.WHITE} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  textViewStyle: {
-    marginTop: 24, // space between logo and text
-  },
-  textStyle: {
-    color: 'white',
-  },
-  activityIndicatorStyle: {
-    marginTop: 16,
+  container: {
+    flex: 1,
+    backgroundColor: PRIMARY_COLOR,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

@@ -12,6 +12,9 @@ import MainNavigator from './MainNavigator';
 import AuthNavigator from './AuthNavigator';
 import { navigationRef } from './utils';
 import useNetwork from '../hooks/useNetwork';
+import useAppInit from '../hooks/useAppInit';
+import LoadingScreen from '../screens/LoadingScreen';
+import { View } from 'react-native-reanimated/lib/typescript/Animated';
 
 const RootNavigator = () => {
   // for checking updates only once per app start
@@ -23,7 +26,7 @@ const RootNavigator = () => {
 
   // Hooks
   useNetwork();
-  const { startApp } = useInit();
+  const { isAppReady } = useAppInit();
 
   useEffect(() => {
     // Check for app updates on app start
@@ -34,7 +37,6 @@ const RootNavigator = () => {
     checkForUpdates();
   }, [networkStatus]);
 
-  // Functions
   const checkForUpdates = async () => {
     try {
       const inAppUpdates = new SpInAppUpdates(
@@ -54,10 +56,12 @@ const RootNavigator = () => {
       });
     } catch (error) {
       console.log('In-app update error:', error);
-    } finally {
-      startApp();
     }
   };
+
+  if (!isAppReady) {
+    return <LoadingScreen />;
+  }
 
   return (
     <NavigationContainer ref={navigationRef}>

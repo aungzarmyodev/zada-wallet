@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
+import React, { useEffect, useCallback, useLayoutEffect, useState, useRef } from 'react';
 import {
   Alert,
   View,
@@ -126,6 +126,15 @@ function ActionsScreen({ navigation }) {
 
     return () => subscription.remove();
   }, []);
+
+  // fetch actions data
+  useFocusEffect(
+    useCallback(() => {
+      if (actionStatus === 'initial') {
+        dispatch(fetchActions());
+      }
+    }, [actionStatus])
+  );
 
   //Checking Notification Status
   useLayoutEffect(() => {

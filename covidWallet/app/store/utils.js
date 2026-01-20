@@ -61,7 +61,7 @@ export const clearAllAndLogout = async (dispatch, type) => {
   persistor.purge();
 };
 
-export const deleteAccountAndClearAll = async (dispatch) => {
+export const deleteAccountAndClearAll = async dispatch => {
   await AuthAPI.unRegisterDeviceToken(Platform.OS);
   resetLocalStorage();
   resetSecureItems();
