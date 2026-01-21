@@ -3,40 +3,52 @@ import { RootState } from '..';
 import { CredentialAPI, VerificationAPI } from '../../gateways';
 import ConstantsList from '../../helpers/ConfigApp';
 import { IConnectionObject } from '../connections/interface';
+import { fetchConnections } from '../connections/thunk';
 
-export const fetchActions = createAsyncThunk('actions/fetchActions', async (args, { getState }) => {
-  try {
-    // Current State
-    const { connection } = getState() as RootState;
-    const connArr = Object.values(connection.entities) as IConnectionObject[];
+export const fetchActions = createAsyncThunk(
+  'actions/fetchActions',
+  async (_, { getState, dispatch }) => {
+    try {
+      let state = getState() as RootState;
 
-    const response = await CredentialAPI.get_all_credentials_offers();
-
-    let offers = response.data.offers;
-    let actions = {
-      success: response.data.success,
-      actions: [] as any,
-    };
-
-    if (response.data.success) {
-      for (let i = 0; i < offers.length; ++i) {
-        // Adding Credential Object
-        offers[i]['type'] = ConstantsList.CRED_OFFER;
-        actions.actions[i] = addImageAndNameFromConnectionList(offers[i], connArr);
+      //  connections exist
+      if (Object.keys(state.connection.entities).length === 0) {
+        await dispatch(fetchConnections()).unwrap();
+        state = getState() as RootState;
       }
+
+      const connArr = Object.values(state.connection.entities) as IConnectionObject[];
+
+      // Fetch offers
+      const response = await CredentialAPI.get_all_credentials_offers();
+
+      const offers = response.data.offers || [];
+      const actions = {
+        success: response.data.success,
+        actions: [] as any[],
+      };
+
+      if (response.data.success) {
+        for (const offer of offers) {
+          const obj = {
+            ...offer,
+            type: ConstantsList.CRED_OFFER,
+          };
+
+          actions.actions.push(addImageAndNameFromConnectionList(obj, connArr));
+        }
+      }
+
+      // 3. Fetch verifications
+      const verifications = await createVerificationObject(connArr);
+      actions.actions = actions.actions.concat(verifications);
+
+      return actions;
+    } catch (e) {
+      throw e;
     }
-
-    // Adding Verification Object
-    let verifications = await createVerificationObject(connArr);
-    actions.actions = actions.actions.concat(verifications);
-
-    console.log('Actions Fetched: ', actions);
-
-    return actions;
-  } catch (e: any) {
-    throw e;
   }
-});
+);
 
 // Create Verification Object
 const createVerificationObject = async (connections: IConnectionObject[]) => {
