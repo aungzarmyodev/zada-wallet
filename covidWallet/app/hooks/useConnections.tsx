@@ -25,9 +25,13 @@ const useConnections = () => {
   });
 
   // UseEffect
-  useEffect(() => {
-    dispatch(fetchConnectionList());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchConnectionList());
+  // }, []);
+
+  const fetchAllConnections = () => {
+    dispatch(fetchConnections());
+  };
 
   // Functions
   const refreshConnections = () => {
@@ -82,6 +86,7 @@ const useConnections = () => {
     onAcceptConnection,
     onDeleteConnection,
     refreshConnections,
+    fetchAllConnections,
   };
 };
 

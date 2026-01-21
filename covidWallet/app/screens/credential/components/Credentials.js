@@ -1,23 +1,12 @@
-import React, { useMemo, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  RefreshControl,
-  FlatList,
-  Dimensions,
-  TouchableOpacity,
-  Linking,
-} from 'react-native';
+import React, { useMemo, useState, useCallback } from 'react';
+import { View, StyleSheet, RefreshControl, FlatList, Dimensions, Linking } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { TextInput } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { themeStyles } from '../../../theme/Styles';
-import PullToRefresh from '../../../components/PullToRefresh';
-import EmptyList from '../../../components/EmptyList';
 import { AppColors, PRIMARY_COLOR, WHITE_COLOR } from '../../../theme/Colors';
-import { get_local_issue_date } from '../../../helpers/time';
-import CardBackground from '../../../components/CardBackground';
-import CertificateCard from '../../../components/CertificateCard';
 import phhLogo from '../../../assets/icons/phh-logo-color.png';
 import zadaLogo from '../../../assets/icons/zada-logo-color.png';
 
@@ -29,16 +18,12 @@ import {
   selectSearchedCredentials,
 } from '../../../store/credentials/selectors';
 import { fetchCredentials } from '../../../store/credentials/thunk';
-import { updateCredential } from '../../../store/credentials';
 import FloatingActionButton from '../../../components/Buttons/FloatingActionButton';
 import { selectUser } from '../../../store/auth/selectors';
 import { selectDevelopmentMode } from '../../../store/app/selectors';
 import { updateWebViewUrl } from '../../../store/app';
-import OverlayLoader from '../../../components/OverlayLoader';
 import EmptyCredentials from '../EmptyCredentials';
 import CredentialCard from './CredentialCard';
-
-const { height } = Dimensions.get('window');
 
 function Credentials(props) {
   // Constants
@@ -55,15 +40,19 @@ function Credentials(props) {
   const credentialStatus = useAppSelector(selectCredentialsStatus);
   const searchedCredentials = useAppSelector(state => selectSearchedCredentials(state, search));
 
+  useFocusEffect(
+    useCallback(() => {
+      if (credentialStatus === 'initial') {
+        dispatch(fetchCredentials());
+      }
+    }, [credentialStatus])
+  );
+
   // Function
   const toggleModal = v => {
     props.navigation.navigate('CredDetailScreen', {
       credentialId: v.credentialId,
     });
-  };
-
-  const updateBackgroundImage = (credentialId, background_url) => {
-    dispatch(updateCredential({ id: credentialId, changes: { backgroundImage: background_url } }));
   };
 
   // List Empty Component

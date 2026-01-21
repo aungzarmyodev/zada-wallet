@@ -116,8 +116,6 @@ export default function SettingsScreen(props) {
       t('messages.logout'),
       async () => {
         dispatch(changeAppStatus('loading'));
-        const pCode = await getItem(PIN_CODE);
-        saveItem(PIN_CODE, pCode);
         clearAllAndLogout(dispatch);
       },
       () => {},

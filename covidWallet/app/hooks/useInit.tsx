@@ -52,7 +52,7 @@ const useInit = () => {
   }, []);
 
   useEffect(() => {
-    if (actionStatus == 'idle' && connStatus == 'idle' && credStatus == 'idle') {
+    if (actionStatus == 'initial' && connStatus == 'initial' && credStatus == 'initial') {
       fetchUserProfile();
     }
   }, [actionStatus, connStatus, credStatus]);
@@ -144,10 +144,10 @@ const useInit = () => {
 
   // Handling Action Status
   const handleActionStatus = () => {
-    if (actionStatus == 'succeeded' || actionStatus == 'failed') {
+    if (actionStatus == 'success' || actionStatus == 'error') {
       dispatch(changeActionStatus('idle'));
 
-      if (actionStatus === 'failed' && actionError.message === 'Network Error') {
+      if (actionStatus === 'error' && actionError.message === 'Network Error') {
         setTimeout(() => {
           showNetworkMessage();
         }, 500);
@@ -159,10 +159,10 @@ const useInit = () => {
 
   // Handling Credentials Status
   const handleCredentialStatus = () => {
-    if (credStatus == 'succeeded' || credStatus == 'failed') {
+    if (credStatus == 'success' || credStatus == 'error') {
       dispatch(changeCredentialStatus('idle'));
 
-      if (credStatus === 'failed' && credError.message === 'Network Error') {
+      if (credStatus === 'error' && credError.message === 'Network Error') {
         setTimeout(() => {
           showNetworkMessage();
         }, 500);
@@ -174,10 +174,10 @@ const useInit = () => {
 
   // Handling Connection Status
   const handleConnectionStatus = () => {
-    if (connStatus == 'succeeded' || connStatus == 'failed') {
+    if (connStatus == 'success' || connStatus == 'error') {
       dispatch(changeConnectionStatus('idle'));
 
-      if (connStatus === 'failed' && connError.message === 'Network Error') {
+      if (connStatus === 'error' && connError.message === 'Network Error') {
         setTimeout(() => {
           showNetworkMessage();
         }, 500);
