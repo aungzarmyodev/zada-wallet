@@ -32,6 +32,7 @@ export type MainStackParamList = {
   LanguageSelectionScreen: undefined;
   ContactUs: undefined;
   AboutUs: undefined;
+  UserGuide: undefined;
   ProfileScreen: undefined;
   CredDetailScreen: { credentialId: string };
   QRScreen: undefined;

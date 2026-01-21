@@ -14,6 +14,7 @@ import TabNavigator from './TabNavigator';
 import SettingsScreen from '../screens/SettingsScreen';
 import ContactUs from '../screens/ContactUs';
 import AboutUs from '../screens/AboutUs';
+import UserGuideScreen from '../screens/UserGuideScreen';
 import ProfileScreen from '../screens/settings/ProfileScreen';
 import QRScreen from '../screens/qr/QRScreen';
 import NewQRScreen from '../screens/qr/NewQRScreen';
@@ -143,6 +144,23 @@ const MainNavigator = () => {
           ),
         })}
         component={AboutUs}
+      />
+      <MainStack.Screen
+        name="UserGuide"
+        options={({ navigation }) => ({
+          headerTitle: t('SettingsScreen.user_guide'),
+          headerLeft: () => (
+            <MaterialIcons
+              onPress={() => {
+                navigation.goBack();
+              }}
+              style={styles.headerRightIcon}
+              size={30}
+              name={backIcon}
+            />
+          ),
+        })}
+        component={UserGuideScreen}
       />
       <MainStack.Screen
         name="ProfileScreen"

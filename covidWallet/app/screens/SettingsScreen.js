@@ -244,6 +244,14 @@ export default function SettingsScreen(props) {
           <Icon name="right" color={AppColors.BLUE} size={18} />
         </TouchableOpacity>
 
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles._row}
+          onPress={() => props.navigation.navigate('UserGuide')}>
+          <Text style={styles._rowLabel}>{t('SettingsScreen.user_guide')}</Text>
+          <Icon name="right" color={AppColors.BLUE} size={18} />
+        </TouchableOpacity>
+
         <Text style={styles.devTextStyle}>
           {longPressCount === 3 && !developmentMode
             ? 'Now just tap ' + (4 - pressCount) + ' more times!'
