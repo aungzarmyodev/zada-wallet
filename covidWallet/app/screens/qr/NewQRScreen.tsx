@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../../navigation/types';
 import { AppColors } from '../../theme/Colors';
 import { useTranslation } from 'react-i18next';
-import { getType } from './utils';
+import { getType, handleCredVerification } from './utils';
 import { CONN_REQ, CONNLESS_VER_REQ } from '../../helpers/ConfigApp';
 import { showOKDialog } from '../../helpers/Toast';
 
@@ -73,8 +73,6 @@ const NewQRScreen = () => {
       'itf',
     ],
     onCodeScanned: codes => {
-      console.log('🔥 SCANNER TRIGGERED');
-      console.log('🔥 CODES:', codes);
       if (scannedRef.current) return;
       if (codes.length === 0) return;
 
@@ -90,7 +88,7 @@ const NewQRScreen = () => {
   /**
    * Handle scanned QR
    */
-  const checkVerificationCode = (scanResult: string) => {
+  const checkVerificationCode = async (scanResult: string) => {
     const type = getType(scanResult);
 
     if (type === CONNLESS_VER_REQ) {
@@ -101,6 +99,18 @@ const NewQRScreen = () => {
       try {
         const qrJSON = JSON.parse(scanResult);
         navigation.navigate('ConnectionAccept', { qrJSON });
+      } catch (e) {
+        unsupportedQRCode();
+      }
+    } else if (type == 'cv' || type == 'cred_ver') {
+      try {
+        const credObj = await handleCredVerification(JSON.parse(scanResult));
+        if (credObj) {
+          navigation.navigate('VerifyQRScreen', {
+            credential: credObj.credential,
+            values: credObj.sortedValues,
+          });
+        }
       } catch (e) {
         unsupportedQRCode();
       }

@@ -28,9 +28,10 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchActions } from '../store/actions/thunk';
 import { fetchCredentials } from '../store/credentials/thunk';
-import { fetchConnections } from '../store/connections/thunk';
+import { fetchAcceptConnectionList } from '../store/connections/thunk';
 import { selectNetworkStatus } from '../store/app/selectors';
 import { _showAlert } from '../helpers';
+import VerifyQRScreen from '../screens/verification_request_screen/VerifyQRScreen';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -88,7 +89,7 @@ const MainNavigator = () => {
   };
 
   const getConnections = () => {
-    dispatch(fetchConnections() as any);
+    dispatch(fetchAcceptConnectionList() as any);
   };
 
   return (
@@ -290,6 +291,11 @@ const MainNavigator = () => {
         options={{ headerShown: false }}
         name="ConnectionBaseVerificationScreen"
         component={ConnectionBaseVerificationScreen}
+      />
+      <MainStack.Screen
+        name="VerifyQRScreen"
+        options={{ headerShown: false }}
+        component={VerifyQRScreen}
       />
     </MainStack.Navigator>
   );

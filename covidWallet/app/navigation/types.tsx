@@ -54,6 +54,10 @@ export type MainStackParamList = {
   ConnectionAccept: {
     qrJSON: any;
   };
+  VerifyQRScreen: {
+    credential: any;
+    values: Array<{ key: string; value: string }>;
+  };
 };
 
 export type TabStackParamList = {
