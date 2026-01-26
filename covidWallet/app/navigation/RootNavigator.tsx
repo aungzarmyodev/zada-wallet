@@ -13,6 +13,7 @@ import useNetwork from '../hooks/useNetwork';
 import useAppInit from '../hooks/useAppInit';
 import LoadingScreen from '../screens/LoadingScreen';
 import { View } from 'react-native-reanimated/lib/typescript/Animated';
+import BiometricModal from '../components/Modal/BiometricModal';
 
 const RootNavigator = () => {
   // for checking updates only once per app start
@@ -63,7 +64,14 @@ const RootNavigator = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      {!isAuthorized ? <AuthNavigator /> : <MainNavigator />}
+      {!isAuthorized ? (
+        <AuthNavigator />
+      ) : (
+        <>
+          <MainNavigator />
+          <BiometricModal />
+        </>
+      )}
     </NavigationContainer>
   );
 };

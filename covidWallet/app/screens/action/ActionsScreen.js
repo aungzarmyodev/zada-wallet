@@ -130,11 +130,24 @@ function ActionsScreen({ navigation }) {
   // fetch actions data
   useFocusEffect(
     useCallback(() => {
+      if (networkStatus !== 'connected') {
+        _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+        return;
+      }
       if (actionStatus === 'initial') {
         dispatch(fetchActions());
       }
-    }, [actionStatus])
+    }, [actionStatus, networkStatus])
   );
+
+  // Pull to refresh
+  const refreshHandler = () => {
+    if (networkStatus !== 'connected') {
+      _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+      return;
+    }
+    dispatch(fetchActions());
+  };
 
   //Checking Notification Status
   useLayoutEffect(() => {
@@ -561,10 +574,6 @@ function ActionsScreen({ navigation }) {
     } catch (error) {
       showMessage('Zada Wallet', error.toString());
     }
-  };
-
-  const refreshHandler = () => {
-    dispatch(fetchActions());
   };
 
   return (

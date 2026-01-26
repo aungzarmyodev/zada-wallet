@@ -9,13 +9,14 @@ import { themeStyles } from '../../theme/Styles';
 import { AppColors, RED_COLOR, SECONDARY_COLOR } from '../../theme/Colors';
 import { useAppSelector } from '../../store';
 import { selectConnectionsStatus } from '../../store/connections/selectors';
-import { showAskDialog, showOKDialog } from '../../helpers/Toast';
+import { _showAlert, showAskDialog, showOKDialog } from '../../helpers/Toast';
 import { IConnectionObject } from '../../store/connections/interface';
 import SelectModal from '../../components/Modal/SelectModal';
 import useConnections from '../../hooks/useConnections';
 import FloatingActionButton from '../../components/Buttons/FloatingActionButton';
 import EmptyConnections from './EmptyConnection';
 import { useFocusEffect } from '@react-navigation/native';
+import { selectNetworkStatus } from '../../store/app/selectors';
 
 function ConnectionsScreen() {
   // Selectors
@@ -29,16 +30,21 @@ function ConnectionsScreen() {
     fetchAllConnections,
   } = useConnections();
   const connectionStatus = useAppSelector(selectConnectionsStatus);
+  const networkStatus = useAppSelector(selectNetworkStatus);
 
   // States
   const [isVisible, setVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
+      if (networkStatus !== 'connected') {
+        _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+        return;
+      }
       if (connectionStatus === 'initial') {
         fetchAllConnections();
       }
-    }, [connectionStatus])
+    }, [connectionStatus, networkStatus])
   );
 
   async function handleAddButton() {
@@ -74,6 +80,10 @@ function ConnectionsScreen() {
   }
 
   const refreshHandler = () => {
+    if (networkStatus !== 'connected') {
+      _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+      return;
+    }
     refreshConnections();
   };
 

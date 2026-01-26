@@ -60,7 +60,7 @@ function Credentials(props) {
     }, [initial, networkStatus])
   );
 
-  // Refresh List
+  // Pull to refresh
   const refreshHandler = () => {
     if (networkStatus !== 'connected') {
       _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));

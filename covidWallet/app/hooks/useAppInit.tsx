@@ -20,7 +20,7 @@ const useAppInit = () => {
       }
 
       setIsAppReady(true);
-    }, 200);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [token, dispatch]);
