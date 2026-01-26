@@ -1,5 +1,8 @@
 export interface ICredentialState {
-  status: 'initial' | 'loading' | 'pending' | 'success' | 'error';
+  //status: 'initial' | 'loading' | 'pending' | 'success' | 'error';
+  fetchCredentials: 'initial' | 'loading' | 'success' | 'error';
+  addCredential: 'initial' | 'loading' | 'success' | 'error';
+  deleteCredential: 'initial' | 'loading' | 'success' | 'error';
   error: {
     code?: string | undefined;
     message?: string | undefined;

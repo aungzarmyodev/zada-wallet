@@ -208,7 +208,9 @@
     "verification_fail_title": "Verification Failed",
     "verification_fail_message": "Failed to verify the QR code. Please try again.",
     "verification_fail_title_1": "Error",
-    "verification_fail_message_1": "An error occurred while processing the QR code. Please try again."
+    "verification_fail_message_1": "An error occurred while processing the QR code. Please try again.",
+    "no_internet_title": "အင်တာနက်ချိတ်ဆက်မှု မရှိပါ။",
+    "no_internet_message": "အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။"
   },
   "messages": {
     "delete_account": "သင့်အကောင့်ကို ဖျက်လိုပါသလား။",

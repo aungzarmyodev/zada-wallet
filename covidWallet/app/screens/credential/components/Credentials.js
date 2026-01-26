@@ -14,16 +14,19 @@ import { CredentialAPI } from '../../../gateways';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
 import {
-  selectCredentialsStatus,
+  fetchCredentialsStatus,
   selectSearchedCredentials,
+  fetchCredentialsError,
 } from '../../../store/credentials/selectors';
 import { fetchCredentials } from '../../../store/credentials/thunk';
+import useApiErrorHandler from '../../../hooks/useApiErrorHandler';
 import FloatingActionButton from '../../../components/Buttons/FloatingActionButton';
 import { selectUser } from '../../../store/auth/selectors';
-import { selectDevelopmentMode } from '../../../store/app/selectors';
+import { selectDevelopmentMode, selectNetworkStatus } from '../../../store/app/selectors';
 import { updateWebViewUrl } from '../../../store/app';
 import EmptyCredentials from '../EmptyCredentials';
 import CredentialCard from './CredentialCard';
+import { _showAlert } from '../../../helpers';
 
 function Credentials(props) {
   // Constants
@@ -37,19 +40,37 @@ function Credentials(props) {
 
   // Selectors
   const { t } = useTranslation();
-  const credentialStatus = useAppSelector(selectCredentialsStatus);
+  const { initial, loading } = useAppSelector(fetchCredentialsStatus);
   const searchedCredentials = useAppSelector(state => selectSearchedCredentials(state, search));
+  const networkStatus = useAppSelector(selectNetworkStatus);
+
+  // Error Handling
+  const error = useAppSelector(fetchCredentialsError);
+  useApiErrorHandler(error);
 
   useFocusEffect(
     useCallback(() => {
-      if (credentialStatus === 'initial') {
+      if (networkStatus !== 'connected') {
+        _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+        return;
+      }
+      if (initial) {
         dispatch(fetchCredentials());
       }
-    }, [credentialStatus])
+    }, [initial, networkStatus])
   );
 
+  // Refresh List
+  const refreshHandler = () => {
+    if (networkStatus !== 'connected') {
+      _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+      return;
+    }
+    dispatch(fetchCredentials());
+  };
+
   // Function
-  const toggleModal = v => {
+  const viewCredentialDetail = v => {
     props.navigation.navigate('CredDetailScreen', {
       credentialId: v.credentialId,
     });
@@ -91,14 +112,9 @@ function Credentials(props) {
           subtitle: item.organizationName,
           issueDate: date,
         }}
-        onPress={() => toggleModal(item)}
+        onPress={() => viewCredentialDetail(item)}
       />
     );
-  };
-
-  // Refresh List
-  const refreshHandler = () => {
-    dispatch(fetchCredentials());
   };
 
   const onRequestCredentialPress = async () => {
@@ -116,7 +132,6 @@ function Credentials(props) {
       setLoader(false);
     } catch (error) {
       setLoader(false);
-      console.log({ error });
     }
   };
   const onRequestCovidPass = () => {
@@ -129,14 +144,10 @@ function Credentials(props) {
   return (
     <>
       <View style={themeStyles.mainContainer}>
-        {/* {loader && <OverlayLoader text="Please wait..." height={'100%'} width={'100%'} />} */}
+        {loader && <OverlayLoader text="Please wait..." height={'100%'} width={'100%'} />}
         <FlatList
           refreshControl={
-            <RefreshControl
-              tintColor={'#7e7e7e'}
-              refreshing={credentialStatus === 'loading'}
-              onRefresh={refreshHandler}
-            />
+            <RefreshControl tintColor={'#7e7e7e'} refreshing={loading} onRefresh={refreshHandler} />
           }
           showsVerticalScrollIndicator={false}
           style={styles.flatListStyle}

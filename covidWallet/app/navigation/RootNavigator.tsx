@@ -3,8 +3,6 @@ import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import SpInAppUpdates, { IAUUpdateKind, StartUpdateOptions } from 'sp-react-native-in-app-updates';
 
-import useInit from '../hooks/useInit';
-
 import { useAppSelector } from '../store';
 import { selectIsAuthorized } from '../store/auth/selectors';
 import { selectNetworkStatus } from '../store/app/selectors';

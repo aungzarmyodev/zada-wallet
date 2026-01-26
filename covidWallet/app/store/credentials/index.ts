@@ -5,7 +5,9 @@ import { CredentialAdapter } from './selectors';
 
 // State initialization
 export const CredentialState: ICredentialState = {
-  status: 'initial',
+  fetchCredentials: 'initial',
+  addCredential: 'initial',
+  deleteCredential: 'initial',
   error: {
     code: undefined,
     message: undefined,
@@ -22,62 +24,83 @@ export const slice = createSlice({
     updateCredential: CredentialAdapter.updateOne,
     deleteCredential: CredentialAdapter.removeOne,
 
-    changeCredentialStatus(state, action) {
-      state.status = action.payload;
+    resetFetchCredentialStatus(state) {
+      state.fetchCredentials = 'initial';
     },
+
+    resetDeleteCredentialStatus(state) {
+      state.deleteCredential = 'initial';
+    },
+
+    resetAddCredentialStatus(state) {
+      state.addCredential = 'initial';
+    },
+
+    // changeCredentialStatus(state, action) {
+    //   state.fetchCredentials = action.payload;
+    //   state.addCredential = action.payload;
+    //   state.deleteCredential = action.payload;
+    // },
     resetCredential: () => CredentialAdapter.getInitialState(CredentialState),
   },
   extraReducers: builder => {
     builder.addCase(fetchCredentials.pending, (state, action) => {
-      if (state.status === 'loading') return;
-      state.status = 'loading';
+      if (state.fetchCredentials === 'loading') return;
+      state.fetchCredentials = 'loading';
     });
     builder.addCase(fetchCredentials.fulfilled, (state, action) => {
       if (action.payload.success) {
         CredentialAdapter.upsertMany(state, action.payload.credentials);
-        state.status = 'success';
+        state.fetchCredentials = 'success';
       }
     });
     builder.addCase(fetchCredentials.rejected, (state, action) => {
-      state.status = 'error';
+      state.fetchCredentials = 'error';
       state.error = action?.error;
     });
 
     // Add Credential
     builder.addCase(addCredential.pending, (state, action) => {
-      if (state.status === 'loading') return;
-      state.status = 'loading';
+      if (state.addCredential === 'loading') return;
+      state.addCredential = 'loading';
     });
     builder.addCase(addCredential.fulfilled, (state, action) => {
       if (action.payload.success) {
         CredentialAdapter.upsertMany(state, action.payload.credentials);
-        state.status = 'success';
+        state.addCredential = 'success';
       }
     });
     builder.addCase(addCredential.rejected, (state, action) => {
-      state.status = 'error';
+      state.addCredential = 'error';
       state.error = action?.error;
     });
 
     // Remove Credentials
     builder.addCase(removeCredentials.pending, (state, action) => {
-      state.status = 'pending';
+      if (state.deleteCredential === 'loading') return;
+      state.deleteCredential = 'loading';
     });
     builder.addCase(removeCredentials.fulfilled, (state, action) => {
       if (action.payload.success) {
-        state.status = 'success';
+        state.deleteCredential = 'success';
       }
     });
     builder.addCase(removeCredentials.rejected, (state, action) => {
-      state.status = 'error';
+      state.deleteCredential = 'error';
       state.error = action?.error;
     });
   },
 });
 
 // Exporting Actions
-export const { changeCredentialStatus, updateCredential, deleteCredential, resetCredential } =
-  slice.actions;
+export const {
+  resetFetchCredentialStatus,
+  resetDeleteCredentialStatus,
+  resetAddCredentialStatus,
+  updateCredential,
+  deleteCredential,
+  resetCredential,
+} = slice.actions;
 
 // export const {
 //     selectAll: selectAllCredentials,

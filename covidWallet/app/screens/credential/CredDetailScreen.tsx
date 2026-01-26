@@ -16,7 +16,7 @@ import {
   _showAlert,
 } from '../../helpers';
 import { AppDispatch, RootState, useAppDispatch, useAppSelector } from '../../store';
-import { selectCredentialsStatus, selectSingleCredential } from '../../store/credentials/selectors';
+import { deleteCredentialStatus, selectSingleCredential } from '../../store/credentials/selectors';
 
 import OverlayLoader from '../../components/OverlayLoader';
 import CredQRModal from './components/CredQRModal';
@@ -45,7 +45,7 @@ const CredDetailScreen = (props: IProps) => {
 
   // Selectors
   const { t } = useTranslation();
-  const credentialStatus = useAppSelector(selectCredentialsStatus);
+  const credentialStatus = useAppSelector(deleteCredentialStatus);
   const networkStatus = useAppSelector(selectNetworkStatus);
 
   // States
@@ -59,12 +59,12 @@ const CredDetailScreen = (props: IProps) => {
 
   // Useeffects
   useEffect(() => {
-    if (credentialStatus === 'succeeded') {
+    if (credentialStatus === 'success') {
       let message: string = t('messages.success_certificate_deletion');
       showMessage('ZADA Wallet', message);
       props.navigation.goBack();
     }
-    if (credentialStatus === 'failed') {
+    if (credentialStatus === 'error') {
       let message: string = t('messages.failed_certificate_deletion');
       showMessage('ZADA Wallet', message);
     }
@@ -96,16 +96,7 @@ const CredDetailScreen = (props: IProps) => {
             name="share"
           />
           <MaterialIcons
-            onPress={() =>
-              credentialStatus === 'idle'
-                ? showAskDialog(
-                    'Are you sure?',
-                    t('messages.delete_certificate'),
-                    onSuccess,
-                    () => {}
-                  )
-                : {}
-            }
+            onPress={() => onDelete()}
             style={styles.headerRightIcon}
             size={25}
             name="delete"
@@ -119,7 +110,7 @@ const CredDetailScreen = (props: IProps) => {
   const createAndSharePDF = async (isDownload: boolean = false) => {
     // Return if internet is unavailable
     if (networkStatus === 'disconnected') {
-      showNetworkMessage();
+      _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
       return;
     }
     setGeneratingPDF(true);
@@ -197,16 +188,24 @@ const CredDetailScreen = (props: IProps) => {
   const openQRModal = async (bool: boolean) => {
     if (networkStatus === 'disconnected') {
       if (data?.qrCode === undefined) {
-        showNetworkMessage();
+        _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
         return;
       }
     }
     setShowQRModal(bool);
   };
 
-  async function onSuccess() {
+  const onDelete = () => {
+    if (networkStatus === 'disconnected') {
+      _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+      return;
+    }
+    showAskDialog('Are you sure?', t('messages.delete_certificate'), onConfirmDelete, () => {});
+  };
+
+  const onConfirmDelete = async () => {
     dispatch(removeCredentials(data.credentialId));
-  }
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -224,7 +223,7 @@ const CredDetailScreen = (props: IProps) => {
         )}
       </View>
       <View style={styles.innerContainer}>
-        {credentialStatus === 'pending' && (
+        {credentialStatus === 'loading' && (
           <OverlayLoader text={t('messages.deleting_certificate')} />
         )}
 

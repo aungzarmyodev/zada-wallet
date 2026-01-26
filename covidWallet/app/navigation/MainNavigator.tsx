@@ -25,10 +25,12 @@ import { navigationRef } from './utils';
 import VerificationRequestScreen from '../screens/verification_request_screen/VerificationRequestScreen';
 import ConnectionBaseVerificationScreen from '../screens/verification_request_screen/ConnectionBaseVerificationScreen';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { fetchActions } from '../store/actions/thunk';
 import { fetchCredentials } from '../store/credentials/thunk';
 import { fetchConnections } from '../store/connections/thunk';
+import { selectNetworkStatus } from '../store/app/selectors';
+import { _showAlert } from '../helpers';
 
 const navigationAnimation =
   Platform.OS == 'ios'
@@ -38,6 +40,7 @@ const navigationAnimation =
 const MainNavigator = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const networkStatus = useAppSelector(selectNetworkStatus);
 
   const backIcon = Platform.OS === 'ios' ? 'chevron-left' : 'arrow-back';
 
@@ -58,6 +61,11 @@ const MainNavigator = () => {
 
   const onRefresh = async (route: any) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? t('common.actions');
+
+    if (networkStatus !== 'connected') {
+      _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+      return;
+    }
 
     switch (routeName) {
       case 'Actions':

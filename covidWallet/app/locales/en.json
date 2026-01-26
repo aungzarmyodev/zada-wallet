@@ -208,7 +208,9 @@
     "verification_fail_title": "Verification Failed",
     "verification_fail_message": "Failed to verify the QR code. Please try again.",
     "verification_fail_title_1": "Error",
-    "verification_fail_message_1": "An error occurred while processing the QR code. Please try again."
+    "verification_fail_message_1": "An error occurred while processing the QR code. Please try again.",
+    "no_internet_title": "No internet connection!",
+    "no_internet_message": "Please check your internet connection and try again."
   },
   "messages": {
     "delete_account": "Do you want to DELETE your account?",
