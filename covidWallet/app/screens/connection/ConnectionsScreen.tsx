@@ -22,12 +22,12 @@ function ConnectionsScreen() {
   // Selectors
   const { t } = useTranslation();
   const {
-    connections,
+    acceptConnections,
     connectionlist,
     onAcceptConnection,
     onDeleteConnection,
     refreshConnections,
-    fetchAllConnections,
+    fetchAcceptConnections,
   } = useConnections();
   const connectionStatus = useAppSelector(selectConnectionsStatus);
   const networkStatus = useAppSelector(selectNetworkStatus);
@@ -42,12 +42,12 @@ function ConnectionsScreen() {
         return;
       }
       if (connectionStatus === 'initial') {
-        fetchAllConnections();
+        fetchAcceptConnections();
       }
     }, [connectionStatus, networkStatus])
   );
 
-  async function handleAddButton() {
+  async function addConnection() {
     setVisible(true);
   }
 
@@ -116,7 +116,7 @@ function ConnectionsScreen() {
         {connectionStatus === 'accepting_connection' && (
           <OverlayLoader text="Creating Connection..." />
         )}
-        {connections.length > 0 && (
+        {acceptConnections.length > 0 && (
           <View style={styles.row}>
             <MaterialCommunityIcons name="lock" size={16} color={AppColors.BLACK} />
             <Text style={styles.message}>{t('EmptyConnections.secure_message')}</Text>
@@ -129,7 +129,7 @@ function ConnectionsScreen() {
           <SwipeListView
             showsVerticalScrollIndicator={false}
             refreshControl={
-              connections.length > 0 ? (
+              acceptConnections.length > 0 ? (
                 <RefreshControl
                   tintColor={'#7e7e7e'}
                   refreshing={connectionStatus === 'loading'}
@@ -141,7 +141,7 @@ function ConnectionsScreen() {
             disableRightSwipe
             disableLeftSwipe={false}
             ListEmptyComponent={EmptyConnections}
-            data={connections}
+            data={acceptConnections}
             style={styles.flatListStyle}
             contentContainerStyle={styles.flatListStyle}
             keyExtractor={(rowData, index) => {
@@ -157,7 +157,7 @@ function ConnectionsScreen() {
 
       <>
         <View style={{ bottom: 10 }}>
-          <FloatingActionButton buttonColor={AppColors.PRIMARY} onPress={handleAddButton} />
+          <FloatingActionButton buttonColor={AppColors.PRIMARY} onPress={addConnection} />
         </View>
 
         <SelectModal

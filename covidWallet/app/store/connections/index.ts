@@ -1,6 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IConnectionList, IConnectionState } from './interface';
-import { removeConnection, fetchConnections, acceptConnection, fetchConnectionList } from './thunk';
+import {
+  removeConnection,
+  fetchAcceptConnectionList,
+  acceptConnection,
+  fetchAllConnectionList,
+} from './thunk';
 import { ConnectionAdapter } from './selectors';
 
 // State initialization
@@ -34,18 +39,18 @@ export const slice = createSlice({
     resetConnection: () => ConnectionAdapter.getInitialState(ConnectionState),
   },
   extraReducers: builder => {
-    // Fetch connection.
-    builder.addCase(fetchConnections.pending, (state, action) => {
+    // Fetch accept connection.
+    builder.addCase(fetchAcceptConnectionList.pending, (state, action) => {
       if (state.status === 'loading') return;
       state.status = 'loading';
     });
-    builder.addCase(fetchConnections.fulfilled, (state, action) => {
+    builder.addCase(fetchAcceptConnectionList.fulfilled, (state, action) => {
       if (action.payload.success) {
         ConnectionAdapter.upsertMany(state, action.payload.connections);
         state.status = 'success';
       }
     });
-    builder.addCase(fetchConnections.rejected, (state, action) => {
+    builder.addCase(fetchAcceptConnectionList.rejected, (state, action) => {
       state.status = 'error';
       state.error = action?.error;
     });
@@ -78,11 +83,11 @@ export const slice = createSlice({
       state.error = action?.error;
     });
 
-    // Get Connection list
-    builder.addCase(fetchConnectionList.pending, (state, action) => {
+    // Get all connection list
+    builder.addCase(fetchAllConnectionList.pending, (state, action) => {
       state.status = 'loading';
     });
-    builder.addCase(fetchConnectionList.fulfilled, (state, action) => {
+    builder.addCase(fetchAllConnectionList.fulfilled, (state, action) => {
       if (action.payload) {
         state.status = 'success';
         let connectionsArray = [] as IConnectionList[];
@@ -99,7 +104,7 @@ export const slice = createSlice({
         state.connectionlist = connectionsArray;
       }
     });
-    builder.addCase(fetchConnectionList.rejected, (state, action) => {
+    builder.addCase(fetchAllConnectionList.rejected, (state, action) => {
       state.status = 'error';
       state.error = action?.error;
     });

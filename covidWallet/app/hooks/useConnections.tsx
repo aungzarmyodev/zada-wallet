@@ -3,8 +3,8 @@ import { AppDispatch, useAppDispatch, useAppSelector } from '../store';
 import { selectConnectionList, selectConnections } from '../store/connections/selectors';
 import {
   acceptConnection,
-  fetchConnectionList,
-  fetchConnections,
+  fetchAllConnectionList,
+  fetchAcceptConnectionList,
   removeConnection,
 } from '../store/connections/thunk';
 import { updateConnectionlist } from '../store/connections';
@@ -18,24 +18,25 @@ const useConnections = () => {
 
   // Selectors
   const user = useAppSelector(selectUser);
-  const connections = useAppSelector(selectConnections.selectAll);
+  const acceptConnections = useAppSelector(selectConnections.selectAll);
   const allConnectionlist = useAppSelector(selectConnectionList);
+
   const connectionlist = useAppSelector(selectConnectionList).map(item => {
     return { label: item.name, value: item.metadata, imageUrl: item.image };
   });
 
   // UseEffect
-  // useEffect(() => {
-  //   dispatch(fetchConnectionList());
-  // }, []);
+  useEffect(() => {
+    dispatch(fetchAllConnectionList());
+  }, []);
 
-  const fetchAllConnections = () => {
-    dispatch(fetchConnections());
+  const fetchAcceptConnections = () => {
+    dispatch(fetchAcceptConnectionList());
   };
 
-  // Functions
+  // pull to refresh
   const refreshConnections = () => {
-    dispatch(fetchConnections());
+    dispatch(fetchAcceptConnectionList());
   };
 
   const onAcceptConnection = (metadata: string) => {
@@ -72,7 +73,7 @@ const useConnections = () => {
       }
 
       await dispatch(removeConnection(connectionId)).unwrap();
-      await dispatch(fetchConnectionList(user.country));
+      await dispatch(fetchAllConnectionList());
 
       return { success: true, message: 'messages.delete_connection_success' };
     } catch (error) {
@@ -81,12 +82,12 @@ const useConnections = () => {
   };
 
   return {
-    connections,
+    acceptConnections,
     connectionlist,
     onAcceptConnection,
     onDeleteConnection,
     refreshConnections,
-    fetchAllConnections,
+    fetchAcceptConnections,
   };
 };
 
