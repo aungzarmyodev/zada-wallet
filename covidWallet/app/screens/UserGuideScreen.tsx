@@ -10,7 +10,9 @@ const UserGuideScreen = () => {
   return (
     <View style={styles.container}>
       <WebView
-        source={{ uri: 'https://www.youtube.com/' }}
+        source={{
+          uri: 'https://www.youtube.com/watch?v=s3qkF-4XuBE&list=PLxllU3XdIYH4by_ewNsa6e0aj47D4LqEq',
+        }}
         onLoadStart={() => {
           if (!pageLoaded) {
             setLoading(true);
