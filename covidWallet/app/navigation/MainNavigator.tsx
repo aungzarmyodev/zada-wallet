@@ -113,14 +113,12 @@ const MainNavigator = () => {
           ),
           headerTitleAlign: 'center',
           headerLeft: () => (
-            <FontAwesome
+            <TouchableOpacity
               onPress={() => {
                 navigationRef.navigate('SettingsScreen');
-              }}
-              style={styles.headerRightIcon}
-              size={30}
-              name="navicon"
-            />
+              }}>
+              <MaterialIcons size={28} name="menu" style={styles.headerRightIcon} />
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -130,14 +128,12 @@ const MainNavigator = () => {
                 }}>
                 <MaterialIcons size={28} name="refresh" style={styles.headerRightIcon} />
               </TouchableOpacity>
-              <MaterialCommunityIcons
+              <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('NewQRScreen');
-                }}
-                style={styles.headerRightIcon}
-                size={30}
-                name="qrcode"
-              />
+                }}>
+                <MaterialIcons size={28} name="qr-code-scanner" style={styles.headerRightIcon} />
+              </TouchableOpacity>
             </View>
           ),
         })}

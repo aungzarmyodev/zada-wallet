@@ -33,7 +33,10 @@
     "title": "We've just sent you a verification code",
     "sub_title_1": "We just sent you the verification code to",
     "sub_title_2": "please verify.",
-    "resend_otp": "Resend OTP"
+    "resend_otp": "Resend OTP",
+    "sms": "Send via SMS",
+    "wahtsapp": "Send via WhatsApp",
+    "didnt_receive_code": "Didn't get a code?"
   },
   "RegistrationScreen": {
     "title": "Hello",
