@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TransitionPresets } from '@react-navigation/stack';
 import { Platform, Text, View, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +24,7 @@ import LanguageSelectionScreen from '../screens/settings/LanguageSelectionScreen
 import { navigationRef } from './utils';
 import VerificationRequestScreen from '../screens/verification_request_screen/VerificationRequestScreen';
 import ConnectionBaseVerificationScreen from '../screens/verification_request_screen/ConnectionBaseVerificationScreen';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { getFocusedRouteNameFromRoute, useIsFocused } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchActions } from '../store/actions/thunk';
 import { fetchCredentials } from '../store/credentials/thunk';
@@ -32,11 +32,15 @@ import { fetchAcceptConnectionList } from '../store/connections/thunk';
 import { selectNetworkStatus } from '../store/app/selectors';
 import { _showAlert } from '../helpers';
 import VerifyQRScreen from '../screens/verification_request_screen/VerifyQRScreen';
+import useAppWalkThrough from '../hooks/useAppWalkThrough';
+import { CopilotStep, walkthroughable } from 'react-native-copilot';
 
 const navigationAnimation =
   Platform.OS == 'ios'
     ? TransitionPresets.DefaultTransition
     : TransitionPresets.RevealFromBottomAndroid;
+
+const CopilotTouchableOpacity = walkthroughable(TouchableOpacity);
 
 const MainNavigator = () => {
   const { t } = useTranslation();
@@ -59,6 +63,9 @@ const MainNavigator = () => {
         return routeName;
     }
   }
+
+  // start app walkthrough
+  useAppWalkThrough();
 
   const onRefresh = async (route: any) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? t('common.actions');
@@ -113,27 +120,33 @@ const MainNavigator = () => {
           ),
           headerTitleAlign: 'center',
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigationRef.navigate('SettingsScreen');
-              }}>
-              <MaterialIcons size={28} name="menu" style={styles.headerRightIcon} />
-            </TouchableOpacity>
+            <CopilotStep text="Open the menu to access settings." order={1} name="menuStep">
+              <CopilotTouchableOpacity
+                onPress={() => {
+                  navigationRef.navigate('SettingsScreen');
+                }}>
+                <MaterialIcons size={28} name="menu" style={styles.headerRightIcon} />
+              </CopilotTouchableOpacity>
+            </CopilotStep>
           ),
           headerRight: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TouchableOpacity
-                onPress={() => {
-                  onRefresh(route);
-                }}>
-                <MaterialIcons size={28} name="refresh" style={styles.headerRightIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('NewQRScreen');
-                }}>
-                <MaterialIcons size={28} name="qr-code-scanner" style={styles.headerRightIcon} />
-              </TouchableOpacity>
+              <CopilotStep text="Tap here to refresh your data." order={2} name="refreshStep">
+                <CopilotTouchableOpacity
+                  onPress={() => {
+                    onRefresh(route);
+                  }}>
+                  <MaterialIcons name="refresh" size={28} style={styles.headerRightIcon} />
+                </CopilotTouchableOpacity>
+              </CopilotStep>
+              <CopilotStep text="Scan a QR code to connect." order={3} name="qrStep">
+                <CopilotTouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('NewQRScreen');
+                  }}>
+                  <MaterialIcons name="qr-code-scanner" size={28} style={styles.headerRightIcon} />
+                </CopilotTouchableOpacity>
+              </CopilotStep>
             </View>
           ),
         })}
