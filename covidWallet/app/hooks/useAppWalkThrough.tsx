@@ -1,13 +1,29 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCopilot } from 'react-native-copilot';
 
+const WALKTHROUGH_KEY = '@app_walkthrough_completed';
+
 const useAppWalkThrough = () => {
   const { start, copilotEvents } = useCopilot();
-  const hasStarted = useRef(false);
 
   useEffect(() => {
-    if (hasStarted.current) return;
+    const checkAndStartWalkthrough = async () => {
+      try {
+        // 1. Check if the user has already seen it
+        const hasSeenWalkthrough = await AsyncStorage.getItem(WALKTHROUGH_KEY);
+
+        if (hasSeenWalkthrough !== 'true') {
+          // 2. Start the walkthrough
+          start();
+
+          // 3. Save to storage so it never runs again
+          await AsyncStorage.setItem(WALKTHROUGH_KEY, 'true');
+        }
+      } catch (error) {
+        console.error('Error checking walkthrough status:', error);
+      }
+    };
 
     const handleStepChange = (step: any) => {
       console.log('Moving to step:', step.name);
@@ -15,18 +31,16 @@ const useAppWalkThrough = () => {
 
     copilotEvents.on('stepChange', handleStepChange);
 
+    // Small delay to ensure the UI is fully mounted
     const timer = setTimeout(() => {
-      if (!hasStarted.current) {
-        hasStarted.current = true;
-        start();
-      }
-    }, 1500);
+      checkAndStartWalkthrough();
+    }, 500);
 
     return () => {
       copilotEvents.off('stepChange', handleStepChange);
       clearTimeout(timer);
     };
-  }, [start]);
+  }, [start, copilotEvents]);
 };
 
 export default useAppWalkThrough;
