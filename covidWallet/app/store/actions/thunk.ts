@@ -3,7 +3,7 @@ import { RootState } from '..';
 import { CredentialAPI, VerificationAPI } from '../../gateways';
 import ConstantsList from '../../helpers/ConfigApp';
 import { IConnectionObject } from '../connections/interface';
-import { fetchConnections } from '../connections/thunk';
+import { fetchAcceptConnectionList } from '../connections/thunk';
 
 export const fetchActions = createAsyncThunk(
   'actions/fetchActions',
@@ -13,7 +13,7 @@ export const fetchActions = createAsyncThunk(
 
       //  connections exist
       if (Object.keys(state.connection.entities).length === 0) {
-        await dispatch(fetchConnections()).unwrap();
+        await dispatch(fetchAcceptConnectionList()).unwrap();
         state = getState() as RootState;
       }
 

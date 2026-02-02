@@ -56,7 +56,7 @@ import {
   selectVerificationActions,
 } from '../../store/actions/selectors';
 import { deleteAction } from '../../store/actions';
-import { fetchConnections } from '../../store/connections/thunk';
+import { fetchAcceptConnectionList } from '../../store/connections/thunk';
 import { selectCredentials } from '../../store/credentials/selectors';
 import { selectNetworkStatus } from '../../store/app/selectors';
 import { fetchCredentials } from '../../store/credentials/thunk';
@@ -279,7 +279,7 @@ function ActionsScreen({ navigation }) {
             let conn = actions.find(x => x.connectionId === selectedItemObj.connectionId);
 
             // Adding Connection
-            dispatch(fetchConnections());
+            dispatch(fetchAcceptConnectionList());
 
             // Deleting Action
             dispatch(deleteAction(conn.connectionId));
