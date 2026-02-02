@@ -32,15 +32,14 @@ import { fetchAcceptConnectionList } from '../store/connections/thunk';
 import { selectNetworkStatus } from '../store/app/selectors';
 import { _showAlert } from '../helpers';
 import VerifyQRScreen from '../screens/verification_request_screen/VerifyQRScreen';
-import useAppWalkThrough from '../hooks/useAppWalkThrough';
-import { CopilotStep, walkthroughable } from 'react-native-copilot';
+import AppTooltip from '../components/tooltip/AppTooltip';
+import useAppTour from '../hooks/useAppTour';
+import { AppTooltipKeys } from '../helpers/AppTooltipKeys';
 
 const navigationAnimation =
   Platform.OS == 'ios'
     ? TransitionPresets.DefaultTransition
     : TransitionPresets.RevealFromBottomAndroid;
-
-const CopilotTouchableOpacity = walkthroughable(TouchableOpacity);
 
 const MainNavigator = () => {
   const { t } = useTranslation();
@@ -65,7 +64,11 @@ const MainNavigator = () => {
   }
 
   // start app walkthrough
-  useAppWalkThrough();
+  const { activeStep, onNext, onSkip } = useAppTour({
+    tooltipKey: AppTooltipKeys.MAIN_SCREEN,
+    totalSteps: 3,
+    delay: 500,
+  });
 
   const onRefresh = async (route: any) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? t('common.actions');
@@ -120,33 +123,54 @@ const MainNavigator = () => {
           ),
           headerTitleAlign: 'center',
           headerLeft: () => (
-            <CopilotStep text="Open the menu to access settings." order={1} name="menuStep">
-              <CopilotTouchableOpacity
+            <AppTooltip
+              isVisible={activeStep === 1}
+              message="Open the menu to access settings."
+              onNext={onNext}
+              onSkip={onSkip}
+              isLastStep={false}
+              placement="bottom"
+              spacing={-60}>
+              <TouchableOpacity
                 onPress={() => {
                   navigationRef.navigate('SettingsScreen');
                 }}>
                 <MaterialIcons size={28} name="menu" style={styles.headerRightIcon} />
-              </CopilotTouchableOpacity>
-            </CopilotStep>
+              </TouchableOpacity>
+            </AppTooltip>
           ),
           headerRight: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <CopilotStep text="Tap here to refresh your data." order={2} name="refreshStep">
-                <CopilotTouchableOpacity
+              <AppTooltip
+                isVisible={activeStep === 2}
+                message="Tap here to refresh your data."
+                onNext={onNext}
+                onSkip={onSkip}
+                isLastStep={false}
+                placement="bottom"
+                spacing={-60}>
+                <TouchableOpacity
                   onPress={() => {
                     onRefresh(route);
                   }}>
                   <MaterialIcons name="refresh" size={28} style={styles.headerRightIcon} />
-                </CopilotTouchableOpacity>
-              </CopilotStep>
-              <CopilotStep text="Scan a QR code to connect." order={3} name="qrStep">
-                <CopilotTouchableOpacity
+                </TouchableOpacity>
+              </AppTooltip>
+              <AppTooltip
+                isVisible={activeStep === 3}
+                message="Tap here to scan a QR code."
+                onNext={onNext}
+                onSkip={onSkip}
+                isLastStep={true}
+                placement="bottom"
+                spacing={-60}>
+                <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('NewQRScreen');
                   }}>
                   <MaterialIcons name="qr-code-scanner" size={28} style={styles.headerRightIcon} />
-                </CopilotTouchableOpacity>
-              </CopilotStep>
+                </TouchableOpacity>
+              </AppTooltip>
             </View>
           ),
         })}
@@ -262,6 +286,7 @@ const MainNavigator = () => {
           headerStyle: {
             backgroundColor: BACKGROUND_COLOR,
           },
+          headerShown: false,
           headerTitle: () => (
             <Text
               maxFontSizeMultiplier={1.9}

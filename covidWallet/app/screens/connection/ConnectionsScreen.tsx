@@ -17,6 +17,9 @@ import FloatingActionButton from '../../components/Buttons/FloatingActionButton'
 import EmptyConnections from './EmptyConnection';
 import { useFocusEffect } from '@react-navigation/native';
 import { selectNetworkStatus } from '../../store/app/selectors';
+import useAppTour from '../../hooks/useAppTour';
+import { AppTooltipKeys } from '../../helpers/AppTooltipKeys';
+import AppTooltip from '../../components/tooltip/AppTooltip';
 
 function ConnectionsScreen() {
   // Selectors
@@ -34,6 +37,12 @@ function ConnectionsScreen() {
 
   // States
   const [isVisible, setVisible] = useState(false);
+
+  // show app tooltip
+  const { activeStep, onNext, onSkip } = useAppTour({
+    tooltipKey: AppTooltipKeys.CONNECTIONS_SCREEN,
+    totalSteps: 1,
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -157,7 +166,17 @@ function ConnectionsScreen() {
 
       <>
         <View style={{ bottom: 10 }}>
-          <FloatingActionButton buttonColor={AppColors.PRIMARY} onPress={addConnection} />
+          <AppTooltip
+            isVisible={activeStep === 1}
+            message="Tap here to add a new Connection."
+            onNext={onNext}
+            onSkip={onSkip}
+            isLastStep={true}
+            placement="bottom"
+            spacing={-200}
+            arrowSize={{ width: 0, height: 0 }}>
+            <FloatingActionButton buttonColor={AppColors.PRIMARY} onPress={addConnection} />
+          </AppTooltip>
         </View>
 
         <SelectModal

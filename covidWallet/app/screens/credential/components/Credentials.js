@@ -27,6 +27,9 @@ import { updateWebViewUrl } from '../../../store/app';
 import EmptyCredentials from '../EmptyCredentials';
 import CredentialCard from './CredentialCard';
 import { _showAlert } from '../../../helpers';
+import AppTooltip from '../../../components/tooltip/AppTooltip';
+import useAppTour from '../../../hooks/useAppTour';
+import { AppTooltipKeys } from '../../../helpers/AppTooltipKeys';
 
 function Credentials(props) {
   // Constants
@@ -43,6 +46,12 @@ function Credentials(props) {
   const { initial, loading } = useAppSelector(fetchCredentialsStatus);
   const searchedCredentials = useAppSelector(state => selectSearchedCredentials(state, search));
   const networkStatus = useAppSelector(selectNetworkStatus);
+
+  // show app tooltip
+  const { activeStep, onNext, onSkip } = useAppTour({
+    tooltipKey: AppTooltipKeys.CREDENTIALS_SCREEN,
+    totalSteps: 1,
+  });
 
   // Error Handling
   const error = useAppSelector(fetchCredentialsError);
@@ -161,47 +170,58 @@ function Credentials(props) {
           renderItem={renderItem}
         />
       </View>
+
       <View style={styles.floatingBtnContainerStyle}>
-        <FloatingActionButton
-          buttonColor={AppColors.PRIMARY}
-          actionItems={
-            developmentMode
-              ? [
-                  {
-                    title: 'myzada.info',
-                    onPress: onRequestZadaCredential,
-                    imageSrc: zadaLogo,
-                    buttonColor: AppColors.WHITE,
-                  },
-                  {
-                    title: 'phh.covidpass.id',
-                    onPress: onRequestCovidPass,
-                    imageSrc: phhLogo,
-                    buttonColor: AppColors.WHITE,
-                  },
-                  {
-                    title: 'Add Credential',
-                    onPress: onRequestCredentialPress,
-                    iconName: 'badge-account-horizontal-outline',
-                    buttonColor: AppColors.WHITE,
-                  },
-                ]
-              : [
-                  {
-                    title: 'myzada.info',
-                    onPress: onRequestZadaCredential,
-                    imageSrc: zadaLogo,
-                    buttonColor: AppColors.WHITE,
-                  },
-                  {
-                    title: 'phh.covidpass.id',
-                    onPress: onRequestCovidPass,
-                    imageSrc: phhLogo,
-                    buttonColor: AppColors.WHITE,
-                  },
-                ]
-          }
-        />
+        <AppTooltip
+          isVisible={activeStep === 1}
+          message="Tap here to add a new credential."
+          onNext={onNext}
+          onSkip={onSkip}
+          isLastStep={true}
+          placement="bottom"
+          spacing={-200}
+          arrowSize={{ width: 0, height: 0 }}>
+          <FloatingActionButton
+            buttonColor={AppColors.PRIMARY}
+            actionItems={
+              developmentMode
+                ? [
+                    {
+                      title: 'myzada.info',
+                      onPress: onRequestZadaCredential,
+                      imageSrc: zadaLogo,
+                      buttonColor: AppColors.WHITE,
+                    },
+                    {
+                      title: 'phh.covidpass.id',
+                      onPress: onRequestCovidPass,
+                      imageSrc: phhLogo,
+                      buttonColor: AppColors.WHITE,
+                    },
+                    {
+                      title: 'Add Credential',
+                      onPress: onRequestCredentialPress,
+                      iconName: 'badge-account-horizontal-outline',
+                      buttonColor: AppColors.WHITE,
+                    },
+                  ]
+                : [
+                    {
+                      title: 'myzada.info',
+                      onPress: onRequestZadaCredential,
+                      imageSrc: zadaLogo,
+                      buttonColor: AppColors.WHITE,
+                    },
+                    {
+                      title: 'phh.covidpass.id',
+                      onPress: onRequestCovidPass,
+                      imageSrc: phhLogo,
+                      buttonColor: AppColors.WHITE,
+                    },
+                  ]
+            }
+          />
+        </AppTooltip>
       </View>
     </>
   );
