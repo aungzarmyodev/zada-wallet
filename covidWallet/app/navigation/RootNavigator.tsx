@@ -18,6 +18,7 @@ import { CopilotProvider } from 'react-native-copilot';
 const RootNavigator = () => {
   // for checking updates only once per app start
   const hasCheckedUpdate = useRef(false);
+  const appStarted = useRef(true);
 
   // Selectors
   const networkStatus = useAppSelector(selectNetworkStatus);
@@ -73,7 +74,7 @@ const RootNavigator = () => {
             animated={true}
             labels={{ next: 'Next', finish: 'Finish', skip: 'Skip', previous: '' }}>
             <MainNavigator />
-            <BiometricModal />
+            <BiometricModal appStarted={appStarted} />
           </CopilotProvider>
         </>
       )}
