@@ -10,8 +10,14 @@
     "pull_to_refresh": "Refresh လုပ်ရန်အောက်သို့ဆွဲချပါ",
     "actions": "လုပ်ဆောင်ချက်များ",
     "credentials": "အထောက်အထားများ",
+    "credential_detail": "Credential Detail",
     "connections": "ချိတ်ဆက်မှုများ",
     "try_again": "ထပ်မံကြိုးစားကြည့်ပါ"
+  },
+  "toolTips": {
+    "download": "Download a PDF into your device.",
+    "share": "Send this credential securely via email or other apps.",
+    "delete": "Permanently remove this credential from your wallet."
   },
   "PreferenceScreen": {
     "title": "နိုင်ငံနှင့် ဘာသာ စကားကိုရွေးပါ။",

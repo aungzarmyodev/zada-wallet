@@ -33,7 +33,7 @@ import { selectNetworkStatus } from '../store/app/selectors';
 import { _showAlert } from '../helpers';
 import VerifyQRScreen from '../screens/verification_request_screen/VerifyQRScreen';
 import AppTooltip from '../components/tooltip/AppTooltip';
-import useAppTour from '../hooks/useAppTour';
+import useAppTooltip from '../hooks/useAppTooltip';
 import { AppTooltipKeys } from '../helpers/AppTooltipKeys';
 
 const navigationAnimation =
@@ -64,7 +64,7 @@ const MainNavigator = () => {
   }
 
   // start app walkthrough
-  const { activeStep, onNext, onSkip } = useAppTour({
+  const { activeStep, onNext, onSkip } = useAppTooltip({
     tooltipKey: AppTooltipKeys.MAIN_SCREEN,
     totalSteps: 3,
     delay: 500,
@@ -287,17 +287,6 @@ const MainNavigator = () => {
             backgroundColor: BACKGROUND_COLOR,
           },
           headerShown: false,
-          headerTitle: () => (
-            <Text
-              maxFontSizeMultiplier={1.9}
-              style={{
-                fontSize: 24,
-                color: BLACK_COLOR,
-                textAlign: 'center',
-              }}>
-              Details
-            </Text>
-          ),
         })}
       />
       {/* <MainStack.Screen

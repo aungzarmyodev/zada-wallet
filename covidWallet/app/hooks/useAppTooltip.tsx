@@ -8,7 +8,7 @@ interface TourProps {
   delay?: number; // Delay before showing (default 1000ms)
 }
 
-const useAppTour = ({ tooltipKey, totalSteps, delay = 1000 }: TourProps) => {
+const useAppTooltip = ({ tooltipKey, totalSteps, delay = 1000 }: TourProps) => {
   const [activeStep, setActiveStep] = useState<number>(0); // 0 means hidden
 
   useFocusEffect(
@@ -19,7 +19,7 @@ const useAppTour = ({ tooltipKey, totalSteps, delay = 1000 }: TourProps) => {
         console.log(`Tour status for ${tooltipKey}:`, hasSeen);
 
         // If not seen, start at step 1 after the delay
-        if (hasSeen) {
+        if (!hasSeen) {
           setTimeout(() => {
             setActiveStep(1);
           }, delay);
@@ -57,4 +57,4 @@ const useAppTour = ({ tooltipKey, totalSteps, delay = 1000 }: TourProps) => {
     onSkip,
   };
 };
-export default useAppTour;
+export default useAppTooltip;

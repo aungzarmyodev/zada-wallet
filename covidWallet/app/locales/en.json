@@ -10,8 +10,14 @@
     "pull_to_refresh": "Pull to refresh",
     "actions": "Actions",
     "credentials": "Credentials",
+    "credential_detail": "Credential Detail",
     "connections": "Connections",
     "try_again": "Try Again"
+  },
+  "toolTips": {
+    "download": "Download a PDF into your device.",
+    "share": "Send this credential securely via email or other apps.",
+    "delete": "Permanently remove this credential from your wallet."
   },
   "PreferenceScreen": {
     "title": "Select Country & Language",
@@ -73,7 +79,7 @@
   },
   "ActionsScreen": {
     "empty_list_text": "There are no actions to complete, Please scan a QR code to either get a digital Credential or to prove it.",
-    "qr_code": "QR CODE",
+    "qr_code": "Scan QR",
     "notification_alert_message": "Notifications are disabled. You will not be able to receive alerts for the actions. Pull down to refresh and receive the latest actions.",
     "select_certificate": "Please select a Credential"
   },

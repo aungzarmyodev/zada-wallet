@@ -28,7 +28,7 @@ import EmptyCredentials from '../EmptyCredentials';
 import CredentialCard from './CredentialCard';
 import { _showAlert } from '../../../helpers';
 import AppTooltip from '../../../components/tooltip/AppTooltip';
-import useAppTour from '../../../hooks/useAppTour';
+import useAppTooltip from '../../../hooks/useAppTooltip';
 import { AppTooltipKeys } from '../../../helpers/AppTooltipKeys';
 
 function Credentials(props) {
@@ -48,7 +48,7 @@ function Credentials(props) {
   const networkStatus = useAppSelector(selectNetworkStatus);
 
   // show app tooltip
-  const { activeStep, onNext, onSkip } = useAppTour({
+  const { activeStep, onNext, onSkip } = useAppTooltip({
     tooltipKey: AppTooltipKeys.CREDENTIALS_SCREEN,
     totalSteps: 1,
   });

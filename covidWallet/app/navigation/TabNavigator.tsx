@@ -15,9 +15,6 @@ import ActionsScreen from '../screens/action/ActionsScreen';
 import ConnectionsScreen from '../screens/connection/ConnectionsScreen';
 import CredentialsScreen from '../screens/credential/CredentialsScreen';
 import { useTranslation } from 'react-i18next';
-import { walkthroughable, CopilotStep } from 'react-native-copilot';
-
-const CopilotTouchableOpacity = walkthroughable(TouchableOpacity);
 
 function TabNavigator() {
   // Constants
@@ -62,11 +59,6 @@ function TabNavigator() {
           headerShown: false,
           tabBarActiveTintColor: PRIMARY_COLOR,
           tabBarInactiveTintColor: SECONDARY_COLOR,
-          tabBarButton: props => (
-            <CopilotStep text="View your notifications here." order={4} name="tabActions">
-              <CopilotTouchableOpacity {...props} />
-            </CopilotStep>
-          ),
         }}
       />
       <TabStack.Screen
@@ -77,11 +69,6 @@ function TabNavigator() {
           headerShown: false,
           tabBarActiveTintColor: PRIMARY_COLOR,
           tabBarInactiveTintColor: SECONDARY_COLOR,
-          tabBarButton: props => (
-            <CopilotStep text="Manage your digital IDs." order={5} name="tabCredentials">
-              <CopilotTouchableOpacity {...props} />
-            </CopilotStep>
-          ),
         }}
       />
       <TabStack.Screen
@@ -92,11 +79,6 @@ function TabNavigator() {
           headerShown: false,
           tabBarActiveTintColor: PRIMARY_COLOR,
           tabBarInactiveTintColor: SECONDARY_COLOR,
-          tabBarButton: props => (
-            <CopilotStep text="View your connected services." order={6} name="tabConnections">
-              <CopilotTouchableOpacity {...props} />
-            </CopilotStep>
-          ),
         }}
       />
     </TabStack.Navigator>

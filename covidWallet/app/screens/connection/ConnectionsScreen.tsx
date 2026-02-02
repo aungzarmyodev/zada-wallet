@@ -17,7 +17,7 @@ import FloatingActionButton from '../../components/Buttons/FloatingActionButton'
 import EmptyConnections from './EmptyConnection';
 import { useFocusEffect } from '@react-navigation/native';
 import { selectNetworkStatus } from '../../store/app/selectors';
-import useAppTour from '../../hooks/useAppTour';
+import useAppTooltip from '../../hooks/useAppTooltip';
 import { AppTooltipKeys } from '../../helpers/AppTooltipKeys';
 import AppTooltip from '../../components/tooltip/AppTooltip';
 
@@ -39,7 +39,7 @@ function ConnectionsScreen() {
   const [isVisible, setVisible] = useState(false);
 
   // show app tooltip
-  const { activeStep, onNext, onSkip } = useAppTour({
+  const { activeStep, onNext, onSkip } = useAppTooltip({
     tooltipKey: AppTooltipKeys.CONNECTIONS_SCREEN,
     totalSteps: 1,
   });
