@@ -27,6 +27,7 @@ import useDevelopment from '../hooks/useDevelopment';
 import OverlayLoader from '../components/OverlayLoader';
 import BiometricModal from '../components/Modal/BiometricModal';
 import CustomSwitchButton from '../components/Buttons/CustomSwitchButton';
+import AppCustomAlert from '../components/Alert/AppCustomAlert';
 
 export default function SettingsScreen(props) {
   // Constants
@@ -47,6 +48,7 @@ export default function SettingsScreen(props) {
   const [isBiometricModalVisible, setBiometricModalVisible] = useState(false);
   const [isAcceptConnectionEnabled, setIsAcceptConnectionEnabled] = useState(autoAcceptConnection);
   const [version, setVersion] = useState(null);
+  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 
   // Set App Status to idle on load.
   useEffect(() => {
@@ -111,16 +113,24 @@ export default function SettingsScreen(props) {
       return;
     }
 
-    showAskDialog(
-      'Are you sure?',
-      t('messages.logout'),
-      async () => {
-        dispatch(changeAppStatus('loading'));
-        clearAllAndLogout(dispatch);
-      },
-      () => {},
-      'Ok'
-    );
+    setShowLogoutAlert(true);
+
+    // showAskDialog(
+    //   'Are you sure?',
+    //   t('messages.logout'),
+    //   async () => {
+    //     dispatch(changeAppStatus('loading'));
+    //     clearAllAndLogout(dispatch);
+    //   },
+    //   () => {},
+    //   'Ok'
+    // );
+  };
+
+  const onConfirmLogut = async () => {
+    dispatch(changeAppStatus('loading'));
+    clearAllAndLogout(dispatch);
+    setShowLogoutAlert(false);
   };
 
   // when user will click on edit profile screen
@@ -280,6 +290,17 @@ export default function SettingsScreen(props) {
             : version.version || version
         }`}</Text>
       </View>
+
+      <AppCustomAlert
+        isVisible={showLogoutAlert}
+        message={t('messages.logout')}
+        cancelText={t('common.cancel')}
+        confirmText={t('common.confirm')}
+        onConfirm={onConfirmLogut}
+        onCancel={() => {
+          setShowLogoutAlert(false);
+        }}
+      />
     </View>
   );
 }
