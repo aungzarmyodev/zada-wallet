@@ -174,12 +174,12 @@ function Credentials(props) {
       <View style={styles.floatingBtnContainerStyle}>
         <AppTooltip
           isVisible={activeStep === 1}
-          message="Tap here to add a new credential."
+          message={t('tooltips.request_credential')}
           onNext={onNext}
           onSkip={onSkip}
           isLastStep={true}
           placement="bottom"
-          spacing={-200}
+          spacing={-210}
           arrowSize={{ width: 0, height: 0 }}>
           <FloatingActionButton
             buttonColor={AppColors.PRIMARY}

@@ -168,7 +168,7 @@ function ConnectionsScreen() {
         <View style={{ bottom: 10 }}>
           <AppTooltip
             isVisible={activeStep === 1}
-            message="Tap here to add a new Connection."
+            message={t('tooltips.add_connection')}
             onNext={onNext}
             onSkip={onSkip}
             isLastStep={true}

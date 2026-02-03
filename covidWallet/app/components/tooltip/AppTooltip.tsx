@@ -55,7 +55,9 @@ const AppTooltip: React.FC<AppTooltipProps> = ({
       placement={placement}
       showChildInTooltip={false}
       childContentSpacing={spacing}
-      onClose={onSkip}
+      closeOnBackgroundInteraction={false}
+      closeOnChildInteraction={false}
+      closeOnContentInteraction={false}
       arrowSize={arrowSize}
       allowChildInteraction={false}
       backgroundColor="rgba(0,0,0,0.5)">
@@ -67,11 +69,11 @@ const AppTooltip: React.FC<AppTooltipProps> = ({
 const styles = StyleSheet.create({
   dialogContainer: {
     backgroundColor: 'white',
-    paddingTop: 8,
+    padding: 8,
   },
   dialogMessage: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#444',
     paddingHorizontal: 8,
     marginBottom: 10,
@@ -79,6 +81,7 @@ const styles = StyleSheet.create({
   dialogFooter: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginBottom: 8,
   },
   dialogAction: {
     justifyContent: 'center',

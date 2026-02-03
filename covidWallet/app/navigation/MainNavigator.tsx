@@ -67,7 +67,6 @@ const MainNavigator = () => {
   const { activeStep, onNext, onSkip } = useAppTooltip({
     tooltipKey: AppTooltipKeys.MAIN_SCREEN,
     totalSteps: 3,
-    delay: 500,
   });
 
   const onRefresh = async (route: any) => {
@@ -125,7 +124,7 @@ const MainNavigator = () => {
           headerLeft: () => (
             <AppTooltip
               isVisible={activeStep === 1}
-              message="Open the menu to access settings."
+              message={t('tooltips.setting')}
               onNext={onNext}
               onSkip={onSkip}
               isLastStep={false}
@@ -143,7 +142,7 @@ const MainNavigator = () => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <AppTooltip
                 isVisible={activeStep === 2}
-                message="Tap here to refresh your data."
+                message={t('tooltips.refresh')}
                 onNext={onNext}
                 onSkip={onSkip}
                 isLastStep={false}
@@ -158,7 +157,7 @@ const MainNavigator = () => {
               </AppTooltip>
               <AppTooltip
                 isVisible={activeStep === 3}
-                message="Tap here to scan a QR code."
+                message={t('tooltips.qr')}
                 onNext={onNext}
                 onSkip={onSkip}
                 isLastStep={true}

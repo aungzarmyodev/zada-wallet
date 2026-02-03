@@ -14,10 +14,15 @@
     "connections": "Connections",
     "try_again": "Try Again"
   },
-  "toolTips": {
-    "download": "Download a PDF into your device.",
-    "share": "Send this credential securely via email or other apps.",
-    "delete": "Permanently remove this credential from your wallet."
+  "tooltips": {
+    "setting": "Open the menu to access your settings.",
+    "refresh": "Tap here to refresh your data.",
+    "qr": "Tap here to scan a QR code.",
+    "request_credential": "Tap here to request a new credential.",
+    "add_connection": "Tap here to add a new connection.",
+    "download": "Download this credential to your device.",
+    "share": "Share this credential securely via email or other apps.",
+    "delete": "Permanently delete this credential from your wallet."
   },
   "PreferenceScreen": {
     "title": "Select Country & Language",

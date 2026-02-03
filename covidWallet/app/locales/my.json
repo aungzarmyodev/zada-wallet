@@ -14,10 +14,15 @@
     "connections": "ချိတ်ဆက်မှုများ",
     "try_again": "ထပ်မံကြိုးစားကြည့်ပါ"
   },
-  "toolTips": {
-    "download": "Download a PDF into your device.",
-    "share": "Send this credential securely via email or other apps.",
-    "delete": "Permanently remove this credential from your wallet."
+  "tooltips": {
+    "setting": "ဆက်တင်များကို အသုံးပြုရန် မီနူးကို ဖွင့်ပါ။",
+    "refresh": "ဒေတာများကို အသစ်ပြန်လည်ရယူရန် ဤနေရာကို နှိပ်ပါ။",
+    "qr": "QR ကုဒ် စကင်ဖတ်ရန် ဤနေရာကို နှိပ်ပါ။",
+    "request_credential": "သက်သေခံလက်မှတ်အသစ် တောင်းဆိုရန် ဤနေရာကို နှိပ်ပါ။",
+    "add_connection": "ချိတ်ဆက်မှုအသစ် ထည့်သွင်းရန် ဤနေရာကို နှိပ်ပါ။",
+    "download": "ဤသက်သေခံလက်မှတ်ကို သင်၏ဖုန်းထဲသို့ ဒေါင်းလုဒ်ရယူပါ။",
+    "share": "ဤသက်သေခံလက်မှတ်ကို အီးမေးလ် (သို့မဟုတ်) အခြားအက်ပ်များမှတစ်ဆင့် လုံခြုံစွာ မျှဝေပါ။",
+    "delete": "ဤသက်သေခံလက်မှတ်ကို သင်၏ Wallet ထဲမှ အပြီးတိုင် ဖျက်ပစ်ပါ။"
   },
   "PreferenceScreen": {
     "title": "နိုင်ငံနှင့် ဘာသာ စကားကိုရွေးပါ။",
