@@ -114,17 +114,6 @@ export default function SettingsScreen(props) {
     }
 
     setShowLogoutAlert(true);
-
-    // showAskDialog(
-    //   'Are you sure?',
-    //   t('messages.logout'),
-    //   async () => {
-    //     dispatch(changeAppStatus('loading'));
-    //     clearAllAndLogout(dispatch);
-    //   },
-    //   () => {},
-    //   'Ok'
-    // );
   };
 
   const onConfirmLogut = async () => {

@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 16,
     color: AppColors.TEXT_LABEL_COLOR,
-    textAlign: 'center',
-    marginBottom: 25,
+    textAlign: 'left',
+    marginBottom: 16,
     lineHeight: 22,
   },
   buttonContainer: {

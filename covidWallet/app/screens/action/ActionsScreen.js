@@ -60,6 +60,8 @@ import { fetchAcceptConnectionList } from '../../store/connections/thunk';
 import { selectCredentials } from '../../store/credentials/selectors';
 import { selectNetworkStatus } from '../../store/app/selectors';
 import { fetchCredentials } from '../../store/credentials/thunk';
+import AppCustomAlert from '../../components/Alert/AppCustomAlert';
+import { IActionObject } from '../../store/actions/interface';
 
 function ActionsScreen({ navigation }) {
   //Constants
@@ -99,6 +101,10 @@ function ActionsScreen({ navigation }) {
 
   // Deep link guard (prevents double navigation)
   const deepLinkHandledRef = useRef(false);
+
+  // show reject or delete action
+  const [selectedAction, setSelectedAction] = useState(null);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   // Notification hook
   useNotification();
@@ -505,12 +511,14 @@ function ActionsScreen({ navigation }) {
   };
 
   const onDeletePressed = item => {
-    showAskDialog(
-      'Are you sure?',
-      t('messages.delete_request'),
-      () => rejectModal(item),
-      () => {}
-    );
+    // showAskDialog(
+    //   'Are you sure?',
+    //   t('messages.delete_request'),
+    //   () => rejectModal(item),
+    //   () => {}
+    // );
+    setSelectedAction(item);
+    setShowDeleteAlert(true);
   };
 
   // Checking is Pincode set or not
@@ -696,6 +704,24 @@ function ActionsScreen({ navigation }) {
           screen="actions"
         />
       )}
+
+      <AppCustomAlert
+        isVisible={showDeleteAlert}
+        title={'Reject action'}
+        message={t('messages.delete_request')}
+        cancelText={t('common.cancel')}
+        confirmText={t('common.confirm')}
+        type="danger"
+        onConfirm={() => {
+          if (selectedAction != null) {
+            rejectModal(selectedAction);
+          }
+          setShowDeleteAlert(false);
+        }}
+        onCancel={() => {
+          setShowDeleteAlert(false);
+        }}
+      />
     </View>
   );
 }

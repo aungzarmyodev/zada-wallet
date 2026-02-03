@@ -17,6 +17,7 @@ import FloatingActionButton from '../../components/Buttons/FloatingActionButton'
 import EmptyConnections from './EmptyConnection';
 import { useFocusEffect } from '@react-navigation/native';
 import { selectNetworkStatus } from '../../store/app/selectors';
+import AppCustomAlert from '../../components/Alert/AppCustomAlert';
 import useAppTooltip from '../../hooks/useAppTooltip';
 import { AppTooltipKeys } from '../../helpers/AppTooltipKeys';
 import AppTooltip from '../../components/tooltip/AppTooltip';
@@ -37,6 +38,10 @@ function ConnectionsScreen() {
 
   // States
   const [isVisible, setVisible] = useState(false);
+
+  // show delete alert dialog
+  const [selectedConnection, setSelectedConnection] = useState<IConnectionObject | null>(null);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   // show app tooltip
   const { activeStep, onNext, onSkip } = useAppTooltip({
@@ -79,13 +84,10 @@ function ConnectionsScreen() {
     }
   }
 
+  // show delete alert dialog
   function onDeletePressed(item: IConnectionObject) {
-    showAskDialog(
-      t('messages.delete_connection_title'),
-      t('messages.delete_connection_message'),
-      () => onSuccessPress(item),
-      () => {}
-    );
+    setSelectedConnection(item);
+    setShowDeleteAlert(true);
   }
 
   const refreshHandler = () => {
@@ -162,6 +164,24 @@ function ConnectionsScreen() {
             rightOpenValue={-75}
           />
         </View>
+
+        <AppCustomAlert
+          isVisible={showDeleteAlert}
+          title={t('messages.delete_connection_title')}
+          message={t('messages.delete_connection_message')}
+          cancelText={t('common.cancel')}
+          confirmText={t('common.confirm')}
+          type="danger"
+          onConfirm={() => {
+            if (selectedConnection != null) {
+              onSuccessPress(selectedConnection);
+            }
+            setShowDeleteAlert(false);
+          }}
+          onCancel={() => {
+            setShowDeleteAlert(false);
+          }}
+        />
       </View>
 
       <>
