@@ -10,12 +10,12 @@ import { analytics_log_app_error } from './app/helpers/analytics';
 import ErrorFallback from './app/components/ErrorFallback';
 import BootstrapPersistance from './app/BootstrapPersistance';
 import './app/locales/index';
-import HomeScreen from './app/sea_wallet/screens/HomeScreen';
+import SeaWalletRootNavigator from './app/sea_wallet/navigation/SeaWalletRootNavigator';
 
 const App = () => {
   const isSeaWallet = Config.APP_TYPE === 'SEA_WALLET';
   console.log('is sea wallet', isSeaWallet);
-  const ActiveNavigator = isSeaWallet ? HomeScreen : RootNavigator;
+  const ActiveNavigator = isSeaWallet ? SeaWalletRootNavigator : RootNavigator;
 
   const errorHandler = (error, stackTrace) => {
     analytics_log_app_error(stackTrace.toString());
