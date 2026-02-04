@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Config from 'react-native-config';
 import NetworkContext from './app/context/NetworkContext';
 import RootNavigator from './app/navigation/RootNavigator';
 import { PRIMARY_COLOR } from './app/theme/Colors';
@@ -10,8 +10,13 @@ import { analytics_log_app_error } from './app/helpers/analytics';
 import ErrorFallback from './app/components/ErrorFallback';
 import BootstrapPersistance from './app/BootstrapPersistance';
 import './app/locales/index';
+import HomeScreen from './app/sea_wallet/screens/HomeScreen';
 
 const App = () => {
+  const isSeaWallet = Config.APP_TYPE === 'SEA_WALLET';
+  console.log('is sea wallet', isSeaWallet);
+  const ActiveNavigator = isSeaWallet ? HomeScreen : RootNavigator;
+
   const errorHandler = (error, stackTrace) => {
     analytics_log_app_error(stackTrace.toString());
   };
@@ -21,7 +26,7 @@ const App = () => {
       <ErrorBoundary FallbackComponent={ErrorFallback} onError={errorHandler}>
         <StatusBar barStyle="light-content" backgroundColor={PRIMARY_COLOR} />
         <BootstrapPersistance>
-          <RootNavigator />
+          <ActiveNavigator />
         </BootstrapPersistance>
       </ErrorBoundary>
     </NetworkContext>
