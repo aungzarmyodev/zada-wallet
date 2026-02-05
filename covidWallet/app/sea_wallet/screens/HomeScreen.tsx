@@ -11,14 +11,10 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<SeaWalletMainStackPara
 const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
-  console.log('ROUTES:', navigation.getState().routeNames);
-  console.log('PARENT:', navigation.getParent()?.getState().routeNames);
-
   return (
-    <SafeAreaView style={{ flex: 1, borderWidth: 2, borderColor: 'red' }} edges={['top']}>
+    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
       <View style={styles.container}>
         <Text> This is Home Screen </Text>
-        <Button title="Go to Categories" onPress={() => navigation.navigate('WalletScreen')} />
       </View>
     </SafeAreaView>
   );
