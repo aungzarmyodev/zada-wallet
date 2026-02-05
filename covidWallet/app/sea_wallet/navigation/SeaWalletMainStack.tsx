@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import BottomNavigationTabBar from './BottomNavigationTabBar';
 import NewQRScreen from '../../screens/qr/NewQRScreen';
+import ViewProfileScreen from '../screens/ViewProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,11 @@ const SeaWalletMainStack = () => {
       />
 
       <Stack.Screen name="ScanQR" component={NewQRScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="ViewProfile"
+        component={ViewProfileScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

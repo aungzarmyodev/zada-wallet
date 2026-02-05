@@ -2,14 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SeaWalletColors } from '../../theme/SeaWalletColors';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
-import { SeaWalletMainStackParamList } from '../navigation/Types';
-
-type HomeScreenNavigationProp = NativeStackNavigationProp<SeaWalletMainStackParamList>;
+import { useAppNavigation } from '../navigation/Types';
 
 const HomeScreen = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
+  const navigation = useAppNavigation();
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['top']}>
