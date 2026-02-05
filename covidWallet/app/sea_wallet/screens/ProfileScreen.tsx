@@ -1,32 +1,49 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { AppRoutes, useAppNavigation } from '../navigation/Types';
 import { AppColors } from '../../theme/Colors';
 
+import { selectNetworkStatus } from '../../store/app/selectors';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { selectUser } from '../../store/auth/selectors';
+
+import { clearAllAndLogout } from '../../store/utils';
+import AppCustomAlert from '../../components/Alert/AppCustomAlert';
+import { showNetworkMessage } from '../../helpers/Toast';
+import { useSelector } from 'react-redux';
+
 const ProfileScreen = () => {
+  const { t } = useTranslation();
   const navigation = useAppNavigation();
+  const dispatch = useAppDispatch();
+  const user = useSelector(selectUser);
 
+  const networkStatus = useAppSelector(selectNetworkStatus);
+  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
-
-  const userData = {
-    name: 'John Doe ',
-    phoneNumber: '+1 234 567 8900',
-  };
 
   const clickViewProfile = () => {
     navigation.navigate(AppRoutes.ViewProfile);
   };
 
   const clickLogout = () => {
-    // Click logout
-    console.log('Logout tapped');
+    if (networkStatus === 'disconnected') {
+      showNetworkMessage();
+      return;
+    }
+    setShowLogoutAlert(true);
+  };
+
+  const confirmLogout = () => {
+    clearAllAndLogout(dispatch);
+    setShowLogoutAlert(false);
   };
 
   const clickChangeLanguage = () => {
-    // Click change language
-    console.log('Change Language tapped');
+    navigation.navigate(AppRoutes.ChangeLanguage);
   };
 
   const clickForgotPin = () => {
@@ -48,10 +65,8 @@ const ProfileScreen = () => {
             <MaterialIcons name="person" size={48} color="#fff" />
           </View>
           <View style={styles.profileContent}>
-            <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{userData.name}</Text>
-              <Text style={styles.profilePhone}>{userData.phoneNumber}</Text>
-            </View>
+            <Text style={styles.profileName}>{user.name}</Text>
+            <Text style={styles.profilePhone}>{user.phone}</Text>
           </View>
           <TouchableOpacity
             style={styles.viewProfileButton}
@@ -110,6 +125,18 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <AppCustomAlert
+        isVisible={showLogoutAlert}
+        title=""
+        message={t('messages.logout')}
+        cancelText={t('common.cancel')}
+        confirmText={t('common.confirm')}
+        onConfirm={confirmLogout}
+        onCancel={() => {
+          setShowLogoutAlert(false);
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -146,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#000',
-    marginBottom: 4,
+    paddingBottom: 4,
   },
   profilePhone: {
     fontSize: 14,

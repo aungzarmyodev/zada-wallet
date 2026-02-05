@@ -65,6 +65,7 @@ export const getUserStatus = createAsyncThunk(
 export const getUserProfile = createAsyncThunk('auth/getUserProfile', async () => {
   try {
     let response = await AuthAPI._fetchProfileAPI();
+    console.log('User Profile', response?.data);
     return response?.data;
   } catch (e) {
     throwErrorIfExist(e);
