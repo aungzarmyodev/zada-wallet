@@ -1,19 +1,20 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from '../screens/home/HomeScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SeaWalletColors } from '../../theme/SeaWalletColors';
-import FloatingQRButton from '../components/FloatingQRButton';
 import WalletScreen from '../screens/WalletScreen';
+import { AppRoutes } from './Types';
 
-type TabName = 'Home' | 'Wallet' | 'Notifications' | 'Profile';
+type TabName = 'Home' | 'Wallet' | 'ScanQR' | 'Notifications' | 'Profile';
 
 const TAB_ICONS: Record<TabName, string> = {
   Home: 'home',
   Wallet: 'wallet',
+  ScanQR: 'qr-code',
   Notifications: 'notifications',
   Profile: 'person',
 };
@@ -27,11 +28,10 @@ const BottomNavigationTabBar = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarActiveTintColor: SeaWalletColors.TAB_BAR_ACTIVE_COLOR,
         tabBarInactiveTintColor: SeaWalletColors.TAB_BAR_INACTIVE_COLOR,
         tabBarIcon: ({ color, size }) => {
-          if (route.name === 'QRAction') return null;
-
           const iconName = TAB_ICONS[route.name as TabName];
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -42,11 +42,14 @@ const BottomNavigationTabBar = () => {
       <Tab.Screen name="Wallet" component={WalletScreen} />
 
       <Tab.Screen
-        name="QRAction"
+        name="ScanQR"
         component={DummyQRScreen}
-        options={{
-          tabBarButton: () => <FloatingQRButton />,
-        }}
+        listeners={({ navigation }) => ({
+          tabPress: e => {
+            e.preventDefault(); // stop normal tab behavior
+            navigation.navigate(AppRoutes.ScanQR);
+          },
+        })}
       />
 
       <Tab.Screen name="Notifications" component={NotificationScreen} />

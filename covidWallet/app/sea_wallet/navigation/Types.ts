@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { changeLanguage } from 'i18next';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 export type SeaWalletMainStackParamList = {
   BottomNavigationBar: undefined;
@@ -11,7 +11,7 @@ export type SeaWalletMainStackParamList = {
 
 export const AppRoutes = {
   BottomNavigationBar: 'BottomNavigationBar',
-  ScanQR: 'ScanQR',
+  ScanQR: 'NewQRScreen',
   ViewProfile: 'ViewProfile',
   ChangeLanguage: 'ChangeLanguage',
 } as const;
@@ -19,3 +19,15 @@ export const AppRoutes = {
 export type AppNavigationProp = NativeStackNavigationProp<SeaWalletMainStackParamList>;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
+
+export type BottomTabParamList = {
+  Home: undefined;
+  Wallet: undefined;
+  ScanQRTab: undefined;
+  Notifications: undefined;
+  Profile: undefined;
+};
+
+export type TabNavigationProp = BottomTabNavigationProp<BottomTabParamList>;
+
+export const useTabNavigation = () => useNavigation<TabNavigationProp>();

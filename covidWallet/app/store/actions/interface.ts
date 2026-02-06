@@ -20,4 +20,5 @@ export interface IActionObject {
   type: string;
   values: {};
   verificationId?: string;
+  createdAtUtc: string;
 }
