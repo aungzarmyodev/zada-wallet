@@ -27,7 +27,7 @@ import useDevelopment from '../hooks/useDevelopment';
 import OverlayLoader from '../components/OverlayLoader';
 import BiometricModal from '../components/Modal/BiometricModal';
 import CustomSwitchButton from '../components/Buttons/CustomSwitchButton';
-import AppCustomAlert from '../components/Alert/AppCustomAlert';
+import AppCustomAlert, { AlertType } from '../components/Alert/AppCustomAlert';
 
 export default function SettingsScreen(props) {
   // Constants
@@ -282,9 +282,11 @@ export default function SettingsScreen(props) {
 
       <AppCustomAlert
         isVisible={showLogoutAlert}
+        title={t('messages.logout_title')}
         message={t('messages.logout')}
         cancelText={t('common.cancel')}
-        confirmText={t('common.confirm')}
+        confirmText={t('messages.logout_title')}
+        type={AlertType.DANGER}
         onConfirm={onConfirmLogut}
         onCancel={() => {
           setShowLogoutAlert(false);

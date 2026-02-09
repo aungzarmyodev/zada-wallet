@@ -91,6 +91,16 @@ const ResendCode = (props: INProps) => {
                 <Text style={styles.buttonText}> {t('VerifyOTPScreen.wahtsapp')}</Text>
               </TouchableOpacity>
             </View>
+
+            <View style={styles.questionContainer}>
+              <Text style={styles.questionText}>{t('VerifyOTPScreen.didnt_receive_code')} </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  ZohoSalesIQOpenChat();
+                }}>
+                <Text style={styles.contactLink}>{t('SettingsScreen.contact_us')}</Text>
+              </TouchableOpacity>
+            </View>
           </>
         ) : (
           <ActivityIndicator color={AppColors.PRIMARY} size="small" style={{ marginLeft: 30 }} />
@@ -103,16 +113,6 @@ const ResendCode = (props: INProps) => {
           </Text>
         </Text>
       )}
-
-      <View style={styles.questionContainer}>
-        <Text style={styles.questionText}>{t('VerifyOTPScreen.didnt_receive_code')} </Text>
-        <TouchableOpacity
-          onPress={() => {
-            ZohoSalesIQOpenChat();
-          }}>
-          <Text style={styles.contactLink}>{t('SettingsScreen.contact_us')}</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
