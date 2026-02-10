@@ -91,28 +91,28 @@ const ResendCode = (props: INProps) => {
                 <Text style={styles.buttonText}> {t('VerifyOTPScreen.wahtsapp')}</Text>
               </TouchableOpacity>
             </View>
+
+            <View style={styles.questionContainer}>
+              <Text style={styles.questionText}>{t('VerifyOTPScreen.didnt_receive_code')} </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  ZohoSalesIQOpenChat();
+                }}>
+                <Text style={styles.contactLink}>{t('SettingsScreen.contact_us')}</Text>
+              </TouchableOpacity>
+            </View>
           </>
         ) : (
           <ActivityIndicator color={AppColors.PRIMARY} size="small" style={{ marginLeft: 30 }} />
         )
       ) : (
-        <Text>
+        <Text style={{ padding: 20 }}>
           {t('VerifyOTPScreen.resend_otp')} in{' '}
           <Text style={styles._countdown}>
             {('0' + phoneMins).slice(-2)} : {('0' + phoneSecs).slice(-2)}
           </Text>
         </Text>
       )}
-
-      <View style={styles.questionContainer}>
-        <Text style={styles.questionText}>{t('VerifyOTPScreen.didnt_receive_code')} </Text>
-        <TouchableOpacity
-          onPress={() => {
-            ZohoSalesIQOpenChat();
-          }}>
-          <Text style={styles.contactLink}>{t('SettingsScreen.contact_us')}</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 140,
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 8,

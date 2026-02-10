@@ -11,7 +11,7 @@ const UserGuideScreen = () => {
     <View style={styles.container}>
       <WebView
         source={{
-          uri: 'https://www.youtube.com/watch?v=s3qkF-4XuBE&list=PLxllU3XdIYH4by_ewNsa6e0aj47D4LqEq',
+          uri: 'https://youtube.com/playlist?list=PLxllU3XdIYH7zn9nAzZtY6nWmTzwALAfH&si=6ARuqVPZxJUC-OuM',
         }}
         onLoadStart={() => {
           if (!pageLoaded) {

@@ -4,6 +4,14 @@ import { AppColors } from '../../theme/Colors';
 
 const { width } = Dimensions.get('window');
 
+export const AlertType = {
+  INFO: 'info',
+  DANGER: 'danger',
+  SUCCESS: 'success',
+} as const;
+
+export type AlertType = (typeof AlertType)[keyof typeof AlertType];
+
 interface CustomAlertProps {
   isVisible: boolean;
   title: string;
@@ -12,7 +20,7 @@ interface CustomAlertProps {
   onCancel?: () => void;
   confirmText?: string;
   cancelText?: string;
-  type?: 'info' | 'danger' | 'success';
+  type?: AlertType;
 }
 
 const AppCustomAlert = ({
@@ -23,7 +31,7 @@ const AppCustomAlert = ({
   onCancel,
   confirmText = 'OK',
   cancelText = 'CANCEL',
-  type = 'info',
+  type = AlertType.INFO,
 }: CustomAlertProps) => {
   return (
     <Modal visible={isVisible} transparent animationType="fade">
@@ -39,7 +47,10 @@ const AppCustomAlert = ({
             )}
 
             <TouchableOpacity style={[styles.button]} onPress={onConfirm}>
-              <Text style={type === 'danger' ? styles.deleteButtonText : styles.confirmButtonText}>
+              <Text
+                style={
+                  type === AlertType.DANGER ? styles.deleteButtonText : styles.confirmButtonText
+                }>
                 {confirmText.toUpperCase()}
               </Text>
             </TouchableOpacity>
@@ -73,7 +84,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: AppColors.TEXT_TITLE_COLOR,
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   message: {
     fontSize: 16,

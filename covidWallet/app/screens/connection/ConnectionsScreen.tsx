@@ -17,7 +17,7 @@ import FloatingActionButton from '../../components/Buttons/FloatingActionButton'
 import EmptyConnections from './EmptyConnection';
 import { useFocusEffect } from '@react-navigation/native';
 import { selectNetworkStatus } from '../../store/app/selectors';
-import AppCustomAlert from '../../components/Alert/AppCustomAlert';
+import AppCustomAlert, { AlertType } from '../../components/Alert/AppCustomAlert';
 import useAppTooltip from '../../hooks/useAppTooltip';
 import { AppTooltipKeys } from '../../helpers/AppTooltipKeys';
 import AppTooltip from '../../components/tooltip/AppTooltip';
@@ -171,7 +171,7 @@ function ConnectionsScreen() {
           message={t('messages.delete_connection_message')}
           cancelText={t('common.cancel')}
           confirmText={t('common.confirm')}
-          type="danger"
+          type={AlertType.DANGER}
           onConfirm={() => {
             if (selectedConnection != null) {
               onSuccessPress(selectedConnection);

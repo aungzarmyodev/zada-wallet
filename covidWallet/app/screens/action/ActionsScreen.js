@@ -60,7 +60,7 @@ import { fetchAcceptConnectionList } from '../../store/connections/thunk';
 import { selectCredentials } from '../../store/credentials/selectors';
 import { selectNetworkStatus } from '../../store/app/selectors';
 import { fetchCredentials } from '../../store/credentials/thunk';
-import AppCustomAlert from '../../components/Alert/AppCustomAlert';
+import AppCustomAlert, { AlertType } from '../../components/Alert/AppCustomAlert';
 import { IActionObject } from '../../store/actions/interface';
 
 function ActionsScreen({ navigation }) {
@@ -707,11 +707,11 @@ function ActionsScreen({ navigation }) {
 
       <AppCustomAlert
         isVisible={showDeleteAlert}
-        title={'Reject action'}
+        title={t('messages.delete_action_title')}
         message={t('messages.delete_request')}
         cancelText={t('common.cancel')}
         confirmText={t('common.confirm')}
-        type="danger"
+        type={AlertType.DANGER}
         onConfirm={() => {
           if (selectedAction != null) {
             rejectModal(selectedAction);
