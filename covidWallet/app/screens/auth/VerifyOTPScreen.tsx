@@ -42,6 +42,23 @@ const VerifyOTPScreen = (props: INProps) => {
   const [codeError, setCodeError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   useLayoutEffect(() => {
     props.navigation.setOptions({
       headerBackground: () => (
@@ -146,42 +163,42 @@ const VerifyOTPScreen = (props: INProps) => {
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
-        <ScrollView style={styles.scrollContainer}>
-          <View style={styles.imageStyle}>
-            <Image
-              resizeMode="contain"
-              source={require('../../assets/images/otp.gif')}
-              style={{ width: 150, height: 150 }}
-            />
-          </View>
-          <Text style={styles.headingStyle}>{t('VerifyOTPScreen.title')}</Text>
-          <Text style={styles.subheadingStyle}>
-            {t('VerifyOTPScreen.sub_title_1')} {user.phone}, {t('VerifyOTPScreen.sub_title_2')}
-          </Text>
-          <View style={styles.inputContainer}>
-            <InputPinComponent
-              OTP
-              onPincodeChange={setCode}
-              pincodeError={codeError}
-              emptyComponent={codeEmptyComponent}
-              filledComponent={codeFilledComponent}
-            />
-          </View>
-          <View style={styles.resendOTPContainer}>
-            <ResendCode navigation={props.navigation} />
-          </View>
-        </ScrollView>
+        <View style={styles.imageStyle}>
+          <Image
+            resizeMode="contain"
+            source={require('../../assets/images/otp.gif')}
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
+        <Text style={styles.headingStyle}>{t('VerifyOTPScreen.title')}</Text>
+        <Text style={styles.subheadingStyle}>
+          {t('VerifyOTPScreen.sub_title_1')} {user.phone}, {t('VerifyOTPScreen.sub_title_2')}
+        </Text>
+        <View style={styles.inputContainer}>
+          <InputPinComponent
+            OTP
+            onPincodeChange={setCode}
+            pincodeError={codeError}
+            emptyComponent={codeEmptyComponent}
+            filledComponent={codeFilledComponent}
+          />
+        </View>
+
+        <View
+          style={{
+            marginTop: 'auto',
+            opacity: keyboardVisible ? 0 : 1,
+            pointerEvents: keyboardVisible ? 'none' : 'auto',
+          }}>
+          <ResendCode navigation={props.navigation} />
+        </View>
       </KeyboardAvoidingView>
-      {loading && <AnimatedLoading type="FadingCircleAlt" color={AppColors.PRIMARY} />}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  scrollContainer: {
     flex: 1,
   },
   imageStyle: {
@@ -214,7 +231,6 @@ const styles = StyleSheet.create({
   },
   resendOTPContainer: {
     alignItems: 'center',
-    marginTop: 200,
   },
 });
 
