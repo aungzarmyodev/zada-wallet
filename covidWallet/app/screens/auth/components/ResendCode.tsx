@@ -106,7 +106,7 @@ const ResendCode = (props: INProps) => {
           <ActivityIndicator color={AppColors.PRIMARY} size="small" style={{ marginLeft: 30 }} />
         )
       ) : (
-        <Text>
+        <Text style={{ padding: 20 }}>
           {t('VerifyOTPScreen.resend_otp')} in{' '}
           <Text style={styles._countdown}>
             {('0' + phoneMins).slice(-2)} : {('0' + phoneSecs).slice(-2)}
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 140,
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 8,

@@ -8,17 +8,14 @@ import {
   BackHandler,
   Platform,
   Keyboard,
-  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppColors } from '../../theme/Colors';
 import { AppDispatch, useAppDispatch, useAppSelector } from '../../store';
 import { selectUser } from '../../store/auth/selectors';
-import FadeView from '../../components/FadeView';
 import { validateUserOTP } from '../../store/auth/thunk';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../navigation/types';
-import AnimatedLoading from '../../components/Animations/AnimatedLoading';
 import InputPinComponent from '../../components/Input/InputPinComponent';
 import ResendCode from './components/ResendCode';
 import { useTranslation } from 'react-i18next';
@@ -158,7 +155,12 @@ const VerifyOTPScreen = (props: INProps) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: AppColors.WHITE }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: AppColors.WHITE,
+      }}
+      edges={['bottom']}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
