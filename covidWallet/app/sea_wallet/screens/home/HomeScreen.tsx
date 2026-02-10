@@ -31,8 +31,6 @@ const HomeScreen = () => {
   const user = useSelector(selectUser);
   const actionList = useAppSelector(selectActions.selectAll);
 
-  console.log('Actions List', actionList);
-
   const actionStatus = useAppSelector(selectActionsStatus);
   const networkStatus = useAppSelector(selectNetworkStatus);
 

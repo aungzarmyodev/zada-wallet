@@ -37,7 +37,7 @@ export interface ICredentialObject {
   credentialId: string;
   threadId: string;
   definitionId: string;
-  issuedAtUtc: Date;
+  issuedAtUtc: string;
   schemaId: string;
   imageUrl: string;
   state: string;

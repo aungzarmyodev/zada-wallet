@@ -1,29 +1,47 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AppColors } from '../../../../theme/Colors';
+import { ICredentialObject } from '../../../../store/credentials/interface';
+import { DateUtils } from '../../../Utils/DateUtils';
+import { CredentialStatus, CredentialStatusType } from '../const/CredentialStatus';
 
 type CredentialItemProp = {
-  item: String;
+  item: ICredentialObject;
+  status: CredentialStatusType;
   onItemClick: () => void;
 };
 
-const CredentialItem = ({ item, onItemClick }: CredentialItemProp) => {
+const CredentialItem = ({ item, status, onItemClick }: CredentialItemProp) => {
+  const isValid = status === CredentialStatus.VALID;
+  const isExpired = status === CredentialStatus.EXPIRED;
+  const isExpiring = status === CredentialStatus.EXPIRING;
+
+  const statusLabel =
+    status === CredentialStatus.EXPIRED
+      ? 'Expired'
+      : status === CredentialStatus.EXPIRING
+      ? 'Expiring'
+      : 'Valid';
+
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={onItemClick}>
-      <View style={styles.headerRow}>
-        <View style={styles.leftContainer}>
-          <View style={styles.logoContainer}>
-            <Image source={{ uri: 'item.imageUrl' }} style={styles.logo} />
-          </View>
-          <View style={styles.titleContainer}>
-            <Text style={styles.name}>{''}</Text>
-            <Text style={styles.organization}>{'item.organizationName'}</Text>
-            <Text style={styles.description} numberOfLines={2}>
-              {'item.state'}
-            </Text>
-          </View>
+      <View style={styles.row}>
+        <View style={styles.left}>
+          <Text style={styles.name}>{item.type}</Text>
+          <Text style={styles.organization}>{item.organizationName}</Text>
+          <Text style={styles.date}>{DateUtils(item.issuedAtUtc)}</Text>
         </View>
-        <Text style={styles.date}>{'timeAgo(item.createdAtUtc)'}</Text>
+        <View style={styles.right}>
+          <Text
+            style={[
+              styles.status,
+              isExpired && styles.expired,
+              isExpiring && styles.expiring,
+              isValid && styles.valid,
+            ]}>
+            {statusLabel}
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -33,7 +51,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: AppColors.WHITE,
     marginVertical: 6,
-    padding: 10,
+    padding: 14,
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -42,45 +60,25 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
-  headerRow: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-
-  leftContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
-    paddingRight: 8,
   },
 
-  logoContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: AppColors.LIGHT_GRAY,
+  left: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  right: {
+    alignItems: 'flex-end',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
   },
-  logo: {
-    width: 56,
-    height: 56,
-    borderRadius: 32,
-    resizeMode: 'contain',
-  },
-
-  titleContainer: {
-    flex: 1,
-  },
-
   name: {
     fontSize: 16,
     fontWeight: '600',
     color: AppColors.BLACK,
   },
-
   organization: {
     fontSize: 13,
     color: AppColors.MEDIUM_GRAY,
@@ -90,13 +88,27 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 12,
     color: AppColors.MEDIUM_GRAY,
+    marginTop: 6,
   },
-
-  description: {
-    marginTop: 10,
-    fontSize: 14,
-    color: AppColors.MEDIUM_GRAY,
-    lineHeight: 20,
+  status: {
+    fontSize: 12,
+    fontWeight: '600',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  valid: {
+    color: '#1E7E34',
+    backgroundColor: '#E6F4EA',
+  },
+  expired: {
+    color: '#B00020',
+    backgroundColor: '#FDECEA',
+  },
+  expiring: {
+    color: '#B26A00',
+    backgroundColor: '#FFF4E5',
   },
 });
 

@@ -17,7 +17,7 @@ export const deleteCredentialStatus = (state: RootState) => state.credential.del
 export const fetchCredentialsError = (state: RootState) => state.credential.error;
 
 // Select all credentials
-export const selectCredentials = CredentialAdapter.getSelectors((s: RootState) => s.credential);
+export const getAllCredentials = CredentialAdapter.getSelectors((s: RootState) => s.credential);
 
 // Select all credentials
 export const selectSingleCredential = createSelector(
@@ -37,16 +37,16 @@ export const fetchCredentialsStatus = createSelector([credentialState], state =>
 }));
 
 // Select sorted array
-export const selectSortedCredentials = createSelector(selectCredentials.selectAll, cred =>
+export const selectSortedCredentials = createSelector(getAllCredentials.selectAll, cred =>
   cred.sort((a, b) => new Date(a.issuedAtUtc).getTime() - new Date(b.issuedAtUtc).getTime())
 );
 
 export const selectSearchedCredentials = createSelector(
-  selectCredentials.selectAll,
-  (_: ICredentialObject[], searchTerm: string) => searchTerm,
-  (cred: ICredentialObject[], searchTerm) => {
+  getAllCredentials.selectAll,
+  (_: ICredentialObject[], searchKeyword: string) => searchKeyword,
+  (cred: ICredentialObject[], searchKeyword) => {
     // Return sorted array
-    if (searchTerm.length == 0) {
+    if (searchKeyword.length == 0) {
       return cred.sort(
         (a, b) => new Date(b.issuedAtUtc).getTime() - new Date(a.issuedAtUtc).getTime()
       );
@@ -54,7 +54,7 @@ export const selectSearchedCredentials = createSelector(
 
     // Return filtered array
     let filteredCred = cred.filter(function (cred) {
-      return cred.type.toLocaleLowerCase().match(searchTerm.toLocaleLowerCase());
+      return cred.type.toLocaleLowerCase().match(searchKeyword.toLocaleLowerCase());
     });
     return filteredCred;
   }

@@ -1,4 +1,4 @@
-export const timeAgo = (dateString?: string | null): string => {
+export const DateUtils = (dateString?: string | null): string => {
   if (!dateString) return '';
 
   const now = new Date();

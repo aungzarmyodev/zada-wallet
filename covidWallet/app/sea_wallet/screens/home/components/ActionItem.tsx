@@ -4,7 +4,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { AppColors } from '../../../../theme/Colors';
 import { IActionObject } from '../../../../store/actions/interface';
 import { getActionHeader } from '../../../../helpers/ActionList';
-import { timeAgo } from '../../../Utils/DateUtils';
+import { DateUtils } from '../../../Utils/DateUtils';
 
 type ActionItemProp = {
   item: IActionObject;
@@ -27,7 +27,7 @@ const ActionItem = ({ item, onItemClick }: ActionItemProp) => {
             </Text>
           </View>
         </View>
-        <Text style={styles.date}>{timeAgo(item.createdAtUtc)}</Text>
+        <Text style={styles.date}>{DateUtils(item.createdAtUtc)}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.WHITE,
     marginHorizontal: 12,
     marginVertical: 6,
-    padding: 16,
+    padding: 10,
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

@@ -1,54 +1,59 @@
 import React, { useCallback, useState } from 'react';
+
 import { View, Text, StyleSheet, TextInput, FlatList, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { AppColors } from '../../../theme/Colors';
+
 import CredentialItem from './components/CredentialItem';
 import EmptyCredentialList from './components/EmptyCredentialList';
-import { useAppSelector } from '../../../store';
-import { selectNetworkStatus } from '../../../store/app/selectors';
 import NoInternetScreen from '../../Utils/NoInternetScreen';
 
-const WALLET_DATA = [
-  { id: '1', title: 'Main Wallet', balance: '$1,200' },
-  { id: '2', title: 'Savings Wallet', balance: '$3,450' },
-  { id: '3', title: 'Crypto Wallet', balance: '$980' },
-  { id: '4', title: 'Travel Wallet', balance: '$560' },
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { selectNetworkStatus } from '../../../store/app/selectors';
+import { fetchCredentialsStatus, getAllCredentials } from '../../../store/credentials/selectors';
+import { fetchCredentials } from '../../../store/credentials/thunk';
 
-  { id: '5', title: 'Main Wallet', balance: '$1,200' },
-  { id: '6', title: 'Savings Wallet', balance: '$3,450' },
-  { id: '7', title: 'Crypto Wallet', balance: '$980' },
-  { id: '8', title: 'Travel Wallet', balance: '$560' },
-
-  { id: '9', title: 'Main Wallet', balance: '$1,200' },
-  { id: '10', title: 'Savings Wallet', balance: '$3,450' },
-  { id: '11', title: 'Crypto Wallet', balance: '$980' },
-  { id: '12', title: 'Travel Wallet', balance: '$560' },
-];
+import { _showAlert } from '../../../helpers/Toast';
+import { ICredentialObject } from '../../../store/credentials/interface';
+import FilterChip from './components/FilterChip';
+import { CredentialStatus, CredentialStatusType } from './const/CredentialStatus';
 
 const WalletScreen = () => {
+  const { t } = useTranslation();
   const networkStatus = useAppSelector(selectNetworkStatus);
-  console.log('Network status', networkStatus);
 
-  const [searchText, setSearchText] = useState('');
+  const dispatch = useAppDispatch();
+  const { initial, loading } = useAppSelector(fetchCredentialsStatus);
+  const credentialList = useAppSelector(getAllCredentials.selectAll);
+  const [selectedType, setSelectedType] = useState<CredentialStatusType>(CredentialStatus.VALID);
 
-  const filteredData = WALLET_DATA.filter(item =>
-    item.title.toLowerCase().includes(searchText.toLowerCase())
+  useFocusEffect(
+    useCallback(() => {
+      if (networkStatus !== 'connected') {
+        _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+        return;
+      }
+      if (initial) {
+        dispatch(fetchCredentials() as any);
+      }
+    }, [initial, networkStatus])
   );
 
   const onItemClick = useCallback((item: any) => {
     Alert.alert('Item clicked', `You clicked item: ${item.type}`, [{ text: 'OK' }]);
   }, []);
 
-  const credentialItem = useCallback(({ item }: { item: any }) => {
-    return (
-      <CredentialItem
-        item={item}
-        onItemClick={() => {
-          onItemClick(item);
-        }}
-      />
-    );
-  }, []);
+  const credentialItem = useCallback(
+    ({ item }: { item: ICredentialObject }) => {
+      return (
+        <CredentialItem item={item} status={selectedType} onItemClick={() => onItemClick(item)} />
+      );
+    },
+    [selectedType, onItemClick]
+  );
 
   const emtpyList = () => {
     return <EmptyCredentialList />;
@@ -61,16 +66,36 @@ const WalletScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <View style={styles.container}>
-        <TextInput
-          placeholder="Search wallet..."
-          value={searchText}
-          onChangeText={setSearchText}
-          style={styles.searchInput}
-        />
+        <Text style={styles.titleText}> {t('My Wallet')}</Text>
+        <View style={styles.chipRow}>
+          <FilterChip
+            count={100}
+            label={t('Valid')}
+            active={selectedType === CredentialStatus.VALID}
+            activeColor={AppColors.PRIMARY}
+            onPress={() => setSelectedType(CredentialStatus.VALID)}
+          />
+
+          <FilterChip
+            count={0}
+            label={t('Expiring')}
+            active={selectedType === CredentialStatus.EXPIRING}
+            activeColor={AppColors.PRIMARY}
+            onPress={() => setSelectedType(CredentialStatus.EXPIRING)}
+          />
+
+          <FilterChip
+            count={0}
+            label={t('Expired')}
+            active={selectedType === CredentialStatus.EXPIRED}
+            activeColor={AppColors.PRIMARY}
+            onPress={() => setSelectedType(CredentialStatus.EXPIRED)}
+          />
+        </View>
         <FlatList
-          data={[]}
+          data={credentialList}
           style={styles.credentailList}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.credentialId}
           renderItem={credentialItem}
           ListEmptyComponent={emtpyList}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
@@ -91,12 +116,15 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.BACKGROUND,
     paddingHorizontal: 16,
   },
-  searchInput: {
-    height: 44,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    backgroundColor: AppColors.WHITE,
-    marginVertical: 16,
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: AppColors.TEXT_TITLE_COLOR,
+    paddingVertical: 16,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    marginBottom: 12,
   },
   credentailList: {
     backgroundColor: AppColors.BACKGROUND,
