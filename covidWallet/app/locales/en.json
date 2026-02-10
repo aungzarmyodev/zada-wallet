@@ -260,7 +260,8 @@
     "action_exit": "You cannot delete this Connection because it has associated Actions.",
     "delete_connection_success": "Connection deleted successfully.",
     "delete_connection_fail": "Failed to delete Connection.",
-    "please_wait": "Please wait..."
+    "please_wait": "Please wait...",
+    "empty_wallet": "Your wallet is empty!"
   },
   "success": {
     "updated_password": "Password has been updated successfully",

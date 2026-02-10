@@ -83,7 +83,7 @@ const HomeScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+    <SafeAreaView style={styles.safeAreaView} edges={['top']}>
       <FlatList
         style={styles.container}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -97,6 +97,11 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: AppColors.PRIMARY,
+  },
+
   container: {
     flex: 1,
     backgroundColor: AppColors.BACKGROUND,

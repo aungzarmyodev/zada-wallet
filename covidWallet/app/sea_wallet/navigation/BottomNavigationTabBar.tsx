@@ -6,7 +6,7 @@ import NotificationScreen from '../screens/NotificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SeaWalletColors } from '../../theme/SeaWalletColors';
-import WalletScreen from '../screens/WalletScreen';
+import WalletScreen from '../screens/wallet/WalletScreen';
 import { AppRoutes } from './Types';
 
 type TabName = 'Home' | 'Wallet' | 'ScanQR' | 'Notifications' | 'Profile';
