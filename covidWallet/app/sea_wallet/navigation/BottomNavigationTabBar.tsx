@@ -2,20 +2,20 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../screens/home/HomeScreen';
-import NotificationScreen from '../screens/NotificationScreen';
+import WalletScreen from '../screens/wallet/WalletScreen';
+import ServicesAndTipsScreen from '../screens/services_tips/ServicesAndTipsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SeaWalletColors } from '../../theme/SeaWalletColors';
-import WalletScreen from '../screens/wallet/WalletScreen';
 import { AppRoutes } from './Types';
 
-type TabName = 'Home' | 'Wallet' | 'ScanQR' | 'Notifications' | 'Profile';
+type TabName = 'Home' | 'Wallet' | 'ScanQR' | 'ServiceAndTip' | 'Profile';
 
 const TAB_ICONS: Record<TabName, string> = {
   Home: 'home',
   Wallet: 'wallet',
   ScanQR: 'qr-code',
-  Notifications: 'notifications',
+  ServiceAndTip: 'construct-outline',
   Profile: 'person',
 };
 
@@ -46,13 +46,13 @@ const BottomNavigationTabBar = () => {
         component={DummyQRScreen}
         listeners={({ navigation }) => ({
           tabPress: e => {
-            e.preventDefault(); // stop normal tab behavior
+            e.preventDefault();
             navigation.navigate(AppRoutes.ScanQR);
           },
         })}
       />
 
-      <Tab.Screen name="Notifications" component={NotificationScreen} />
+      <Tab.Screen name="ServiceAndTip" component={ServicesAndTipsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

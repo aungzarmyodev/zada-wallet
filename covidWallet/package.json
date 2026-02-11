@@ -28,18 +28,14 @@
     "androidTasks": "npm-run-all -l clean:android build:android-all",
     "build:parallel": "npm-run-all -l clean:node --parallel iosTasks androidTasks",
     "start": "react-native start",
-
     "android:zada-dev": "ENVFILE=.env.development npx react-native run-android --mode zadaWalletDebug --appId com.zadanetwork.wallet --main-activity com.zadanetwork.wallet.MainActivity",
     "android:zada-prod": "ENVFILE=.env.production react-native run-android --mode zadaWalletRelease",
-
     "android:sea-dev": "ENVFILE=.env.seafarer.development npx react-native run-android --mode seaWalletDebug --appId com.zadanetwork.seawallet",
     "android:sea-prod": "ENVFILE=.env.seafarer.production react-native run-android --mode seaWalletRelease",
-
     "build:zada-apk": "cd android && ENVFILE=.env.production ./gradlew  assembleZadaWalletRelease",
     "build:sea-apk": "cd android && ENVFILE=.env.seafarer.production ./gradlew  assembleSeaWalletRelease",
     "build:zada-bundle": "cd android && ENVFILE=.env.production ./gradlew   bundleZadaWalletRelease",
     "build:sea-bundle": "cd android && ENVFILE=.env.seafarer.production ./gradlew bundleSeaWalletRelease",
-
     "test": "jest",
     "lint": "eslint .",
     "postinstall": "patch-package"
@@ -121,7 +117,7 @@
     "react-native-svg": "^15.3.0",
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-swiper": "^1.6.0-rc.3",
-    "react-native-tab-view": "^3.1.1",
+    "react-native-tab-view": "^4.2.2",
     "react-native-vector-icons": "^10.0.2",
     "react-native-view-shot": "^3.3.0",
     "react-native-vision-camera": "^4.7.2",
