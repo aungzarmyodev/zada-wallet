@@ -14,8 +14,8 @@ type TabName = 'Home' | 'Wallet' | 'ScanQR' | 'ServiceAndTip' | 'Profile';
 const TAB_ICONS: Record<TabName, string> = {
   Home: 'home',
   Wallet: 'wallet',
-  ScanQR: 'qr-code',
-  ServiceAndTip: 'construct-outline',
+  ScanQR: 'scan',
+  ServiceAndTip: 'compass-outline',
   Profile: 'person',
 };
 
