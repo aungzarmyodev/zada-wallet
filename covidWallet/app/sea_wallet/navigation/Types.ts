@@ -4,7 +4,7 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 export type SeaWalletMainStackParamList = {
   BottomNavigationBar: undefined;
-  ScanQR: undefined;
+  NewQRScreen: undefined;
   ViewProfile: undefined;
   ChangeLanguage: undefined;
 };
@@ -23,10 +23,18 @@ export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 export type BottomTabParamList = {
   Home: undefined;
   Wallet: undefined;
-  ScanQRTab: undefined;
-  Notifications: undefined;
+  ScanQR: undefined;
+  ServiceAndTip: undefined;
   Profile: undefined;
 };
+
+export const TabRoutes = {
+  Home: 'Home',
+  Wallet: 'Wallet',
+  ScanQR: 'ScanQR',
+  ServiceAndTip: 'ServiceAndTip',
+  Profile: 'Profile',
+} as const;
 
 export type TabNavigationProp = BottomTabNavigationProp<BottomTabParamList>;
 

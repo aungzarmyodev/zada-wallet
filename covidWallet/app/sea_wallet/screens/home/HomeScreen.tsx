@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { AppColors } from '../../../theme/Colors';
 
-import { useAppNavigation, useTabNavigation } from '../../navigation/Types';
+import { AppRoutes, TabRoutes, useAppNavigation, useTabNavigation } from '../../navigation/Types';
 
 import { selectUser } from '../../../store/auth/selectors';
 import { useSelector } from 'react-redux';
@@ -47,7 +47,15 @@ const HomeScreen = () => {
   );
 
   const viewAll = () => {
-    tabNavigation.navigate('Wallet');
+    tabNavigation.navigate(TabRoutes.Wallet);
+  };
+
+  const scanQR = () => {
+    navigation.navigate(AppRoutes.ScanQR);
+  };
+
+  const browseServie = () => {
+    tabNavigation.navigate(TabRoutes.ServiceAndTip);
   };
 
   const onItemClick = useCallback((item: IActionObject) => {
@@ -59,7 +67,7 @@ const HomeScreen = () => {
 
     return (
       <>
-        <HomeHeader user={user} viewAll={viewAll} />
+        <HomeHeader user={user} viewAll={viewAll} scanQR={scanQR} browseService={browseServie} />
         {hasActions && <ActionListTitle />}
       </>
     );

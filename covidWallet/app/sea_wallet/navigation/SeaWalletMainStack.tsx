@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import BottomNavigationTabBar from './BottomNavigationTabBar';
 import NewQRScreen from '../../screens/qr/NewQRScreen';
-import ViewProfileScreen from '../screens/ViewProfileScreen';
+import ViewProfileScreen from '../screens/profile/ViewProfileScreen';
 import LanguageSelectionScreen from '../../screens/settings/LanguageSelectionScreen';
 import { AppRoutes } from './Types';
 

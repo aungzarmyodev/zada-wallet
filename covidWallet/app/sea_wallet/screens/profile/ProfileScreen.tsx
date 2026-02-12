@@ -3,17 +3,18 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image } f
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { AppRoutes, useAppNavigation } from '../navigation/Types';
-import { AppColors } from '../../theme/Colors';
+import { AppRoutes, useAppNavigation } from '../../navigation/Types';
+import { AppColors } from '../../../theme/Colors';
 
-import { selectNetworkStatus } from '../../store/app/selectors';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { selectUser } from '../../store/auth/selectors';
+import { selectNetworkStatus } from '../../../store/app/selectors';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { selectUser } from '../../../store/auth/selectors';
 
-import { clearAllAndLogout } from '../../store/utils';
-import AppCustomAlert from '../../components/Alert/AppCustomAlert';
-import { showNetworkMessage } from '../../helpers/Toast';
+import { clearAllAndLogout } from '../../../store/utils';
+import AppCustomAlert from '../../../components/Alert/AppCustomAlert';
+import { showNetworkMessage } from '../../../helpers/Toast';
 import { useSelector } from 'react-redux';
+import UserProfileLogo from '../home/components/UserProfileLogo';
 
 const ProfileScreen = () => {
   const { t } = useTranslation();
@@ -61,9 +62,15 @@ const ProfileScreen = () => {
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Profile */}
         <View style={styles.profileHeaderContainer}>
-          <View style={styles.profileImageContainer}>
+          {/* <View style={styles.profileImageContainer}>
             <MaterialIcons name="person" size={48} color="#fff" />
-          </View>
+          </View> */}
+          <UserProfileLogo
+            name={user.name}
+            size={60}
+            backgroundColor={AppColors.PRIMARY}
+            textColor={AppColors.WHITE}
+          />
           <View style={styles.profileContent}>
             <Text style={styles.profileName}>{user.name}</Text>
             <Text style={styles.profilePhone}>{user.phone}</Text>

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { AppColors } from '../../theme/Colors';
+import { AppColors } from '../../../theme/Colors';
 
 const ViewProfileScreen = ({ navigation }: any) => {
   const [profileData, setProfileData] = useState({
