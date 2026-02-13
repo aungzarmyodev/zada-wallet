@@ -80,7 +80,7 @@ const VerificationRequestScreen = props => {
           t('messages.verification_fail_title'),
           t('messages.verification_fail_message'),
           () => {
-            navigation.navigate('MainScreen');
+            navigation.goBack();
           }
         );
       }
@@ -90,7 +90,7 @@ const VerificationRequestScreen = props => {
         t('messages.verification_fail_title_1'),
         t('messages.verification_fail_message_1'),
         () => {
-          navigation.navigate('MainScreen');
+          navigation.goBack();
         }
       );
     }
@@ -144,16 +144,18 @@ const VerificationRequestScreen = props => {
   };
 
   const closeButtonClick = () => {
-    navigation.navigate('MainScreen');
+    resetState();
+    navigation.goBack();
   };
 
   const goBackToMainScreen = async () => {
     resetState();
-    navigation.navigate('MainScreen');
+    navigation.goBack();
   };
 
   const rejectButtonClick = async () => {
-    navigation.navigate('MainScreen');
+    resetState();
+    navigation.goBack();
   };
 
   const acceptButtonClick = async credential => {
@@ -170,7 +172,7 @@ const VerificationRequestScreen = props => {
         await Linking.openURL(redirectCallback);
         await new Promise(resolve => setTimeout(resolve, 1000));
         resetState();
-        navigation.navigate('MainScreen');
+        navigation.goBack();
       } else {
         showOKDialog('ZADA', 'Submitted Successfully!', goBackToMainScreen);
       }

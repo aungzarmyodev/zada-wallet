@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainStackParamList } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { selectConnections } from '../../store/connections/selectors';
@@ -20,7 +19,7 @@ interface ConnectionAcceptScreenRouteParams {
 
 const ConnectionAccept = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const route = useRoute();
   const dispatch = useAppDispatch();
 
@@ -114,7 +113,7 @@ const ConnectionAccept = () => {
   };
 
   const goBack = () => {
-    navigation.navigate('MainScreen');
+    navigation.goBack();
   };
 
   return (
@@ -131,7 +130,7 @@ const ConnectionAccept = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: AppColors.BLACK,
+    backgroundColor: AppColors.BACKGROUND,
   },
   progressViewStyle: {
     flex: 1,

@@ -3,21 +3,20 @@ import { Text, View, StyleSheet, TouchableOpacity, Alert, Vibration } from 'reac
 import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-camera';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainStackParamList } from '../../navigation/types';
 import { AppColors } from '../../theme/Colors';
 import { useTranslation } from 'react-i18next';
 import { getType, handleCredVerification } from './utils';
 import { CONN_REQ, CONNLESS_VER_REQ } from '../../helpers/ConfigApp';
 import { showOKDialog } from '../../helpers/Toast';
 
-type NavigationProp = NativeStackNavigationProp<MainStackParamList, 'NewQRScreen'>;
+type CommonNavProp = NativeStackNavigationProp<any>;
 
 const NewQRScreen = () => {
   // localization
   const { t } = useTranslation();
 
   // navigation
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<CommonNavProp>();
 
   // camera
   const device = useCameraDevice('back');
@@ -92,13 +91,13 @@ const NewQRScreen = () => {
     const type = getType(scanResult);
 
     if (type === CONNLESS_VER_REQ) {
-      navigation.navigate('VerificationRequestScreen', {
+      navigation.replace('VerificationRequestScreen', {
         data: { scanData: scanResult },
       });
     } else if (type === CONN_REQ) {
       try {
         const qrJSON = JSON.parse(scanResult);
-        navigation.navigate('ConnectionAccept', { qrJSON });
+        navigation.replace('ConnectionAccept', { qrJSON });
       } catch (e) {
         unsupportedQRCode();
       }
@@ -106,7 +105,7 @@ const NewQRScreen = () => {
       try {
         const credObj = await handleCredVerification(JSON.parse(scanResult));
         if (credObj) {
-          navigation.navigate('VerifyQRScreen', {
+          navigation.replace('VerifyQRScreen', {
             credential: credObj.credential,
             values: credObj.sortedValues,
           });
@@ -130,7 +129,7 @@ const NewQRScreen = () => {
   };
 
   const goBack = () => {
-    navigation.navigate('MainScreen');
+    navigation.goBack();
   };
 
   // if device not ready

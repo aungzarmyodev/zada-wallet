@@ -5,12 +5,17 @@ import SuccessModal from '../qr/components/SuccessModal';
 import FailureModal from '../qr/components/FailureModal';
 import { VerificationAPI } from '../../gateways';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainStackParamList as MainParamList } from '../../navigation/types';
 import CustomProgressBar from '../qr/components/CustomProgressBar';
+import { MainStackParamList } from '../../navigation/types';
+import { SeaWalletMainStackParamList } from '../../sea_wallet/navigation/Types';
 
-type Props = NativeStackScreenProps<MainParamList, 'VerifyQRScreen'>;
+type MainProps = NativeStackScreenProps<MainStackParamList, 'VerifyQRScreen'>;
 
-const VerifyQRScreen = ({ route, navigation }: Props) => {
+type SeaProps = NativeStackScreenProps<SeaWalletMainStackParamList, 'VerifyQRScreen'>;
+
+type Props = MainProps | SeaProps;
+
+const VerifyQRScreen = ({ navigation, route }: Props) => {
   const { credential, values } = route.params;
 
   const [showCredValues, setShowCredValues] = useState(true);
@@ -51,10 +56,7 @@ const VerifyQRScreen = ({ route, navigation }: Props) => {
     setShowCredValues(false);
     setShowError(false);
     setShowSuccess(false);
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'MainScreen' }],
-    });
+    navigation.goBack();
   };
 
   return (

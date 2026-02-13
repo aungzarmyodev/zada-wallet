@@ -2,19 +2,37 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
-export type SeaWalletMainStackParamList = {
-  BottomNavigationBar: undefined;
-  NewQRScreen: undefined;
-  ViewProfile: undefined;
-  ChangeLanguage: undefined;
-};
-
 export const AppRoutes = {
-  BottomNavigationBar: 'BottomNavigationBar',
+  SeaWalletMain: 'SeaWalletMainScreen',
   ScanQR: 'NewQRScreen',
-  ViewProfile: 'ViewProfile',
-  ChangeLanguage: 'ChangeLanguage',
+  VerifyRequest: 'VerificationRequestScreen',
+  ConnectionAccept: 'ConnectionAccept',
+  VerifyQR: 'VerifyQRScreen',
+  Profile: 'ViewProfile',
+  Language: 'ChangeLanguage',
 } as const;
+
+export type SeaWalletMainStackParamList = {
+  [AppRoutes.SeaWalletMain]: undefined;
+  [AppRoutes.Profile]: undefined;
+  [AppRoutes.Language]: undefined;
+  [AppRoutes.ScanQR]: undefined;
+  [AppRoutes.VerifyRequest]: {
+    data: {
+      metadata?: any;
+      type?: string;
+      imageUrl?: string;
+      organizationName?: string;
+      connectionId?: string;
+      scanData?: string;
+    };
+  };
+  [AppRoutes.ConnectionAccept]: { qrJSON: any };
+  [AppRoutes.VerifyQR]: {
+    credential: any;
+    values: Array<{ key: string; value: string }>;
+  };
+};
 
 export type AppNavigationProp = NativeStackNavigationProp<SeaWalletMainStackParamList>;
 
