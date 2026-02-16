@@ -46,12 +46,12 @@ const SeaWalletMainStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name={AppRoutes.Profile}
+        name={AppRoutes.ViewProfile}
         component={ViewProfileScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name={AppRoutes.Language}
+        name={AppRoutes.ChangeLanguage}
         component={LanguageSelectionScreen}
         options={{
           headerShown: true,
