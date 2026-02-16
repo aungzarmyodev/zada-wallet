@@ -47,7 +47,7 @@ const EmptyCredentialScreen = ({ onClose }: { onClose: () => void }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: AppColors.BACKGROUND,
+    backgroundColor: AppColors.PRIMARY,
   },
   toolbar: {
     height: 56,
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    backgroundColor: AppColors.BACKGROUND,
   },
   logo: {
     width: 120,
@@ -122,7 +123,8 @@ const styles = StyleSheet.create({
   },
   bottom: {
     paddingHorizontal: 8,
-    paddingVertical: 16,
+    paddingVertical: 20,
+    backgroundColor: AppColors.BACKGROUND,
   },
   closeButton: {
     backgroundColor: AppColors.PRIMARY,

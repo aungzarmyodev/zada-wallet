@@ -7,6 +7,7 @@ import LanguageSelectionScreen from '../../screens/settings/LanguageSelectionScr
 import VerificationRequestScreen from '../../screens/verification_request_screen/VerificationRequestScreen';
 import ConnectionAccept from '../../screens/qr/ConnectionAccept';
 import VerifyQRScreen from '../../screens/verification_request_screen/VerifyQRScreen';
+import ConnectionBaseVerificationScreen from '../../screens/verification_request_screen/ConnectionBaseVerificationScreen';
 import { AppRoutes, SeaWalletMainStackParamList } from './Types';
 
 const Stack = createNativeStackNavigator<SeaWalletMainStackParamList>();
@@ -37,6 +38,11 @@ const SeaWalletMainStack = () => {
       <Stack.Screen
         name={AppRoutes.VerifyQR}
         component={VerifyQRScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={AppRoutes.ConnectionBaseVerification}
+        component={ConnectionBaseVerificationScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

@@ -267,5 +267,8 @@
     "updated_password": "Password has been updated successfully",
     "updated_profile": "Profile has been updated successfully",
     "updated_pincode": "Pincode is updated successfully"
+  },
+  "sea_wallet": {
+    "empty_action_list": "You don't have any actions yet."
   }
 }

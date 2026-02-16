@@ -80,11 +80,11 @@ const ConnectionBaseVerificationScreen = () => {
   }, [verificationId]);
 
   const closeButtonClick = () => {
-    navigation.navigate('MainScreen');
+    navigation.goBack();
   };
 
   const goBackToMainScreen = async () => {
-    navigation.navigate('MainScreen');
+    navigation.goBack();
   };
 
   const rejectButtonClick = async () => {

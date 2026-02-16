@@ -1,12 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { IActionObject } from '../../store/actions/interface';
 
 export const AppRoutes = {
   SeaWalletMain: 'SeaWalletMainScreen',
   ScanQR: 'NewQRScreen',
   VerifyRequest: 'VerificationRequestScreen',
   ConnectionAccept: 'ConnectionAccept',
+  ConnectionBaseVerification: 'ConnectionBaseVerificationScreen',
   VerifyQR: 'VerifyQRScreen',
   Profile: 'ViewProfile',
   Language: 'ChangeLanguage',
@@ -31,6 +33,9 @@ export type SeaWalletMainStackParamList = {
   [AppRoutes.VerifyQR]: {
     credential: any;
     values: Array<{ key: string; value: string }>;
+  };
+  [AppRoutes.ConnectionBaseVerification]: {
+    data: IActionObject;
   };
 };
 

@@ -5,13 +5,15 @@ import { AppColors } from '../../../../theme/Colors';
 import { IActionObject } from '../../../../store/actions/interface';
 import { getActionHeader } from '../../../../helpers/ActionList';
 import { DateUtils } from '../../../Utils/DateUtils';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type ActionItemProp = {
   item: IActionObject;
   onItemClick: () => void;
+  onDeleteItem: () => void;
 };
 
-const ActionItem = ({ item, onItemClick }: ActionItemProp) => {
+const ActionItem = ({ item, onItemClick, onDeleteItem }: ActionItemProp) => {
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={onItemClick}>
       <View style={styles.headerRow}>
@@ -22,12 +24,17 @@ const ActionItem = ({ item, onItemClick }: ActionItemProp) => {
           <View style={styles.titleContainer}>
             <Text style={styles.name}>{getActionHeader(item.type)}</Text>
             <Text style={styles.organization}>{item.organizationName}</Text>
-            <Text style={styles.description} numberOfLines={2}>
-              {item.state}
-            </Text>
+            <Text style={styles.date}>{DateUtils(item.createdAtUtc)}</Text>
           </View>
         </View>
-        <Text style={styles.date}>{DateUtils(item.createdAtUtc)}</Text>
+        <TouchableOpacity onPress={onDeleteItem}>
+          <Ionicons
+            name="trash-outline"
+            size={20}
+            color={AppColors.DANGER}
+            style={{ padding: 8 }}
+          />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );

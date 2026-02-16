@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     fontSize: 14,
-    fontWeight: '500',
-    color: AppColors.MEDIUM_GRAY,
+    fontWeight: '400',
+    color: AppColors.GRAY,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
   },
   cardValue: {
-    fontSize: 18,
-    fontWeight: '900',
+    fontSize: 16,
+    fontWeight: '600',
     color: AppColors.BLACK,
   },
   cardLabel: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#666',
     textAlign: 'center',
   },
