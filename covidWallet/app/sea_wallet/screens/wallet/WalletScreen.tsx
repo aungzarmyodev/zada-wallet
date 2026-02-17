@@ -1,107 +1,67 @@
-import React, { useCallback, useState } from 'react';
-
-import { View, Text, StyleSheet, TextInput, FlatList, Alert } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-
+import React, { useState } from 'react';
+import { View, Text, useWindowDimensions, StyleSheet, TouchableOpacity } from 'react-native';
+import { TabView, SceneMap, NavigationState, SceneRendererProps } from 'react-native-tab-view';
+import CredentialList from './CredentialList';
+import ConnectionList from './ConnectionList';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
 import { AppColors } from '../../../theme/Colors';
 
-import CredentialItem from './components/CredentialItem';
-import EmptyCredentialList from './components/EmptyCredentialList';
-import NoInternetScreen from '../../Utils/NoInternetScreen';
-import { AppRoutes, useAppNavigation } from '../../navigation/Types';
+type TabRoute = {
+  key: 'credentaiList' | 'connectionList';
+  title: string;
+};
 
-import { useAppDispatch, useAppSelector } from '../../../store';
-import { selectNetworkStatus } from '../../../store/app/selectors';
-import { fetchCredentialsStatus, getAllCredentials } from '../../../store/credentials/selectors';
-import { fetchCredentials } from '../../../store/credentials/thunk';
+const renderScene = SceneMap({
+  credentaiList: CredentialList,
+  connectionList: ConnectionList,
+});
 
-import { _showAlert } from '../../../helpers/Toast';
-import { ICredentialObject } from '../../../store/credentials/interface';
-import FilterChip from './components/FilterChip';
-import { CredentialStatus, CredentialStatusType } from './const/CredentialStatus';
+const routes: TabRoute[] = [
+  { key: 'credentaiList', title: 'Credentials' },
+  { key: 'connectionList', title: 'Connections' },
+];
 
 const WalletScreen = () => {
-  const { t } = useTranslation();
-  const navigation = useAppNavigation();
-  const networkStatus = useAppSelector(selectNetworkStatus);
+  const layout = useWindowDimensions();
+  const [index, setIndex] = useState(0);
 
-  const dispatch = useAppDispatch();
-  const { initial, loading } = useAppSelector(fetchCredentialsStatus);
-  const credentialList = useAppSelector(getAllCredentials.selectAll);
-  const [selectedType, setSelectedType] = useState<CredentialStatusType>(CredentialStatus.VALID);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (networkStatus !== 'connected') {
-        _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
-        return;
-      }
-      if (initial) {
-        dispatch(fetchCredentials() as any);
-      }
-    }, [initial, networkStatus])
-  );
-
-  const onItemClick = useCallback((item: ICredentialObject) => {
-    navigation.navigate(AppRoutes.CredentialDetail, { credentialId: item.credentialId });
-  }, []);
-
-  const credentialItem = useCallback(
-    ({ item }: { item: ICredentialObject }) => {
-      return (
-        <CredentialItem item={item} status={selectedType} onItemClick={() => onItemClick(item)} />
-      );
-    },
-    [selectedType, onItemClick]
-  );
-
-  const emtpyList = () => {
-    return <EmptyCredentialList />;
+  const renderCustomTabBar = (
+    props: SceneRendererProps & { navigationState: NavigationState<TabRoute> }
+  ) => {
+    return (
+      <View style={styles.tabBarContainer}>
+        {props.navigationState.routes.map((route, i) => {
+          const isActive = index === i;
+          return (
+            <TouchableOpacity
+              key={route.key}
+              style={[styles.tabItem, isActive ? styles.activeTabItem : null, { flex: 1 }]}
+              onPress={() => setIndex(i)}>
+              <Text style={[styles.tabLabel, isActive ? styles.activeTabLabel : null]}>
+                {route.title}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
   };
 
-  if (networkStatus === 'disconnected') {
-    return <NoInternetScreen />;
-  }
-
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeAreaView} edges={['top']}>
       <View style={styles.container}>
-        <Text style={styles.titleText}> {t('My Wallet')}</Text>
-        <View style={styles.chipRow}>
-          <FilterChip
-            count={100}
-            label={t('Valid')}
-            active={selectedType === CredentialStatus.VALID}
-            activeColor={AppColors.PRIMARY}
-            onPress={() => setSelectedType(CredentialStatus.VALID)}
-          />
-
-          <FilterChip
-            count={0}
-            label={t('Expiring')}
-            active={selectedType === CredentialStatus.EXPIRING}
-            activeColor={AppColors.PRIMARY}
-            onPress={() => setSelectedType(CredentialStatus.EXPIRING)}
-          />
-
-          <FilterChip
-            count={0}
-            label={t('Expired')}
-            active={selectedType === CredentialStatus.EXPIRED}
-            activeColor={AppColors.PRIMARY}
-            onPress={() => setSelectedType(CredentialStatus.EXPIRED)}
-          />
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>My Wallet</Text>
+          <Text style={styles.subTitleText}>10 Credentials</Text>
         </View>
-        <FlatList
-          data={credentialList}
-          style={styles.credentailList}
-          keyExtractor={item => item.credentialId}
-          renderItem={credentialItem}
-          ListEmptyComponent={emtpyList}
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
-          keyboardShouldPersistTaps="handled"
+
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          renderTabBar={renderCustomTabBar}
+          onIndexChange={setIndex}
+          swipeEnabled={false}
+          initialLayout={{ width: layout.width }}
         />
       </View>
     </SafeAreaView>
@@ -109,27 +69,50 @@ const WalletScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
+  safeAreaView: {
     flex: 1,
     backgroundColor: AppColors.PRIMARY,
   },
   container: {
     flex: 1,
     backgroundColor: AppColors.BACKGROUND,
-    paddingHorizontal: 16,
+  },
+  titleContainer: {
+    padding: 16,
   },
   titleText: {
     fontSize: 24,
     fontWeight: 'bold',
     color: AppColors.TEXT_TITLE_COLOR,
-    paddingVertical: 16,
   },
-  chipRow: {
+  subTitleText: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: AppColors.TEXT_LABEL_COLOR,
+    paddingTop: 4,
+  },
+
+  tabBarContainer: {
     flexDirection: 'row',
-    marginBottom: 12,
-  },
-  credentailList: {
+    padding: 8,
     backgroundColor: AppColors.BACKGROUND,
+  },
+  tabItem: {
+    paddingVertical: 10,
+    backgroundColor: AppColors.LIGHT_GRAY,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeTabItem: {
+    backgroundColor: AppColors.PRIMARY,
+  },
+  tabLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: AppColors.TEXT_LABEL_COLOR,
+  },
+  activeTabLabel: {
+    color: AppColors.WHITE,
   },
 });
 
