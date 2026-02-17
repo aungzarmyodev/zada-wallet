@@ -58,13 +58,9 @@ const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: AppColors.PRIMARY }} edges={['top']}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Profile */}
         <View style={styles.profileHeaderContainer}>
-          {/* <View style={styles.profileImageContainer}>
-            <MaterialIcons name="person" size={48} color="#fff" />
-          </View> */}
           <UserProfileLogo
             name={user.name}
             size={60}
@@ -83,14 +79,11 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Divider */}
         <View style={styles.divider} />
 
-        {/* General Info Section */}
         <View style={styles.generalInfoSection}>
           <Text style={styles.sectionTitle}>General Info</Text>
 
-          {/* Change Language */}
           <TouchableOpacity
             style={styles.menuItem}
             onPress={clickChangeLanguage}
@@ -101,7 +94,6 @@ const ProfileScreen = () => {
 
           <View style={styles.menuDivider} />
 
-          {/* Forgot PIN */}
           <TouchableOpacity style={styles.menuItem} onPress={clickForgotPin} activeOpacity={0.7}>
             <Text style={styles.menuItemText}>Change PIN</Text>
             <MaterialIcons name="chevron-right" size={24} color="#ccc" />
@@ -109,7 +101,6 @@ const ProfileScreen = () => {
 
           <View style={styles.menuDivider} />
 
-          {/* Enable Biometric */}
           <View style={styles.menuItem}>
             <Text style={styles.menuItemText}>Enable Biometric</Text>
             <Switch
@@ -122,7 +113,6 @@ const ProfileScreen = () => {
 
           <View style={styles.menuDivider} />
 
-          {/* Logout */}
           <TouchableOpacity
             style={[styles.menuItem, styles.logoutItem]}
             onPress={clickLogout}
