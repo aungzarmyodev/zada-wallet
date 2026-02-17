@@ -15,16 +15,10 @@ import { useTranslation } from 'react-i18next';
 
 import { BACKGROUND_COLOR, BLACK_COLOR, GRAY_COLOR, WHITE_COLOR } from '../../theme/Colors';
 import { downloadFile, getCredentialTemplate, replacePlaceHolders, sharePDF } from './utils';
-import {
-  get_local_issue_date,
-  parse_date_time,
-  showAskDialog,
-  showMessage,
-  showNetworkMessage,
-  _showAlert,
-} from '../../helpers';
+import { get_local_issue_date, parse_date_time, showMessage, _showAlert } from '../../helpers';
 import { AppDispatch, RootState, useAppDispatch, useAppSelector } from '../../store';
 import { deleteCredentialStatus, selectSingleCredential } from '../../store/credentials/selectors';
+import { resetDeleteCredentialStatus } from '../../store/credentials/index';
 
 import OverlayLoader from '../../components/OverlayLoader';
 import CredQRModal from './components/CredQRModal';
@@ -38,6 +32,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AppTooltip from '../../components/tooltip/AppTooltip';
 import useAppTooltip from '../../hooks/useAppTooltip';
 import { AppTooltipKeys } from '../../helpers/AppTooltipKeys';
+import AppCustomAlert, { AlertType } from '../../components/Alert/AppCustomAlert';
 
 interface IProps {
   route: any;
@@ -64,6 +59,7 @@ const CredDetailScreen = (props: IProps) => {
   const [showQRModal, setShowQRModal] = useState(false);
   const [isGenerating, setGenerating] = useState(data?.qrCode === undefined ? true : false);
   const [isGeneratingPDF, setGeneratingPDF] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   const { activeStep, onNext, onSkip } = useAppTooltip({
     tooltipKey: AppTooltipKeys.CREDENTIAL_DETAIL_SCREEN,
@@ -75,11 +71,13 @@ const CredDetailScreen = (props: IProps) => {
     if (credentialStatus === 'success') {
       let message: string = t('messages.success_certificate_deletion');
       showMessage('ZADA Wallet', message);
+      dispatch(resetDeleteCredentialStatus());
       props.navigation.goBack();
     }
     if (credentialStatus === 'error') {
       let message: string = t('messages.failed_certificate_deletion');
       showMessage('ZADA Wallet', message);
+      dispatch(resetDeleteCredentialStatus);
     }
   }, [credentialStatus, props.navigation]);
 
@@ -185,7 +183,8 @@ const CredDetailScreen = (props: IProps) => {
       _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
       return;
     }
-    showAskDialog('Are you sure?', t('messages.delete_certificate'), onConfirmDelete, () => {});
+    setShowDeleteAlert(true);
+    // showAskDialog('Are you sure?', t('messages.delete_certificate'), onConfirmDelete, () => {});
   };
 
   const onConfirmDelete = async () => {
@@ -298,6 +297,18 @@ const CredDetailScreen = (props: IProps) => {
           mainStyle={{}}
         />
       </View>
+      <AppCustomAlert
+        isVisible={showDeleteAlert}
+        title={t('messages.delete_credential_title')}
+        message={t('messages.delete_certificate')}
+        cancelText={t('common.cancel')}
+        confirmText={t('common.confirm')}
+        onConfirm={onConfirmDelete}
+        type={AlertType.DANGER}
+        onCancel={() => {
+          setShowDeleteAlert(false);
+        }}
+      />
     </SafeAreaView>
   );
 };

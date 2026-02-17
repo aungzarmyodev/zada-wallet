@@ -12,6 +12,7 @@ export const AppRoutes = {
   VerifyQR: 'VerifyQRScreen',
   ViewProfile: 'ViewProfile',
   ChangeLanguage: 'ChangeLanguage',
+  CredentialDetail: 'CredentialDetail',
 } as const;
 
 export type SeaWalletMainStackParamList = {
@@ -37,6 +38,7 @@ export type SeaWalletMainStackParamList = {
   [AppRoutes.ConnectionBaseVerification]: {
     data: IActionObject;
   };
+  [AppRoutes.CredentialDetail]: { credentialId: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<SeaWalletMainStackParamList>;

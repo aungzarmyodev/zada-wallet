@@ -230,6 +230,7 @@
     "delete_account": "သင့်အကောင့်ကို ဖျက်လိုပါသလား။",
     "delete_action_title": "Delete Action",
     "delete_request": "ဤတောင်းဆိုချက်ကို ဖျက်လိုသည်မှာ သေချာပါသလား။",
+    "delete_credential_title": "Delete Credential",
     "delete_certificate": "သင်၏အထောက်အထားကိုဖျက်ရန်သေချာပါသလား။",
     "updating_profile": "သင့်ကိုယ့်ရေးကိုယ်တာအချက်အလက်များကိုပြင်ဆင်နေပါသည်။...",
     "fetching_profile": "သင့်ကိုယ့်ရေးကိုယ်တာအချက်အလက်များကိုထည့်သွင်းနေပါသည်။...",

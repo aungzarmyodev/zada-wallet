@@ -10,6 +10,7 @@ import { AppColors } from '../../../theme/Colors';
 import CredentialItem from './components/CredentialItem';
 import EmptyCredentialList from './components/EmptyCredentialList';
 import NoInternetScreen from '../../Utils/NoInternetScreen';
+import { AppRoutes, useAppNavigation } from '../../navigation/Types';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { selectNetworkStatus } from '../../../store/app/selectors';
@@ -23,6 +24,7 @@ import { CredentialStatus, CredentialStatusType } from './const/CredentialStatus
 
 const WalletScreen = () => {
   const { t } = useTranslation();
+  const navigation = useAppNavigation();
   const networkStatus = useAppSelector(selectNetworkStatus);
 
   const dispatch = useAppDispatch();
@@ -42,8 +44,8 @@ const WalletScreen = () => {
     }, [initial, networkStatus])
   );
 
-  const onItemClick = useCallback((item: any) => {
-    Alert.alert('Item clicked', `You clicked item: ${item.type}`, [{ text: 'OK' }]);
+  const onItemClick = useCallback((item: ICredentialObject) => {
+    navigation.navigate(AppRoutes.CredentialDetail, { credentialId: item.credentialId });
   }, []);
 
   const credentialItem = useCallback(
