@@ -6,31 +6,37 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { AppColors } from '../../../theme/Colors';
 
-import CredentialItem from './components/CredentialItem';
 import EmptyCredentialList from './components/EmptyCredentialList';
 import NoInternetScreen from '../../Utils/NoInternetScreen';
-import { AppRoutes, useAppNavigation } from '../../navigation/Types';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { selectNetworkStatus } from '../../../store/app/selectors';
-import { fetchCredentialsStatus, getAllCredentials } from '../../../store/credentials/selectors';
-import { fetchCredentials } from '../../../store/credentials/thunk';
-
-import { _showAlert } from '../../../helpers/Toast';
-import { ICredentialObject } from '../../../store/credentials/interface';
-import { CredentialStatus, CredentialStatusType } from './const/CredentialStatus';
+import { selectConnectionsStatus } from '../../../store/connections/selectors';
+import { _showAlert, showOKDialog } from '../../../helpers/Toast';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import useConnections from '../../../hooks/useConnections';
+import { IConnectionObject } from '../../../store/connections/interface';
+import ConnectionItem from './components/ConnectionItem';
+import AppCustomAlert, { AlertType } from '../../../components/Alert/AppCustomAlert';
+import SelectModal from '../../../components/Modal/SelectModal';
 
 const ConnectionList = () => {
   const { t } = useTranslation();
-  const navigation = useAppNavigation();
-  const networkStatus = useAppSelector(selectNetworkStatus);
-
   const dispatch = useAppDispatch();
-  const { initial, loading } = useAppSelector(fetchCredentialsStatus);
-  const credentialList = useAppSelector(getAllCredentials.selectAll);
-  const [selectedType, setSelectedType] = useState<CredentialStatusType>(CredentialStatus.VALID);
-  const [searchText, setSearchText] = useState('');
+  const networkStatus = useAppSelector(selectNetworkStatus);
+  const {
+    acceptConnections,
+    connectionlist,
+    onAcceptConnection,
+    onDeleteConnection,
+    refreshConnections,
+    fetchAcceptConnections,
+  } = useConnections();
+  const connectionStatus = useAppSelector(selectConnectionsStatus);
+
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [selectedConnection, setSelectedConnection] = useState<IConnectionObject | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -38,28 +44,53 @@ const ConnectionList = () => {
         _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
         return;
       }
-      if (initial) {
-        dispatch(fetchCredentials() as any);
+      if (connectionStatus === 'initial') {
+        fetchAcceptConnections();
       }
-    }, [initial, networkStatus])
+    }, [connectionStatus, networkStatus])
   );
 
-  const onItemClick = useCallback((item: ICredentialObject) => {
-    navigation.navigate(AppRoutes.CredentialDetail, { credentialId: item.credentialId });
+  const addNewConnection = () => {
+    setShowBottomSheet(true);
+  };
+  const onConnectionSelect = (label: string, value: string) => {
+    onAcceptConnection(value);
+    setShowBottomSheet(false);
+  };
+
+  const onItemClick = useCallback((item: IConnectionObject) => {
+    setSelectedConnection(item);
+    setShowDeleteAlert(true);
   }, []);
 
+  async function onSuccessPress(connection: IConnectionObject) {
+    try {
+      const result = await onDeleteConnection(connection.connectionId);
+      if (result.success) {
+        showOKDialog('', t(result.message), () => {});
+      } else {
+        showOKDialog('', t(result.message), () => {});
+      }
+    } catch (error) {
+      showOKDialog('', t('errors.something_went_wrong'), () => {});
+    }
+  }
+
   const credentialItem = useCallback(
-    ({ item }: { item: ICredentialObject }) => {
-      return (
-        <CredentialItem item={item} status={selectedType} onItemClick={() => onItemClick(item)} />
-      );
+    ({ item }: { item: IConnectionObject }) => {
+      return <ConnectionItem item={item} deleteItem={() => onItemClick(item)} />;
     },
-    [selectedType, onItemClick]
+    [onItemClick]
   );
 
   const headerItem = () => {
     return (
-      <TouchableOpacity style={styles.addButton} activeOpacity={0.8} onPress={() => {}}>
+      <TouchableOpacity
+        style={styles.addButton}
+        activeOpacity={0.8}
+        onPress={() => {
+          addNewConnection();
+        }}>
         <Ionicons name="add-circle" size={24} color={AppColors.TEXT_LABEL_COLOR} />
 
         <Text style={styles.addText}>{t('Add Connection')}</Text>
@@ -78,14 +109,42 @@ const ConnectionList = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={credentialList}
+        data={acceptConnections}
         style={styles.credentailList}
-        keyExtractor={item => item.credentialId}
+        keyExtractor={item => item.connectionId}
         renderItem={credentialItem}
         ListEmptyComponent={emtpyList}
         ListHeaderComponent={headerItem}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
         keyboardShouldPersistTaps="handled"
+      />
+      {/* Add new connection */}
+      <SelectModal
+        title={t('ConnectionsScreen.select_connections')}
+        subTitle="Select a connection to add"
+        isVisible={showBottomSheet}
+        data={connectionlist}
+        onSelect={onConnectionSelect}
+        onClose={() => setShowBottomSheet(false)}
+      />
+      {/* delete alert dialog */}
+      <AppCustomAlert
+        isVisible={showDeleteAlert}
+        title={t('messages.delete_connection_title')}
+        message={t('messages.delete_connection_message')}
+        cancelText={t('common.cancel')}
+        confirmText={t('common.confirm')}
+        type={AlertType.DANGER}
+        onConfirm={() => {
+          if (selectedConnection != null) {
+            onSuccessPress(selectedConnection);
+          }
+          setShowDeleteAlert(false);
+        }}
+        onCancel={() => {
+          setShowDeleteAlert(false);
+        }}
       />
     </View>
   );

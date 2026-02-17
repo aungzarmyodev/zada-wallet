@@ -1,28 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AppColors } from '../../../../theme/Colors';
-import { ICredentialObject } from '../../../../store/credentials/interface';
-import { DateUtils } from '../../../Utils/DateUtils';
-import { CredentialStatus, CredentialStatusType } from '../const/CredentialStatus';
+import { IConnectionObject } from '../../../../store/connections/interface';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-type CredentialItemProp = {
-  item: ICredentialObject;
-  status: CredentialStatusType;
-  onItemClick: () => void;
+type Props = {
+  item: IConnectionObject;
+  deleteItem: () => void;
 };
 
-const CredentialItem = ({ item, status, onItemClick }: CredentialItemProp) => {
-  const isValid = status === CredentialStatus.VALID;
-  const isExpired = status === CredentialStatus.EXPIRED;
-  const isExpiring = status === CredentialStatus.EXPIRING;
-
-  const statusLabel =
-    status === CredentialStatus.EXPIRED
-      ? 'Expired'
-      : status === CredentialStatus.EXPIRING
-      ? 'Expiring'
-      : 'Valid';
-
+const ConnectionItem = ({ item, deleteItem }: Props) => {
   const renderLogo = () => {
     if (item.imageUrl) {
       return (
@@ -36,24 +23,21 @@ const CredentialItem = ({ item, status, onItemClick }: CredentialItemProp) => {
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={onItemClick}>
+    <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={() => {}}>
       <View style={styles.row}>
         {renderLogo()}
         <View style={styles.left}>
-          <Text style={styles.name}>{item.type}</Text>
-          <Text style={styles.organization}>{item.organizationName}</Text>
-          <Text style={styles.date}>{DateUtils(item.issuedAtUtc)}</Text>
+          <Text style={styles.name}>{item.name}</Text>
         </View>
         <View style={styles.right}>
-          <Text
-            style={[
-              styles.status,
-              isExpired && styles.expired,
-              isExpiring && styles.expiring,
-              isValid && styles.valid,
-            ]}>
-            {statusLabel}
-          </Text>
+          <TouchableOpacity onPress={deleteItem}>
+            <Ionicons
+              name="trash-outline"
+              size={20}
+              color={AppColors.DANGER}
+              style={{ padding: 8 }}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
@@ -165,4 +149,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CredentialItem;
+export default ConnectionItem;
