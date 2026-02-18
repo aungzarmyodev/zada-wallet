@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from 'react';
 
-import { View, Text, StyleSheet, TextInput, FlatList, Alert } from 'react-native';
+import { View, StyleSheet, TextInput, FlatList } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { AppColors } from '../../../theme/Colors';
 
@@ -12,14 +11,16 @@ import EmptyCredentialList from './components/EmptyCredentialList';
 import NoInternetScreen from '../../Utils/NoInternetScreen';
 import { AppRoutes, useAppNavigation } from '../../navigation/Types';
 
-import { useAppDispatch, useAppSelector } from '../../../store';
+import { RootState, useAppDispatch, useAppSelector } from '../../../store';
 import { selectNetworkStatus } from '../../../store/app/selectors';
-import { fetchCredentialsStatus, getAllCredentials } from '../../../store/credentials/selectors';
+import {
+  fetchCredentialsStatus,
+  selectSearchedCredentials,
+} from '../../../store/credentials/selectors';
 import { fetchCredentials } from '../../../store/credentials/thunk';
 
 import { _showAlert } from '../../../helpers/Toast';
 import { ICredentialObject } from '../../../store/credentials/interface';
-import FilterChip from './components/FilterChip';
 import { CredentialStatus, CredentialStatusType } from './const/CredentialStatus';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -30,9 +31,11 @@ const CredentialList = () => {
 
   const dispatch = useAppDispatch();
   const { initial, loading } = useAppSelector(fetchCredentialsStatus);
-  const credentialList = useAppSelector(getAllCredentials.selectAll);
-  const [selectedType, setSelectedType] = useState<CredentialStatusType>(CredentialStatus.VALID);
-  const [searchText, setSearchText] = useState('');
+
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const credentialList = useAppSelector((state: RootState) =>
+    selectSearchedCredentials(state, searchKeyword)
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -53,10 +56,14 @@ const CredentialList = () => {
   const credentialItem = useCallback(
     ({ item }: { item: ICredentialObject }) => {
       return (
-        <CredentialItem item={item} status={selectedType} onItemClick={() => onItemClick(item)} />
+        <CredentialItem
+          item={item}
+          status={CredentialStatus.VALID}
+          onItemClick={() => onItemClick(item)}
+        />
       );
     },
-    [selectedType, onItemClick]
+    [onItemClick]
   );
 
   const emtpyList = () => {
@@ -74,8 +81,8 @@ const CredentialList = () => {
 
         <TextInput
           placeholder={t('Search')}
-          value={searchText}
-          onChangeText={setSearchText}
+          value={searchKeyword}
+          onChangeText={setSearchKeyword}
           style={styles.searchInput}
           placeholderTextColor="#999"
         />

@@ -269,6 +269,7 @@
     "updated_pincode": "ပင်ကုဒ်ကိုအောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ။"
   },
   "sea_wallet": {
-    "empty_action_list": "You don't have any actions yet."
+    "empty_action_list": "You don't have any actions yet.",
+    "my_wallet": "My Wallet"
   }
 }

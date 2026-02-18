@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, useWindowDimensions, StyleSheet, TouchableOpacity } from 'react-native';
 import { TabView, SceneMap, NavigationState, SceneRendererProps } from 'react-native-tab-view';
 import CredentialList from './CredentialList';
 import ConnectionList from './ConnectionList';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppColors } from '../../../theme/Colors';
+import { useTranslation } from 'react-i18next';
+import { useFocusEffect } from '@react-navigation/native';
+import { _showAlert } from '../../../helpers/Toast';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { fetchCredentials } from '../../../store/credentials/thunk';
+import { selectNetworkStatus } from '../../../store/app/selectors';
+import { fetchCredentialsStatus, getAllCredentials } from '../../../store/credentials/selectors';
 
 type TabRoute = {
   key: 'credentaiList' | 'connectionList';
@@ -22,8 +29,29 @@ const routes: TabRoute[] = [
 ];
 
 const WalletScreen = () => {
+  const { t } = useTranslation();
+
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+
+  const networkStatus = useAppSelector(selectNetworkStatus);
+
+  const dispatch = useAppDispatch();
+  const { initial } = useAppSelector(fetchCredentialsStatus);
+
+  const credentialList = useAppSelector(getAllCredentials.selectAll);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (networkStatus !== 'connected') {
+        _showAlert(t('errors.no_internet_title'), t('errors.no_internet_message'));
+        return;
+      }
+      if (initial) {
+        dispatch(fetchCredentials() as any);
+      }
+    }, [initial, networkStatus])
+  );
 
   const renderCustomTabBar = (
     props: SceneRendererProps & { navigationState: NavigationState<TabRoute> }
@@ -51,8 +79,10 @@ const WalletScreen = () => {
     <SafeAreaView style={styles.safeAreaView} edges={['top']}>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>My Wallet</Text>
-          <Text style={styles.subTitleText}>10 Credentials</Text>
+          <Text style={styles.titleText}>{t('sea_wallet.my_wallet')}</Text>
+          <Text style={styles.subTitleText}>
+            {credentialList.length} {t('common.credentials')}
+          </Text>
         </View>
 
         <TabView
@@ -87,7 +117,7 @@ const styles = StyleSheet.create({
   },
   subTitleText: {
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: '600',
     color: AppColors.TEXT_LABEL_COLOR,
     paddingTop: 4,
   },
@@ -113,6 +143,11 @@ const styles = StyleSheet.create({
   },
   activeTabLabel: {
     color: AppColors.WHITE,
+  },
+  countText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#000',
   },
 });
 

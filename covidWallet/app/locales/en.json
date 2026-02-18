@@ -270,6 +270,7 @@
     "updated_pincode": "Pincode is updated successfully"
   },
   "sea_wallet": {
-    "empty_action_list": "You don't have any actions yet."
+    "empty_action_list": "You don't have any actions yet.",
+    "my_wallet": "My Wallet"
   }
 }

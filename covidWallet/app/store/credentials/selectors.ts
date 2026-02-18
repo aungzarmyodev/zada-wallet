@@ -43,19 +43,10 @@ export const selectSortedCredentials = createSelector(getAllCredentials.selectAl
 
 export const selectSearchedCredentials = createSelector(
   getAllCredentials.selectAll,
-  (_: ICredentialObject[], searchKeyword: string) => searchKeyword,
-  (cred: ICredentialObject[], searchKeyword) => {
-    // Return sorted array
-    if (searchKeyword.length == 0) {
-      return cred.sort(
-        (a, b) => new Date(b.issuedAtUtc).getTime() - new Date(a.issuedAtUtc).getTime()
-      );
-    }
+  (_: RootState, searchKeyword: string) => searchKeyword.toLowerCase(),
+  (cred, keyword) => {
+    if (!keyword) return cred;
 
-    // Return filtered array
-    let filteredCred = cred.filter(function (cred) {
-      return cred.type.toLocaleLowerCase().match(searchKeyword.toLocaleLowerCase());
-    });
-    return filteredCred;
+    return cred.filter(c => c.type?.toLowerCase().includes(keyword));
   }
 );
