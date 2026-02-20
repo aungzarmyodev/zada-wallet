@@ -2,21 +2,14 @@ import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { AppColors } from '../../../../theme/Colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { ServiceObj } from '../../../../store/services_and_resources/ServieAndResourceModels';
 
 type ServiceFeatureProp = {
-  title: string;
-  description: string;
+  service: ServiceObj;
   phoneCall(): void;
   learnMore(): void;
-  showPhoneCall: boolean;
 };
-const ServiceFeatureCardView = ({
-  title,
-  description,
-  phoneCall,
-  learnMore,
-  showPhoneCall,
-}: ServiceFeatureProp) => {
+const ServiceFeatureCardView = ({ service, phoneCall, learnMore }: ServiceFeatureProp) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardRow}>
@@ -24,20 +17,22 @@ const ServiceFeatureCardView = ({
           <Text style={styles.mainLabel}>S</Text>
         </View>
         <View style={styles.rightView}>
-          <Text style={styles.cardTitle}>{title}</Text>
-          <Text style={styles.cardDescription}>{description}</Text>
+          <Text style={styles.cardTitle}>{service.name}</Text>
+          <Text style={styles.cardDescription}>{service.description}</Text>
           <View style={styles.row}>
-            {showPhoneCall && (
+            {service.phone && (
               <TouchableOpacity style={[styles.chip, { marginRight: 8 }]} onPress={phoneCall}>
                 <MaterialIcons name="phone" size={16} color={AppColors.PRIMARY} />
                 <Text style={styles.label}>Call</Text>
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity style={styles.chip} onPress={learnMore}>
-              <MaterialIcons name="open-in-new" size={16} color={AppColors.PRIMARY} />
-              <Text style={styles.label}>Visit</Text>
-            </TouchableOpacity>
+            {service.url && (
+              <TouchableOpacity style={styles.chip} onPress={learnMore}>
+                <MaterialIcons name="open-in-new" size={16} color={AppColors.PRIMARY} />
+                <Text style={styles.label}>Visit</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>

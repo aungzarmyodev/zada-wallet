@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ResourceObj } from './ServieAndResourceModels';
-import { fetchResources } from './Thunk';
+import { CategoryObj, ResourceObj, ServiceObj } from './ServieAndResourceModels';
+import { fetchResources, fetchServicesAndCategories } from './Thunk';
 
 type ResourceState = {
   resources: ResourceObj[];
@@ -8,15 +8,29 @@ type ResourceState = {
   error: string | null;
 };
 
-const initialState: ResourceState = {
+const resourcesInitialState: ResourceState = {
   resources: [],
   loading: false,
   error: null,
 };
 
-const ServiceAndResourcesSlice = createSlice({
-  name: 'serviceandresources',
-  initialState,
+type ServicesState = {
+  categories: CategoryObj[];
+  services: ServiceObj[];
+  loading: boolean;
+  error: string | null;
+};
+
+const servicesInitialState: ServicesState = {
+  categories: [],
+  services: [],
+  loading: false,
+  error: null,
+};
+
+const ResourcesSlice = createSlice({
+  name: 'resources',
+  initialState: resourcesInitialState,
   reducers: {},
   extraReducers: builder => {
     builder
@@ -30,9 +44,31 @@ const ServiceAndResourcesSlice = createSlice({
       })
       .addCase(fetchResources.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error = action.error as string;
       });
   },
 });
 
-export { ServiceAndResourcesSlice };
+const ServicesSlice = createSlice({
+  name: 'services',
+  initialState: servicesInitialState,
+  reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(fetchServicesAndCategories.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchServicesAndCategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = action.payload.categories;
+        state.services = action.payload.services;
+      })
+      .addCase(fetchServicesAndCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error as string;
+      });
+  },
+});
+
+export { ResourcesSlice, ServicesSlice };

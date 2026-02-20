@@ -12,3 +12,15 @@ export const fetchResources = createAsyncThunk(
     }
   }
 );
+
+export const fetchServicesAndCategories = createAsyncThunk(
+  'services/fetchAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const result = await SupabaseAPI.getCategoriesAndServices();
+      return result;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);

@@ -15,7 +15,7 @@ const ServiceChip = ({ icon, label, active, onPress }: ServiceChipProp) => {
     <TouchableOpacity onPress={onPress}>
       <View style={[styles.container, active && { backgroundColor: AppColors.PRIMARY }]}>
         <MaterialIcons
-          name="info-outline"
+          name={icon}
           size={20}
           style={[styles.icon, active && { color: AppColors.WHITE }]}
         />

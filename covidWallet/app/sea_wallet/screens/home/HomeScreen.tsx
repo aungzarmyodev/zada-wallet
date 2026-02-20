@@ -36,7 +36,6 @@ import ActionDialog from '../../../components/Dialogs/ActionDialog';
 import OverlayLoader from '../../../components/OverlayLoader';
 import AppCustomAlert, { AlertType } from '../../../components/Alert/AppCustomAlert';
 import { delete_verification } from '../../../gateways/verifications';
-import { SupabaseAPI } from '../../../store/supabaseApi';
 
 const HomeScreen = () => {
   const navigation = useAppNavigation();
@@ -76,23 +75,6 @@ const HomeScreen = () => {
       }
     }, [actionStatus, networkStatus])
   );
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      const data = await SupabaseAPI.getResources();
-      const categories = await SupabaseAPI.getCategories();
-      const serciesProvider = await SupabaseAPI.getServices();
-      console.log('serciesProvider', serciesProvider);
-      console.log('Categories', categories);
-      console.log('getResources', data);
-    } catch (e) {
-      console.log('Error', e);
-    }
-  };
 
   const onRefresh = useCallback(async () => {
     if (networkStatus !== 'connected') {

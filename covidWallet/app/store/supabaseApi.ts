@@ -1,5 +1,10 @@
 import { supabase } from '../gateways/supabase';
-import { mapResource, ResourceObj } from './services_and_resources/ServieAndResourceModels';
+import {
+  mapCategory,
+  mapResource,
+  mapService,
+  ResourceObj,
+} from './services_and_resources/ServieAndResourceModels';
 
 export const SupabaseAPI = {
   // Fetch categories
@@ -22,12 +27,21 @@ export const SupabaseAPI = {
     return data;
   },
 
-  // Fetch ports
-  async getPorts() {
-    const { data, error } = await supabase.from('port_guides').select('*').order('port_name');
+  async getCategoriesAndServices() {
+    const [categoriesRaw, servicesRaw] = await Promise.all([
+      this.getCategories(),
+      this.getServices(),
+    ]);
 
-    if (error) throw error;
-    return data;
+    const categories = (categoriesRaw ?? []).map(mapCategory);
+    const services = (servicesRaw ?? []).map(mapService);
+
+    const filteredCategories = categories.filter(c => c.type === 'service');
+
+    return {
+      categories: filteredCategories,
+      services,
+    };
   },
 
   // Fetch resources

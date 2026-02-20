@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../screens/home/HomeScreen';
 import WalletScreen from '../screens/wallet/WalletScreen';
-import ServicesAndResourcesScreen from '../screens/services_tips/ServicesAndResourcesScreen';
+import ServicesAndResourcesScreen from '../screens/services_and_resources/ServicesAndResourcesScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SeaWalletColors } from '../../theme/SeaWalletColors';
