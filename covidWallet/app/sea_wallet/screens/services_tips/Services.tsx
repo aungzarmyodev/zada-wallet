@@ -5,7 +5,7 @@ import ServiceChip from './component/ServiceChip';
 import { ServiceStatusType, ServiceTypes } from './const/ServiceTypes';
 import ServiceFeatureCardView from './component/ServiceFeatureCardView';
 
-const ServiceScreen = () => {
+const Services = () => {
   const [selectedType, setSelectedType] = useState<ServiceStatusType>(ServiceTypes.INSURANCE);
 
   const selectedServiceTypes = (type: ServiceStatusType) => {
@@ -93,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ServiceScreen;
+export default Services;

@@ -2,33 +2,25 @@ import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { AppColors } from '../../../../theme/Colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { ResourceObj } from '../../../../store/services_and_resources/ServieAndResourceModels';
 
 type ResourceCardViewProp = {
-  title: string;
-  description: string;
+  item: ResourceObj;
   phoneCall(): void;
   learnMore(): void;
-  showPhoneCall: boolean;
 };
-const ResourceCardView = ({
-  title,
-  description,
-  phoneCall,
-  learnMore,
-  showPhoneCall,
-}: ResourceCardViewProp) => {
+const ResourceCardView = ({ item, phoneCall, learnMore }: ResourceCardViewProp) => {
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>{title}</Text>
-      <Text style={styles.cardDescription}>{description}</Text>
+      <Text style={styles.cardTitle}>{item.title}</Text>
+      <Text style={styles.cardDescription}>{item.description}</Text>
       <View style={styles.row}>
-        {showPhoneCall && (
+        {item.phone && (
           <TouchableOpacity style={[styles.chip, { marginRight: 8 }]} onPress={phoneCall}>
             <MaterialIcons name="phone" size={16} color={AppColors.PRIMARY} />
             <Text style={styles.label}>Call</Text>
           </TouchableOpacity>
         )}
-
         <TouchableOpacity style={styles.chip} onPress={learnMore}>
           <MaterialIcons name="open-in-new" size={16} color={AppColors.PRIMARY} />
           <Text style={styles.label}>Learn More</Text>

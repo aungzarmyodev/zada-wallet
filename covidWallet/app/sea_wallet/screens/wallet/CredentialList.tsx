@@ -8,7 +8,7 @@ import { AppColors } from '../../../theme/Colors';
 
 import CredentialItem from './components/CredentialItem';
 import EmptyCredentialList from './components/EmptyCredentialList';
-import NoInternetScreen from '../../Utils/NoInternetScreen';
+import NoInternetScreen from '../../common/NoInternetScreen';
 import { AppRoutes, useAppNavigation } from '../../navigation/Types';
 
 import { RootState, useAppDispatch, useAppSelector } from '../../../store';

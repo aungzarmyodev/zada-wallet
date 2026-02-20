@@ -18,6 +18,7 @@ import { ConnectionSlice } from './connections';
 import { ActionSlice } from './actions';
 import { AppSlice } from './app';
 import { createEncryptor } from './utils';
+import { ServiceAndResourcesSlice } from './services_and_resources/ServiceAndResourceReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setup } from '../gateways/http_client';
 import { middleware } from './middleware';
@@ -31,6 +32,7 @@ let reducers = combineReducers({
   actions: ActionSlice.reducer,
   credential: CredentialSlice.reducer,
   connection: ConnectionSlice.reducer,
+  serviceandresource: ServiceAndResourcesSlice.reducer,
 });
 
 // Fake function to get store type.
@@ -75,6 +77,7 @@ export const generateStore = (encryptionKey: { isFresh: boolean; key: string }) 
     actions: ActionSlice.reducer,
     credential: CredentialSlice.reducer,
     connection: ConnectionSlice.reducer,
+    serviceandresource: ServiceAndResourcesSlice.reducer,
   });
 
   const rootReducer = (state: any, action: any) => {

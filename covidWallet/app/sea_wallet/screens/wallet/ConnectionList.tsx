@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { AppColors } from '../../../theme/Colors';
 
 import EmptyCredentialList from './components/EmptyCredentialList';
-import NoInternetScreen from '../../Utils/NoInternetScreen';
+import NoInternetScreen from '../../common/NoInternetScreen';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { selectNetworkStatus } from '../../../store/app/selectors';

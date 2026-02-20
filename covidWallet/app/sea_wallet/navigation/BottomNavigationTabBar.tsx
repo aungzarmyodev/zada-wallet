@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../screens/home/HomeScreen';
 import WalletScreen from '../screens/wallet/WalletScreen';
-import ServicesAndTipsScreen from '../screens/services_tips/ServicesAndTipsScreen';
+import ServicesAndResourcesScreen from '../screens/services_tips/ServicesAndResourcesScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SeaWalletColors } from '../../theme/SeaWalletColors';
@@ -52,7 +52,7 @@ const BottomNavigationTabBar = () => {
         })}
       />
 
-      <Tab.Screen name={TabRoutes.ServiceAndTip} component={ServicesAndTipsScreen} />
+      <Tab.Screen name={TabRoutes.ServiceAndTip} component={ServicesAndResourcesScreen} />
       <Tab.Screen name={TabRoutes.Profile} component={ProfileScreen} />
     </Tab.Navigator>
   );

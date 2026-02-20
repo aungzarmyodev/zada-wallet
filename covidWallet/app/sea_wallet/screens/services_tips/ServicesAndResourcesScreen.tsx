@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, useWindowDimensions, StyleSheet, TouchableOpacity } from 'react-native';
 import { TabView, SceneMap, NavigationState, SceneRendererProps } from 'react-native-tab-view';
-import ServiceScreen from './ServiceScreen';
-import TipScreen from './TipScreen';
+import Services from './Services';
+import Resources from './Resources';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppColors } from '../../../theme/Colors';
 
 type TabRoute = {
-  key: 'services' | 'tips';
+  key: 'services' | 'resources';
   title: string;
 };
 
 const renderScene = SceneMap({
-  services: ServiceScreen,
-  tips: TipScreen,
+  services: Services,
+  resources: Resources,
 });
 
 const routes: TabRoute[] = [
   { key: 'services', title: 'Services' },
-  { key: 'tips', title: 'Tips & Resources' },
+  { key: 'resources', title: 'Tips & Resources' },
 ];
 
-const ServicesAndTipsScreen = () => {
+const ServicesAndResourcesScreen = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 
@@ -120,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ServicesAndTipsScreen;
+export default ServicesAndResourcesScreen;
