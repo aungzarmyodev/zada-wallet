@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -8,11 +8,14 @@ import { AppColors } from '../../../theme/Colors';
 
 import { selectNetworkStatus } from '../../../store/app/selectors';
 import { useAppDispatch, useAppSelector } from '../../../store';
+import { saveItem, getItem } from '../../../helpers/Storage';
+import { BIOMETRIC_ENABLED } from '../../../helpers/ConfigApp';
+
 import { selectUser } from '../../../store/auth/selectors';
 
 import { clearAllAndLogout } from '../../../store/utils';
 import AppCustomAlert from '../../../components/Alert/AppCustomAlert';
-import { showNetworkMessage } from '../../../helpers/Toast';
+import { showMessage, showNetworkMessage } from '../../../helpers/Toast';
 import { useSelector } from 'react-redux';
 import UserProfileLogo from '../home/components/UserProfileLogo';
 
@@ -25,6 +28,19 @@ const ProfileScreen = () => {
   const networkStatus = useAppSelector(selectNetworkStatus);
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
+
+  // get biometirc status
+  useEffect(() => {
+    const loadBiometricStatus = async () => {
+      try {
+        const value = await getItem(BIOMETRIC_ENABLED);
+        setBiometricEnabled(value === 'true');
+      } catch (e) {
+        setBiometricEnabled(false);
+      }
+    };
+    loadBiometricStatus();
+  }, []);
 
   const clickViewProfile = () => {
     navigation.navigate(AppRoutes.ViewProfile);
@@ -52,9 +68,18 @@ const ProfileScreen = () => {
     console.log('Forgot PIN tapped');
   };
 
-  const toggleBiometric = (value: boolean) => {
+  const toggleBiometric = async (value: boolean) => {
+    await saveItem(BIOMETRIC_ENABLED, JSON.stringify(value));
     setBiometricEnabled(value);
-    console.log('Biometric toggled:', value);
+    if (value) {
+      setTimeout(() => {
+        showMessage('ZADA Wallet', 'Biometric enabled!');
+      }, 500);
+    } else {
+      setTimeout(() => {
+        showMessage('ZADA Wallet', 'Biometric disabled!');
+      }, 500);
+    }
   };
 
   return (
