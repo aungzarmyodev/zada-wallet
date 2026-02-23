@@ -28,7 +28,7 @@ const HomeHeader = ({ user, viewAll, scanQR, browseService }: HomeHeaderProp) =>
           <Text style={styles.profileName}>{user.name}</Text>
         </View>
       </View>
-      <View style={styles.summaryTitleContainer}>
+      {/* <View style={styles.summaryTitleContainer}>
         <Text style={styles.summaryTitle}>Credential Summary</Text>
         <TouchableOpacity
           style={styles.viewAllContainer}
@@ -38,8 +38,8 @@ const HomeHeader = ({ user, viewAll, scanQR, browseService }: HomeHeaderProp) =>
           <Text style={styles.viewAllText}>View All </Text>
           <MaterialIcons name="chevron-right" size={24} color={AppColors.MEDIUM_GRAY} />
         </TouchableOpacity>
-      </View>
-      <View style={styles.cardsContainer}>
+      </View> */}
+      {/* <View style={styles.cardsContainer}>
         <View style={styles.statusCard}>
           <View style={styles.validCircleIcon}>
             <MaterialIcons name="check-circle" size={16} color="#4CAF50" />
@@ -67,7 +67,7 @@ const HomeHeader = ({ user, viewAll, scanQR, browseService }: HomeHeaderProp) =>
             <Text style={styles.cardLabel}>Expired</Text>
           </View>
         </View>
-      </View>
+      </View> */}
       <QuickActions scanQR={scanQR} browseService={browseService} />
     </View>
   );

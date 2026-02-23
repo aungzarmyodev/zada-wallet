@@ -3,26 +3,15 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AppColors } from '../../../../theme/Colors';
 import { ICredentialObject } from '../../../../store/credentials/interface';
 import { DateUtils } from '../../../Utils/DateUtils';
-import { CredentialStatus, CredentialStatusType } from '../const/CredentialStatus';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type CredentialItemProp = {
   item: ICredentialObject;
-  status: CredentialStatusType;
   onItemClick: () => void;
+  shareItem: () => void;
 };
 
-const CredentialItem = ({ item, status, onItemClick }: CredentialItemProp) => {
-  const isValid = status === CredentialStatus.VALID;
-  const isExpired = status === CredentialStatus.EXPIRED;
-  const isExpiring = status === CredentialStatus.EXPIRING;
-
-  const statusLabel =
-    status === CredentialStatus.EXPIRED
-      ? 'Expired'
-      : status === CredentialStatus.EXPIRING
-      ? 'Expiring'
-      : 'Valid';
-
+const CredentialItem = ({ item, onItemClick, shareItem }: CredentialItemProp) => {
   const renderLogo = () => {
     if (item.imageUrl) {
       return (
@@ -36,27 +25,32 @@ const CredentialItem = ({ item, status, onItemClick }: CredentialItemProp) => {
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={onItemClick}>
+    <View style={styles.card}>
       <View style={styles.row}>
-        {renderLogo()}
-        <View style={styles.left}>
-          <Text style={styles.name}>{item.type}</Text>
-          <Text style={styles.organization}>{item.organizationName}</Text>
-          <Text style={styles.date}>{DateUtils(item.issuedAtUtc)}</Text>
-        </View>
+        <TouchableOpacity style={styles.leftContainer} activeOpacity={0.8} onPress={onItemClick}>
+          {item.imageUrl ? (
+            <View style={styles.logoContainer}>
+              <Image source={{ uri: item.imageUrl }} style={styles.logo} />
+            </View>
+          ) : (
+            <View style={styles.logoContainer} />
+          )}
+
+          <View style={styles.left}>
+            <Text style={styles.name}>{item.type}</Text>
+            <Text style={styles.organization}>{item.organizationName}</Text>
+          </View>
+        </TouchableOpacity>
+
         <View style={styles.right}>
-          <Text
-            style={[
-              styles.status,
-              isExpired && styles.expired,
-              isExpiring && styles.expiring,
-              isValid && styles.valid,
-            ]}>
-            {statusLabel}
-          </Text>
+          <Text style={styles.date}>{DateUtils(item.issuedAtUtc)}</Text>
+
+          <TouchableOpacity style={styles.shareIcon} onPress={shareItem}>
+            <MaterialIcons name="share" size={22} color={AppColors.PRIMARY} />
+          </TouchableOpacity>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -76,6 +70,12 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
 
   logoContainer: {
@@ -138,6 +138,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: AppColors.MEDIUM_GRAY,
     marginTop: 6,
+  },
+  shareIcon: {
+    margin: 10,
   },
 
   status: {
