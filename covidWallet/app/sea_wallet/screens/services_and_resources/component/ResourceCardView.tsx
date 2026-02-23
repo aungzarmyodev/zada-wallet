@@ -21,10 +21,12 @@ const ResourceCardView = ({ item, phoneCall, learnMore }: ResourceCardViewProp) 
             <Text style={styles.label}>Call</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={styles.chip} onPress={learnMore}>
-          <MaterialIcons name="open-in-new" size={16} color={AppColors.PRIMARY} />
-          <Text style={styles.label}>Learn More</Text>
-        </TouchableOpacity>
+        {item.url && (
+          <TouchableOpacity style={styles.chip} onPress={learnMore}>
+            <MaterialIcons name="open-in-new" size={16} color={AppColors.PRIMARY} />
+            <Text style={styles.label}>Learn More</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
