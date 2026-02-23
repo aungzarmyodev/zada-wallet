@@ -11,6 +11,7 @@ export const AppRoutes = {
   ConnectionBaseVerification: 'ConnectionBaseVerificationScreen',
   VerifyQR: 'VerifyQRScreen',
   ViewProfile: 'ViewProfile',
+  ChangePin: 'ChangePin',
   ChangeLanguage: 'ChangeLanguage',
   CredentialDetail: 'CredentialDetail',
 } as const;
@@ -18,6 +19,7 @@ export const AppRoutes = {
 export type SeaWalletMainStackParamList = {
   [AppRoutes.SeaWalletMain]: undefined;
   [AppRoutes.ViewProfile]: undefined;
+  [AppRoutes.ChangePin]: undefined;
   [AppRoutes.ChangeLanguage]: undefined;
   [AppRoutes.ScanQR]: undefined;
   [AppRoutes.VerifyRequest]: {

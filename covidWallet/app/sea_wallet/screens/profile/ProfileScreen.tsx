@@ -63,9 +63,8 @@ const ProfileScreen = () => {
     navigation.navigate(AppRoutes.ChangeLanguage);
   };
 
-  const clickForgotPin = () => {
-    // Click forgot PIN
-    console.log('Forgot PIN tapped');
+  const clickChangePin = () => {
+    navigation.navigate(AppRoutes.ChangePin);
   };
 
   const toggleBiometric = async (value: boolean) => {
@@ -119,7 +118,7 @@ const ProfileScreen = () => {
 
           <View style={styles.menuDivider} />
 
-          <TouchableOpacity style={styles.menuItem} onPress={clickForgotPin} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.menuItem} onPress={clickChangePin} activeOpacity={0.7}>
             <Text style={styles.menuItemText}>Change PIN</Text>
             <MaterialIcons name="chevron-right" size={24} color="#ccc" />
           </TouchableOpacity>

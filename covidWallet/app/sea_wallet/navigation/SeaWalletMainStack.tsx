@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavigationTabBar from './BottomNavigationTabBar';
 import NewQRScreen from '../../screens/qr/NewQRScreen';
 import ViewProfileScreen from '../screens/profile/ViewProfileScreen';
+import ChangePinScreen from '../screens/profile/ChangePinScreen';
 import LanguageSelectionScreen from '../../screens/settings/LanguageSelectionScreen';
 import VerificationRequestScreen from '../../screens/verification_request_screen/VerificationRequestScreen';
 import ConnectionAccept from '../../screens/qr/ConnectionAccept';
@@ -50,6 +51,11 @@ const SeaWalletMainStack = () => {
         name={AppRoutes.ViewProfile}
         component={ViewProfileScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={AppRoutes.ChangePin}
+        component={ChangePinScreen}
+        options={{ headerShown: true, title: 'Change Pin' }}
       />
       <Stack.Screen
         name={AppRoutes.ChangeLanguage}
