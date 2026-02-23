@@ -23,10 +23,23 @@ export type CategoryObj = {
   type: string;
 };
 
+const CATEGORY_ICON_MAP: Record<string, string> = {
+  'emergency&welfare': 'health-and-safety',
+  'financial&insurance': 'credit-card',
+  'healthcare&wellness': 'monitor-heart',
+};
+
+const getCategoryIcon = (name?: string) => {
+  if (!name) return 'help-circle';
+
+  const key = name.toLowerCase().replace(/\s/g, '');
+  return CATEGORY_ICON_MAP[key] ?? 'help-circle';
+};
+
 export const mapCategory = (api: any): CategoryObj => ({
   id: api?.id ?? '',
   name: api?.name ?? '',
-  icon: api?.icon_name ?? undefined,
+  icon: getCategoryIcon(api?.name),
   type: api?.type ?? '',
 });
 

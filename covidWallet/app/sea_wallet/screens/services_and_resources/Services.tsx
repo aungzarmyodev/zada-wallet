@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Linking, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Linking, Alert } from 'react-native';
 import { AppColors } from '../../../theme/Colors';
 import ServiceChip from './component/ServiceChip';
-import { ServiceStatusType, ServiceTypes } from './const/ServiceTypes';
 import ServiceFeatureCardView from './component/ServiceFeatureCardView';
 
 import { fetchServicesAndCategories } from '../../../store/services_and_resources/Thunk';
@@ -25,8 +24,7 @@ const Services = () => {
   const { categories, services, loading, error } = useAppSelector(selectServiceState);
   const [selectedCategory, setSelectedCategory] = useState<CategoryObj | null>(null);
 
-  console.log('categories', categories);
-  console.log('servies', services);
+  console.log('categoryies', categories);
 
   useFocusEffect(
     useCallback(() => {
@@ -39,8 +37,10 @@ const Services = () => {
   );
 
   useEffect(() => {
-    if (categories.length > 0 && !selectedCategory) {
-      setSelectedCategory(categories[0]);
+    if (categories.length > 0) {
+      setSelectedCategory(prev =>
+        prev ? categories.find(c => c.id === prev.id) || categories[0] : categories[0]
+      );
     }
   }, [categories]);
 
@@ -92,9 +92,9 @@ const Services = () => {
           {categories.map(cat => (
             <ServiceChip
               key={cat.id}
-              icon={cat.icon || 'grid'}
+              icon={cat.icon}
               label={cat.name}
-              active={selectedCategory === cat}
+              active={selectedCategory?.id === cat.id}
               onPress={() => setSelectedCategory(cat)}
             />
           ))}
